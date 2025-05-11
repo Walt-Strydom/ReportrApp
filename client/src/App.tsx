@@ -4,6 +4,8 @@ import Home from "@/pages/Home";
 import CreatePage from "@/pages/CreatePage";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import InstallPrompt from "@/components/InstallPrompt";
+import FooterLinks from "@/components/FooterLinks";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function Router() {
   return (
@@ -16,11 +18,14 @@ function Router() {
 }
 
 function App() {
+  const isMobile = useIsMobile();
+
   return (
     <>
       <Router />
       <OfflineIndicator />
       <InstallPrompt />
+      {!isMobile && <FooterLinks />}
     </>
   );
 }
