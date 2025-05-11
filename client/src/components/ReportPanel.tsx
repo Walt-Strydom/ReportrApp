@@ -12,6 +12,8 @@ import { z } from 'zod';
 import { issueFormSchema } from '@shared/schema';
 import { resizeImage } from '@/lib/imageUtils';
 import { issueCategories, getAllIssueTypes } from '@/data/issueTypes';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from './LanguageSelector';
 
 interface ReportPanelProps {
   isOpen: boolean;
@@ -32,6 +34,7 @@ export default function ReportPanel({
   onSuccess,
   currentLocation 
 }: ReportPanelProps) {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedIssueType, setSelectedIssueType] = useState<string | null>(null);

@@ -102,6 +102,8 @@
     "location": {
       "denied": "Liggingstoegang Geweier",
       "deniedDesc": "Aktiveer asseblief liggingstoegang in jou blaaier-instellings om al die kenmerke van Lokisa te gebruik.",
+      "granted": "Liggingstoegang Toegestaan",
+      "grantedDesc": "Lokisa kan nou akkuraat die ligging van gerapporteerde probleme identifiseer.",
       "error": "Liggingsfout",
       "errorDesc": "Kon nie jou ligging kry nie. Probeer asseblief later weer.",
       "tryAgain": "Probeer weer"

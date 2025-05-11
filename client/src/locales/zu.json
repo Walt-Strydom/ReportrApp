@@ -102,6 +102,8 @@
     "location": {
       "denied": "Ukufinyelela Kwendawo Kunqatshiwe",
       "deniedDesc": "Sicela unikeze imvume yokufinyelela endaweni kusethimgi yakho ye-browser ukuze usebenzise zonke izici ze-Lokisa.",
+      "granted": "Ukufinyelela Kwendawo Kunikwe Imvume",
+      "grantedDesc": "I-Lokisa manje ingakwazi ukuhlonza ngokucophelela indawo yezinkinga ezibikiwe.",
       "error": "Iphutha Lendawo",
       "errorDesc": "Ayikwazanga ukuthola indawo yakho. Sicela uzame futhi emva kwesikhathi.",
       "tryAgain": "Zama futhi"

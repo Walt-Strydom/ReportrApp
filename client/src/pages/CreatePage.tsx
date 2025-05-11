@@ -103,8 +103,8 @@ export default function CreatePage() {
   // Handle report success
   const handleReportSuccess = () => {
     showSuccessOverlay(
-      'Report Submitted!',
-      'Your report has been sent to the relevant authorities.'
+      t('success.report.title'),
+      t('success.report.message')
     );
     
     // Automatically return to home page after success
@@ -136,7 +136,7 @@ export default function CreatePage() {
             className="bg-white"
           >
             <ChevronLeft className="mr-1 h-4 w-4" />
-            Back to Home
+            {t('nav.home')}
           </Button>
         </div>
         
@@ -144,7 +144,7 @@ export default function CreatePage() {
         {geolocation.loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
             <div className="bg-white p-4 rounded-lg shadow-lg">
-              <p className="text-center">Getting your location...</p>
+              <p className="text-center">{t('home.location.loading')}</p>
             </div>
           </div>
         )}
@@ -183,21 +183,21 @@ export default function CreatePage() {
       {/* Display error if geolocation fails */}
       {geolocation.error && !geolocation.loading && (
         <div className="absolute bottom-20 left-4 right-4 bg-destructive text-white p-3 rounded-lg">
-          <p>Location error: {geolocation.error}</p>
+          <p>{t('errors.location.error')}: {geolocation.error}</p>
           <button 
             className="underline mt-1" 
             onClick={() => {
               if (geolocation.permissionStatus === 'denied') {
                 toast({
-                  title: "Location Permission Required",
-                  description: "Please enable location services in your browser settings.",
+                  title: t('errors.location.denied'),
+                  description: t('errors.location.deniedDesc'),
                 });
               } else {
                 handleRequestLocationPermission();
               }
             }}
           >
-            Try again
+            {t('errors.location.tryAgain')}
           </button>
         </div>
       )}

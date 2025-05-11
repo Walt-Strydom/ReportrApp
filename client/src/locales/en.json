@@ -102,6 +102,8 @@
     "location": {
       "denied": "Location Access Denied",
       "deniedDesc": "Please enable location access in your browser settings to use all features of Lokisa.",
+      "granted": "Location Access Granted",
+      "grantedDesc": "Lokisa can now accurately identify the location of reported issues.",
       "error": "Location Error",
       "errorDesc": "Unable to get your location. Please try again later.",
       "tryAgain": "Try again"
