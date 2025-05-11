@@ -38,11 +38,13 @@
     "form": {
       "category": {
         "label": "Issue Category",
-        "placeholder": "Select a category"
+        "placeholder": "Select a category",
+        "required": "Please select an issue category"
       },
       "subcategory": {
         "label": "Issue Type",
-        "placeholder": "Select an issue type"
+        "placeholder": "Select an issue type",
+        "required": "Please select an issue type"
       },
       "location": {
         "label": "Location",
@@ -112,6 +114,11 @@
       "required": "This field is required",
       "minLength": "Must be at least {{count}} characters",
       "maxLength": "Cannot exceed {{count}} characters"
+    },
+    "submission": {
+      "title": "Submission Error",
+      "unknown": "An unknown error occurred",
+      "failed": "Failed to submit report"
     }
   },
   "categories": {

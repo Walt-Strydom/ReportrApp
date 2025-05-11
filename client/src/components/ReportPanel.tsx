@@ -82,8 +82,8 @@ export default function ReportPanel({
   const goToStep2 = () => {
     if (step === 1 && !selectedCategory) {
       toast({
-        title: "Error",
-        description: "Please select an issue category",
+        title: t('errors.form.required'),
+        description: t('report.form.category.required'),
         variant: "destructive"
       });
       return;
@@ -91,8 +91,8 @@ export default function ReportPanel({
     
     if (step === 1.5 && !selectedIssueType) {
       toast({
-        title: "Error",
-        description: "Please select an issue type",
+        title: t('errors.form.required'),
+        description: t('report.form.subcategory.required'),
         variant: "destructive"
       });
       return;
@@ -117,8 +117,8 @@ export default function ReportPanel({
       form.setValue('address', currentLocation.address);
     } else {
       toast({
-        title: "Location Error",
-        description: "Unable to get your current location. Please try again.",
+        title: t('errors.location.error'),
+        description: t('errors.location.errorDesc'),
         variant: "destructive"
       });
       return;
@@ -193,8 +193,8 @@ export default function ReportPanel({
       
       // Show success message
       toast({
-        title: "Report Submitted",
-        description: "Your report has been sent to the relevant authorities",
+        title: t('success.report.title'),
+        description: t('success.report.message'),
       });
       
       // Reset form and show success
@@ -203,8 +203,8 @@ export default function ReportPanel({
     } catch (error) {
       console.error('Submit error:', error);
       toast({
-        title: "Submission Error",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
+        title: t('errors.submission.title'),
+        description: error instanceof Error ? error.message : t('errors.submission.unknown'),
         variant: "destructive"
       });
     }
@@ -219,7 +219,7 @@ export default function ReportPanel({
       {/* Step 1: Category Selection */}
       <div className={`p-6 min-h-screen snap-start ${step !== 1 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-xl">Report an Issue</h2>
+          <h2 className="font-bold text-xl">{t('report.title')}</h2>
           <button className="text-neutral-800" onClick={handleClose}>
             <XIcon className="h-6 w-6" />
           </button>
