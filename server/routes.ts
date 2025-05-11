@@ -144,7 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         deviceId: req.body.deviceId
       });
       
-      // Check if this device already upvoted this issue
+      // Check if this device already supported this issue
       const existingUpvote = await storage.getUpvoteByDeviceAndIssue(
         upvoteData.deviceId,
         upvoteData.issueId
@@ -154,13 +154,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(409).json({ message: 'You have already supported this issue' });
       }
       
-      // Create upvote record
+      // Create support record
       await storage.createUpvote(upvoteData);
       
-      // Increment upvote count on the issue
+      // Increment support count on the issue
       const updatedIssue = await storage.incrementUpvote(id);
       
-      // Use the updated issue or create a merged object with updated upvote count
+      // Use the updated issue or create a merged object with updated supporters count
       const issueForEmail = updatedIssue || {
         ...issue,
         upvotes: issue.upvotes + 1
@@ -182,7 +182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ 
-          message: 'Invalid upvote data', 
+          message: 'Invalid support data', 
           errors: error.errors 
         });
       }
