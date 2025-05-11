@@ -14,8 +14,12 @@ import { Button } from '@/components/ui/button';
 import { AlertTriangle, MapPin, ThumbsUp, Megaphone } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/LanguageSelector';
 
 export default function Home() {
+  const { t } = useTranslation();
+  
   // State variables
   const [issueDetailsPanelActive, setIssueDetailsPanelActive] = useState(false);
   const [nearbyIssuesPanelActive, setNearbyIssuesPanelActive] = useState(false);
@@ -24,8 +28,8 @@ export default function Home() {
   const [selectedIssueId, setSelectedIssueId] = useState<number | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState({
-    title: 'Issue Supported!',
-    message: 'Thank you for confirming this issue. It helps prioritize repairs.'
+    title: t('success.support.title'),
+    message: t('success.support.message')
   });
   const { toast } = useToast();
   const [, setLocation] = useLocation();
@@ -120,8 +124,8 @@ export default function Home() {
   // Handle support success
   const handleSupportSuccess = () => {
     showSuccessOverlay(
-      'Issue Supported!',
-      'Thank you for confirming this issue. It helps prioritize repairs.'
+      t('success.support.title'),
+      t('success.support.message')
     );
   };
   
@@ -159,20 +163,23 @@ export default function Home() {
       {/* Header */}
       <header className="bg-primary text-white p-6">
         <div className="container mx-auto">
-          <h1 className="text-2xl font-bold mb-2">Lokisa</h1>
-          <p className="text-sm mb-4">Pretoria Infrastructure Reporting</p>
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-2xl font-bold">{t('app.name')}</h1>
+            <LanguageSelector />
+          </div>
+          <p className="text-sm mb-4">{t('app.tagline')}</p>
           
           {/* Welcome message with location */}
           <div className="mt-4">
             {address ? (
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-1" />
-                <p className="text-sm">Current location: {address}</p>
+                <p className="text-sm">{t('home.location.current', { address })}</p>
               </div>
             ) : geolocation.loading ? (
-              <p className="text-sm">Getting your location...</p>
+              <p className="text-sm">{t('home.location.loading')}</p>
             ) : (
-              <p className="text-sm">Location not available</p>
+              <p className="text-sm">{t('home.location.unavailable')}</p>
             )}
           </div>
         </div>
@@ -184,16 +191,16 @@ export default function Home() {
         <section className="mb-8">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="p-6">
-              <h2 className="text-xl font-bold mb-2">See an infrastructure problem?</h2>
+              <h2 className="text-xl font-bold mb-2">{t('home.cta.title')}</h2>
               <p className="text-gray-600 mb-4">
-                Report potholes, broken street lights, water leaks and more to help improve Pretoria.
+                {t('home.cta.description')}
               </p>
               <Button 
                 onClick={handleReportButtonClick} 
                 className="w-full py-6 text-lg font-semibold"
               >
                 <AlertTriangle className="mr-2 h-5 w-5" />
-                Lodge a Complaint
+                {t('home.cta.button')}
               </Button>
             </div>
           </div>
@@ -202,31 +209,31 @@ export default function Home() {
         {/* Top Issues Section */}
         <section className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Top Issues</h2>
+            <h2 className="text-xl font-bold">{t('home.topIssues.title')}</h2>
             <Button 
               variant="outline" 
               onClick={() => setNearbyIssuesPanelActive(true)}
               size="sm"
             >
-              View All
+              {t('home.topIssues.viewAll')}
             </Button>
           </div>
 
           {isLoading ? (
             <div className="text-center py-8">
-              <p>Loading issues...</p>
+              <p>{t('home.topIssues.loading')}</p>
             </div>
           ) : error ? (
             <div className="bg-red-50 text-red-600 p-4 rounded-lg">
-              <p>Failed to load issues. Please try again later.</p>
+              <p>{t('home.topIssues.error')}</p>
             </div>
           ) : topIssues.length === 0 ? (
             <div className="bg-gray-100 p-6 rounded-lg text-center">
               <Megaphone className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium mb-2">No issues reported yet</h3>
-              <p className="text-gray-500 mb-4">Be the first to report an infrastructure issue in your area.</p>
+              <h3 className="text-lg font-medium mb-2">{t('home.topIssues.empty.title')}</h3>
+              <p className="text-gray-500 mb-4">{t('home.topIssues.empty.description')}</p>
               <Button onClick={handleReportButtonClick}>
-                Report an Issue
+                {t('home.topIssues.empty.button')}
               </Button>
             </div>
           ) : (
@@ -282,7 +289,7 @@ export default function Home() {
                     </div>
 
                     <Button variant="ghost" size="sm" className="self-end">
-                      Support
+                      {t('home.topIssues.supportButton')}
                     </Button>
                   </div>
                 </div>
@@ -293,7 +300,7 @@ export default function Home() {
                 className="w-full mt-4" 
                 onClick={() => setNearbyIssuesPanelActive(true)}
               >
-                View All Reported Issues
+                {t('issues.nearby.viewAll')}
               </Button>
             </div>
           )}

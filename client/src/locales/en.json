@@ -1,0 +1,157 @@
+{
+  "app": {
+    "name": "Lokisa",
+    "tagline": "Pretoria Infrastructure Reporting"
+  },
+  "nav": {
+    "home": "Home",
+    "map": "Map",
+    "report": "Report",
+    "nearby": "Nearby"
+  },
+  "home": {
+    "cta": {
+      "title": "See an infrastructure problem?",
+      "description": "Report potholes, broken street lights, water leaks and more to help improve Pretoria.",
+      "button": "Lodge a Complaint"
+    },
+    "topIssues": {
+      "title": "Top Issues",
+      "viewAll": "View All",
+      "loading": "Loading issues...",
+      "error": "Failed to load issues. Please try again later.",
+      "empty": {
+        "title": "No issues reported yet",
+        "description": "Be the first to report an infrastructure issue in your area.",
+        "button": "Report an Issue"
+      },
+      "supportButton": "Support"
+    },
+    "location": {
+      "current": "Current location: {{address}}",
+      "loading": "Getting your location...",
+      "unavailable": "Location not available"
+    }
+  },
+  "report": {
+    "title": "Report an Issue",
+    "form": {
+      "category": {
+        "label": "Issue Category",
+        "placeholder": "Select a category"
+      },
+      "subcategory": {
+        "label": "Issue Type",
+        "placeholder": "Select an issue type"
+      },
+      "location": {
+        "label": "Location",
+        "current": "Using your current location",
+        "address": "Address"
+      },
+      "notes": {
+        "label": "Additional Details",
+        "placeholder": "Provide any details that would help identify or fix the issue"
+      },
+      "photo": {
+        "label": "Photo (Optional)",
+        "dropzone": "Drag and drop an image here, or click to select one",
+        "selected": "Image selected",
+        "maxSize": "Maximum file size: 5MB"
+      },
+      "submit": "Submit Report",
+      "cancel": "Cancel"
+    }
+  },
+  "issues": {
+    "status": {
+      "reported": "Reported",
+      "in_progress": "In Progress",
+      "resolved": "Resolved"
+    },
+    "details": {
+      "title": "Issue Details",
+      "reported": "Reported {{timeAgo}}",
+      "notes": "No additional details provided.",
+      "supporters": "{{count}} supporter",
+      "supporters_plural": "{{count}} supporters",
+      "support": "Support This Issue",
+      "supported": "Supported",
+      "close": "Close"
+    },
+    "nearby": {
+      "title": "Nearby Issues",
+      "search": "Search issues...",
+      "allCategories": "All Categories",
+      "allIssues": "All Issues",
+      "noResults": "No issues found matching your criteria",
+      "viewAll": "View All Reported Issues"
+    }
+  },
+  "success": {
+    "report": {
+      "title": "Report Submitted!",
+      "message": "Your report has been sent to the relevant authorities."
+    },
+    "support": {
+      "title": "Issue Supported!",
+      "message": "Thank you for confirming this issue. It helps prioritize repairs."
+    }
+  },
+  "errors": {
+    "location": {
+      "denied": "Location Access Denied",
+      "deniedDesc": "Please enable location access in your browser settings to use all features of Lokisa.",
+      "error": "Location Error",
+      "errorDesc": "Unable to get your location. Please try again later.",
+      "tryAgain": "Try again"
+    },
+    "form": {
+      "required": "This field is required",
+      "minLength": "Must be at least {{count}} characters",
+      "maxLength": "Cannot exceed {{count}} characters"
+    }
+  },
+  "categories": {
+    "roads": "Roads & Traffic",
+    "water": "Water & Sanitation",
+    "electricity": "Electricity",
+    "waste": "Waste Management",
+    "parks": "Parks & Recreation",
+    "other": "Other Issues"
+  },
+  "subcategories": {
+    "pothole": "Pothole",
+    "broken_road": "Broken Road Surface",
+    "traffic_light": "Traffic Light Not Working",
+    "street_light": "Street Light Out",
+    "water_leak": "Water Leak",
+    "blocked_drain": "Blocked Drain",
+    "power_outage": "Power Outage",
+    "fallen_power_line": "Fallen Power Line",
+    "illegal_dumping": "Illegal Dumping",
+    "overflowing_bin": "Overflowing Bin",
+    "fallen_tree": "Fallen Tree",
+    "damaged_park": "Damaged Park Equipment",
+    "other": "Other Issue"
+  },
+  "offline": {
+    "status": "You are offline",
+    "queuedReports": "Your report has been saved and will be sent when you're back online",
+    "queuedSupport": "Your support has been saved and will be sent when you're back online"
+  },
+  "language": {
+    "selector": "Change Language",
+    "en": "English",
+    "af": "Afrikaans",
+    "zu": "isiZulu",
+    "xh": "isiXhosa",
+    "st": "Sesotho",
+    "tn": "Setswana",
+    "nso": "Sepedi",
+    "ts": "Xitsonga",
+    "ss": "siSwati",
+    "ve": "Tshivenda",
+    "nr": "isiNdebele"
+  }
+}

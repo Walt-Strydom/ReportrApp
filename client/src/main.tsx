@@ -6,6 +6,8 @@ import { queryClient } from "./lib/queryClient";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Workbox } from 'workbox-window';
+// Import i18n configuration
+import './lib/i18n';
 
 // Register the service worker
 if ('serviceWorker' in navigator) {
