@@ -122,7 +122,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
 /**
  * Send an email notification for an issue that received support
  */
-export async function sendUpvoteEmail(issue: Issue): Promise<{ success: boolean; data?: any; error?: any }> {
+export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean; data?: any; error?: any }> {
   try {
     // Format issue details for email
     const issueType = getIssueTypeName(issue.type);
@@ -188,7 +188,7 @@ export async function sendUpvoteEmail(issue: Issue): Promise<{ success: boolean;
     
     return { success: true, data };
   } catch (error) {
-    console.error('Error sending upvote email:', error);
+    console.error('Error sending support email:', error);
     return { success: false, error };
   }
 }

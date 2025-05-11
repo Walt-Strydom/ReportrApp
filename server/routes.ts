@@ -8,7 +8,7 @@ import { ZodError } from "zod-validation-error";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { sendNewIssueEmail, sendUpvoteEmail } from "./emailService";
+import { sendNewIssueEmail, sendSupportEmail } from "./emailService";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -151,7 +151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
       
       if (existingUpvote) {
-        return res.status(409).json({ message: 'You have already upvoted this issue' });
+        return res.status(409).json({ message: 'You have already supported this issue' });
       }
       
       // Create upvote record
@@ -169,12 +169,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Send email notification using Resend API
       try {
         const emailResult = await sendUpvoteEmail(issueForEmail);
-        console.log('Upvote email notification sent:', emailResult.success ? 'Success' : 'Failed');
+        console.log('Support email notification sent:', emailResult.success ? 'Success' : 'Failed');
         if (!emailResult.success) {
-          console.error('Upvote email sending error:', emailResult.error);
+          console.error('Support email sending error:', emailResult.error);
         }
       } catch (emailError) {
-        console.error('Failed to send upvote email notification:', emailError);
+        console.error('Failed to send support email notification:', emailError);
         // Continue with response even if email fails
       }
       
@@ -187,8 +187,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.error('Upvote error:', error);
-      res.status(500).json({ message: 'Failed to upvote issue' });
+      console.error('Support error:', error);
+      res.status(500).json({ message: 'Failed to support this issue' });
     }
   });
 
