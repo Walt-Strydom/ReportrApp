@@ -39,6 +39,7 @@ export default function ReportPanel({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedIssueType, setSelectedIssueType] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -162,6 +163,9 @@ export default function ReportPanel({
     // Photos are now optional, so we don't need to check if one is provided
 
     try {
+      // Set loading state to true
+      setIsSubmitting(true);
+
       // Create FormData for file upload
       const formData = new FormData();
       
@@ -188,7 +192,7 @@ export default function ReportPanel({
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit report');
+        throw new Error(errorData.message || t('errors.submission.failed'));
       }
       
       // Show success message
@@ -207,6 +211,9 @@ export default function ReportPanel({
         description: error instanceof Error ? error.message : t('errors.submission.unknown'),
         variant: "destructive"
       });
+    } finally {
+      // Set loading state back to false
+      setIsSubmitting(false);
     }
   };
 
