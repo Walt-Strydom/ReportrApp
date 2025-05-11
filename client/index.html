@@ -23,6 +23,47 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- PWA Install Notification for iOS devices -->
+    <script>
+      if (navigator.standalone === false && 
+          /(iPhone|iPad|iPod)/i.test(navigator.userAgent) && 
+          !window.matchMedia('(display-mode: standalone)').matches) {
+        // Show iOS-specific install instructions on first visit
+        if (!localStorage.getItem('pwaInstallShown')) {
+          setTimeout(() => {
+            const iosPrompt = document.createElement('div');
+            iosPrompt.style.position = 'fixed';
+            iosPrompt.style.bottom = '0';
+            iosPrompt.style.left = '0';
+            iosPrompt.style.right = '0';
+            iosPrompt.style.padding = '12px';
+            iosPrompt.style.background = '#ffffff';
+            iosPrompt.style.color = '#000000';
+            iosPrompt.style.boxShadow = '0px -2px 10px rgba(0, 0, 0, 0.1)';
+            iosPrompt.style.textAlign = 'center';
+            iosPrompt.style.fontSize = '14px';
+            iosPrompt.style.zIndex = '10000';
+            iosPrompt.innerHTML = `
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="flex: 1; text-align: left; padding-right: 10px;">
+                  <strong>Install Lokisa App</strong>
+                  <p style="margin: 5px 0 0 0; font-size: 12px;">
+                    Tap <span style="font-size: 18px;">⎙</span> then "Add to Home Screen"
+                  </p>
+                </div>
+                <button id="closeIosPrompt" style="background: none; border: none; font-size: 16px; cursor: pointer;">✕</button>
+              </div>
+            `;
+            document.body.appendChild(iosPrompt);
+            
+            document.getElementById('closeIosPrompt').addEventListener('click', () => {
+              document.body.removeChild(iosPrompt);
+              localStorage.setItem('pwaInstallShown', 'true');
+            });
+          }, 2000);
+        }
+      }
+    </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>

@@ -18,8 +18,7 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'always',
     allowsLinkPreview: false,
-    scrollEnabled: true,
-    useNativeControls: true
+    scrollEnabled: true
   },
   plugins: {
     SplashScreen: {
