@@ -22,8 +22,8 @@ export default function IssueDetailsPanel({
   onClose,
   onSuccess 
 }: IssueDetailsPanelProps) {
-  const [isUpvoting, setIsUpvoting] = useState(false);
-  const [isUpvoted, setIsUpvoted] = useState(false);
+  const [isSupporting, setIsSupporting] = useState(false);
+  const [hasSupported, setHasSupported] = useState(false);
   const { toast } = useToast();
 
   if (!issue) return null;
@@ -59,11 +59,11 @@ export default function IssueDetailsPanel({
     }
   };
 
-  const handleUpvote = async () => {
-    if (isUpvoting || isUpvoted || !issue) return;
+  const handleSupport = async () => {
+    if (isSupporting || hasSupported || !issue) return;
     
     try {
-      setIsUpvoting(true);
+      setIsSupporting(true);
       
       // Get device ID
       const deviceId = generateDeviceId();
@@ -78,8 +78,8 @@ export default function IssueDetailsPanel({
         throw new Error(errorData.message || 'Failed to support this issue');
       }
       
-      // Mark as upvoted
-      setIsUpvoted(true);
+      // Mark as supported
+      setHasSupported(true);
       
       // Show success message
       toast({
@@ -95,14 +95,14 @@ export default function IssueDetailsPanel({
       onClose();
       onSuccess();
     } catch (error) {
-      console.error('Upvote error:', error);
+      console.error('Support error:', error);
       toast({
-        title: "Upvote Error",
+        title: "Support Error",
         description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive"
       });
     } finally {
-      setIsUpvoting(false);
+      setIsSupporting(false);
     }
   };
   
@@ -150,13 +150,13 @@ export default function IssueDetailsPanel({
         </div>
         
         <Button
-          onClick={handleUpvote}
+          onClick={handleSupport}
           className={`w-full py-3 rounded-lg font-medium mb-4 flex items-center justify-center ${
-            isUpvoted ? 'bg-success' : 'bg-primary'
+            hasSupported ? 'bg-success' : 'bg-primary'
           } text-white`}
-          disabled={isUpvoting || isUpvoted}
+          disabled={isSupporting || hasSupported}
         >
-          {isUpvoted ? (
+          {hasSupported ? (
             <>
               <span className="mr-2">✓</span>
               <span>Supported</span>
