@@ -62,6 +62,27 @@ export default function NearbyIssuesPanel({
         return 'bg-neutral-500';
     }
   };
+  
+  // Get the actual color value (not class name) for backgrounds
+  const getColorValue = (type: string) => {
+    const issueType = getIssueTypeById(type);
+    
+    if (issueType) {
+      return issueType.color;
+    }
+    
+    // Fall back to legacy types with hex values
+    switch (type) {
+      case 'pothole':
+        return '#ef4444';  // destructive red
+      case 'streetlight':
+        return '#0ea5e9';  // accent blue
+      case 'trafficlight':
+        return '#6366f1';  // secondary purple
+      default:
+        return '#6b7280';  // neutral gray
+    }
+  };
 
   // Format issue type for display
   const formatIssueType = (type: string) => {
@@ -162,15 +183,25 @@ export default function NearbyIssuesPanel({
                 onClick={() => onIssueClick(issue.id)}
               >
                 <div className="flex items-start p-4">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">
-                    {issue.photoUrl && (
+                  {issue.photoUrl ? (
+                    <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">
                       <img 
                         src={issue.photoUrl} 
                         alt={`${issue.type} issue`} 
                         className="w-full h-full object-cover" 
                       />
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
+                      style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
+                      <img 
+                        src="/assets/lokisa-logo.png" 
+                        alt="Lokisa Logo" 
+                        className="h-10 w-auto" 
+                        style={{opacity: 0.8}}
+                      />
+                    </div>
+                  )}
                   
                   <div className="flex-1">
                     <div className="flex items-center mb-1">

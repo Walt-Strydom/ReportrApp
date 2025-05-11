@@ -262,9 +262,11 @@ export default function Home() {
                     ) : (
                       <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
                         style={{backgroundColor: `${getBadgeColor(issue.type)}25`}}>
-                        <AlertTriangle 
-                          className="h-8 w-8" 
-                          style={{color: getBadgeColor(issue.type)}} 
+                        <img 
+                          src="/assets/lokisa-logo.png" 
+                          alt="Lokisa Logo" 
+                          className="h-10 w-auto" 
+                          style={{opacity: 0.8}}
                         />
                       </div>
                     )}

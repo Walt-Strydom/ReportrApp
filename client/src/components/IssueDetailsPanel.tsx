@@ -39,6 +39,11 @@ export default function IssueDetailsPanel({
   const getBadgeColor = () => {
     return issueType ? `bg-[${issueType.color}]` : 'bg-neutral-500';
   };
+  
+  // Get the actual color value for backgrounds
+  const getColorValue = () => {
+    return issueType ? issueType.color : '#6b7280';  // neutral gray as fallback
+  };
 
   // Format issue type for display
   const formatIssueType = () => {
@@ -116,15 +121,25 @@ export default function IssueDetailsPanel({
         <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-6"></div>
         
         <div className="flex items-start mb-6">
-          <div className="w-20 h-20 rounded-lg overflow-hidden mr-4">
-            {issue.photoUrl && (
+          {issue.photoUrl ? (
+            <div className="w-20 h-20 rounded-lg overflow-hidden mr-4">
               <img 
                 src={issue.photoUrl} 
                 alt={`${issue.type} issue`} 
                 className="w-full h-full object-cover" 
               />
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
+              style={{backgroundColor: `${getColorValue()}25`}}>
+              <img 
+                src="/assets/lokisa-logo.png" 
+                alt="Lokisa Logo" 
+                className="h-10 w-auto" 
+                style={{opacity: 0.8}}
+              />
+            </div>
+          )}
           
           <div className="flex-1">
             <div className="flex items-center mb-1">
