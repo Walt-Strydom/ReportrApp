@@ -1,19 +1,38 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { DownloadIcon } from 'lucide-react';
+import { DownloadIcon, SmartphoneIcon, AppleIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { isIOS, isAndroid, isInstalledPWA, isRunningInCapacitor } from '@/lib/platform';
 
 export function InstallPrompt() {
   const { t } = useTranslation();
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [promptType, setPromptType] = useState<'android' | 'ios' | 'standard'>('standard');
 
   useEffect(() => {
+    // Don't show prompts in these conditions
+    if (isInstalledPWA() || isRunningInCapacitor()) {
+      return;
+    }
+
+    // iOS-specific prompt
+    if (isIOS()) {
+      // Only show iOS prompt if not already shown in this session
+      if (!localStorage.getItem('iosPromptShown')) {
+        setPromptType('ios');
+        setShowInstallPrompt(true);
+      }
+      return;
+    }
+
+    // Android / PWA install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      // Prevent Chrome from automatically showing the prompt
       e.preventDefault();
       // Store the event for later use
       setDeferredPrompt(e);
+      setPromptType(isAndroid() ? 'android' : 'standard');
       // Show the install button
       setShowInstallPrompt(true);
     };
@@ -26,6 +45,14 @@ export function InstallPrompt() {
   }, []);
 
   const handleInstallClick = () => {
+    // For iOS, we just need to hide the prompt and mark as shown
+    if (promptType === 'ios') {
+      localStorage.setItem('iosPromptShown', 'true');
+      setShowInstallPrompt(false);
+      return;
+    }
+
+    // For Android/standard web, show the native install prompt
     if (!deferredPrompt) return;
 
     // Show the install prompt

@@ -65,7 +65,8 @@
         "remove": "Remove Photo",
         "dropzone": "Drag and drop an image here, or click to select one",
         "selected": "Image selected",
-        "maxSize": "Maximum file size: 5MB"
+        "maxSize": "Maximum file size: 5MB",
+        "nativeCamera": "Using device camera"
       },
       "submit": "Submit Report",
       "submitting": "Submitting...",
@@ -128,6 +129,10 @@
       "title": "Submission Error",
       "unknown": "An unknown error occurred",
       "failed": "Failed to submit report"
+    },
+    "camera": {
+      "title": "Camera Error",
+      "message": "Failed to access the device camera"
     }
   },
   "categories": {
