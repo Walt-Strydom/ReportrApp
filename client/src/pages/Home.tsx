@@ -164,7 +164,13 @@ export default function Home() {
       <header className="bg-primary text-white p-6">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="text-2xl font-bold">{t('app.name')}</h1>
+            <div className="flex items-center">
+              <img 
+                src="/assets/lokisa-logo.png" 
+                alt="Lokisa Logo" 
+                className="h-10 w-auto"
+              />
+            </div>
             <LanguageSelector />
           </div>
           <p className="text-sm mb-4">{t('app.tagline')}</p>
