@@ -8,9 +8,11 @@ import ReportPanel from '@/components/ReportPanel';
 import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
+import LocationPermissionModal from '@/components/LocationPermissionModal';
 import { Issue } from '@/types';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
   // State variables
@@ -18,6 +20,7 @@ export default function Home() {
   const [issueDetailsPanelActive, setIssueDetailsPanelActive] = useState(false);
   const [nearbyIssuesPanelActive, setNearbyIssuesPanelActive] = useState(false);
   const [successOverlayActive, setSuccessOverlayActive] = useState(false);
+  const [locationModalActive, setLocationModalActive] = useState(false);
   const [selectedIssueId, setSelectedIssueId] = useState<number | null>(null);
   const [heatmapActive, setHeatmapActive] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
@@ -25,19 +28,63 @@ export default function Home() {
     title: 'Report Submitted!',
     message: 'Your report has been sent to the relevant authorities.'
   });
+  const { toast } = useToast();
 
-  // Get user's geolocation
+  // Get user's geolocation with enhanced permissions handling
   const geolocation = useGeolocation();
 
+  // Show location permission modal on first load if permission is not granted
+  useEffect(() => {
+    if (geolocation.permissionStatus === 'prompt') {
+      setLocationModalActive(true);
+    } else if (geolocation.permissionStatus === 'denied') {
+      toast({
+        title: "Location Access Denied",
+        description: "Please enable location access in your browser settings to use all features of Lokisa.",
+        variant: "destructive",
+      });
+    }
+  }, [geolocation.permissionStatus, toast]);
+
+  // Handle requesting location permission
+  const handleRequestLocationPermission = () => {
+    setLocationModalActive(false);
+    
+    geolocation.requestLocationAccess()
+      .then(() => {
+        toast({
+          title: "Location Access Granted",
+          description: "Lokisa can now accurately identify the location of reported issues.",
+        });
+      })
+      .catch((error) => {
+        console.error("Location access error:", error);
+        
+        if (error.code === 1) { // PERMISSION_DENIED
+          toast({
+            title: "Location Access Denied",
+            description: "Some features may not work correctly. You can enable location access in your browser settings.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Location Error",
+            description: "Unable to get your location. Please try again later.",
+            variant: "destructive",
+          });
+        }
+      });
+  };
+
   // Fetch issues data
-  const { data: issues = [], isLoading, error } = useQuery({
+  const { data: issues = [], isLoading, error } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
     enabled: !geolocation.loading && !!geolocation.latitude && !!geolocation.longitude,
   });
 
   // Get selected issue details
   const selectedIssue = selectedIssueId 
-    ? issues.find((issue: Issue) => issue.id === selectedIssueId) || null
+    ? issues.find((issue) => issue.id === selectedIssueId) || null
     : null;
 
   // Reverse geocode coordinates to get address
@@ -46,6 +93,10 @@ export default function Home() {
       reverseGeocode(geolocation.latitude, geolocation.longitude)
         .then(result => {
           setAddress(result.address);
+        })
+        .catch(error => {
+          console.error("Geocoding error:", error);
+          setAddress(`${geolocation.latitude?.toFixed(6)}, ${geolocation.longitude?.toFixed(6)}`);
         });
     }
   }, [geolocation.latitude, geolocation.longitude, address]);
@@ -77,6 +128,17 @@ export default function Home() {
       'Issue Upvoted!',
       'Thank you for confirming this issue. It helps prioritize repairs.'
     );
+  };
+  
+  // Handle report button click with permission check
+  const handleReportButtonClick = () => {
+    // If location permission is not granted, show permission modal
+    if (geolocation.permissionStatus !== 'granted') {
+      setLocationModalActive(true);
+      return;
+    }
+    
+    setReportPanelActive(true);
   };
 
   return (
@@ -121,7 +183,7 @@ export default function Home() {
       
       {/* Bottom Navigation */}
       <BottomNavigation 
-        onReportButtonClick={() => setReportPanelActive(true)}
+        onReportButtonClick={handleReportButtonClick}
         onMapButtonClick={() => {
           setIssueDetailsPanelActive(false);
           setNearbyIssuesPanelActive(false);
@@ -164,6 +226,35 @@ export default function Home() {
         title={successMessage.title}
         message={successMessage.message}
       />
+      
+      {/* Location Permission Modal */}
+      <LocationPermissionModal
+        isOpen={locationModalActive}
+        onClose={() => setLocationModalActive(false)}
+        onRequestPermission={handleRequestLocationPermission}
+      />
+      
+      {/* Display error if geolocation fails */}
+      {geolocation.error && !geolocation.loading && (
+        <div className="absolute bottom-20 left-4 right-4 bg-destructive text-white p-3 rounded-lg">
+          <p>Location error: {geolocation.error}</p>
+          <button 
+            className="underline mt-1" 
+            onClick={() => {
+              if (geolocation.permissionStatus === 'denied') {
+                toast({
+                  title: "Location Permission Required",
+                  description: "Please enable location services in your browser settings.",
+                });
+              } else {
+                handleRequestLocationPermission();
+              }
+            }}
+          >
+            Try again
+          </button>
+        </div>
+      )}
     </div>
   );
 }
