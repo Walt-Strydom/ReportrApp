@@ -125,7 +125,10 @@ export default function CreatePage() {
           }
           issues={issues}
           heatmapActive={false}
-          onMarkerClick={() => {}}
+          onMarkerClick={(issueId) => {
+            // Navigate to home page and show the issue details
+            setLocation(`/?issueId=${issueId}`);
+          }}
         />
         
         {/* Map Controls */}

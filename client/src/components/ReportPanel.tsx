@@ -244,18 +244,13 @@ export default function ReportPanel({
               onClick={() => handleCategorySelect(category.id)}
             >
               <div className="flex flex-col items-center">
-                <div 
-                  className="w-16 h-16 rounded-full flex items-center justify-center mb-2"
-                  style={{ backgroundColor: `${category.color}20` }}
-                >
-                  <IssueTypeCard 
-                    type={category.icon}
-                    name=""
-                    selected={false}
-                    onClick={() => {}}
-                    color={category.color}
-                  />
-                </div>
+                <IssueTypeCard 
+                  type={category.icon}
+                  name=""
+                  selected={false}
+                  onClick={() => {}}
+                  color={category.color}
+                />
                 <span className="font-medium text-center">{category.name}</span>
               </div>
             </div>
@@ -309,20 +304,13 @@ export default function ReportPanel({
                     }`}
                     onClick={() => handleIssueTypeSelect(subcat.id)}
                   >
-                    <div 
-                      className="w-10 h-10 rounded-full flex items-center justify-center mr-4"
-                      style={{ backgroundColor: `${
-                        issueCategories.find(c => c.id === selectedCategory)?.color || '#666'
-                      }20` }}
-                    >
-                      <IssueTypeCard 
-                        type={subcat.icon}
-                        name=""
-                        selected={false}
-                        onClick={() => {}}
-                        color={issueCategories.find(c => c.id === selectedCategory)?.color}
-                      />
-                    </div>
+                    <IssueTypeCard 
+                      type={subcat.icon}
+                      name=""
+                      selected={false}
+                      onClick={() => {}}
+                      color={issueCategories.find(c => c.id === selectedCategory)?.color}
+                    />
                     <span className="flex-1">{subcat.name}</span>
                     <ChevronRightIcon className="h-5 w-5 text-neutral-400" />
                   </div>
@@ -357,9 +345,7 @@ export default function ReportPanel({
         <div className="bg-neutral-200 rounded-xl h-80 flex items-center justify-center mb-6">
           {!photo ? (
             <div className="text-center p-6">
-              <div className="w-16 h-16 rounded-full bg-neutral-300 flex items-center justify-center mx-auto mb-4">
-                <CameraIcon className="h-6 w-6 text-neutral-500" />
-              </div>
+              <CameraIcon className="h-10 w-10 text-neutral-500 mx-auto mb-4" />
               <p className="text-neutral-600">{t('report.form.photo.description')}</p>
               <p className="text-xs text-neutral-500 mt-2">{t('report.form.photo.help')}</p>
             </div>
