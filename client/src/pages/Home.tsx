@@ -19,13 +19,18 @@ import LanguageSelector from '@/components/LanguageSelector';
 
 export default function Home() {
   const { t } = useTranslation();
+  const [location] = useLocation();
+  
+  // Parse URL query parameters
+  const params = new URLSearchParams(location.split('?')[1]);
+  const issueIdParam = params.get('issueId');
   
   // State variables
-  const [issueDetailsPanelActive, setIssueDetailsPanelActive] = useState(false);
+  const [issueDetailsPanelActive, setIssueDetailsPanelActive] = useState(!!issueIdParam);
   const [nearbyIssuesPanelActive, setNearbyIssuesPanelActive] = useState(false);
   const [successOverlayActive, setSuccessOverlayActive] = useState(false);
   const [locationModalActive, setLocationModalActive] = useState(false);
-  const [selectedIssueId, setSelectedIssueId] = useState<number | null>(null);
+  const [selectedIssueId, setSelectedIssueId] = useState<number | null>(issueIdParam ? parseInt(issueIdParam) : null);
   const [address, setAddress] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState({
     title: t('success.support.title'),
