@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { issueFormSchema, upvoteFormSchema } from "@shared/schema";
+import { issueFormSchema, supportFormSchema } from "@shared/schema";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { ZodError } from "zod-validation-error";
@@ -128,8 +128,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Upvote an issue
-  app.post('/api/issues/:id/upvote', async (req: Request, res: Response) => {
+  // Support an issue
+  app.post('/api/issues/:id/support', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       const issue = await storage.getIssueById(id);
@@ -138,8 +138,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Issue not found' });
       }
       
-      // Validate upvote data
-      const upvoteData = upvoteFormSchema.parse({
+      // Validate support data
+      const upvoteData = supportFormSchema.parse({
         issueId: id,
         deviceId: req.body.deviceId
       });
@@ -168,7 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send email notification using Resend API
       try {
-        const emailResult = await sendUpvoteEmail(issueForEmail);
+        const emailResult = await sendSupportEmail(issueForEmail);
         console.log('Support email notification sent:', emailResult.success ? 'Success' : 'Failed');
         if (!emailResult.success) {
           console.error('Support email sending error:', emailResult.error);

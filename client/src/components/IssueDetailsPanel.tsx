@@ -68,8 +68,8 @@ export default function IssueDetailsPanel({
       // Get device ID
       const deviceId = generateDeviceId();
       
-      // Send upvote request
-      const response = await apiRequest('POST', `/api/issues/${issue.id}/upvote`, {
+      // Send support request
+      const response = await apiRequest('POST', `/api/issues/${issue.id}/support`, {
         deviceId
       });
       

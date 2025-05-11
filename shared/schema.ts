@@ -23,7 +23,7 @@ export const issues = pgTable("issues", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Define the Upvote type to track upvotes
+// Define the Support type to track issue support
 export const upvotes = pgTable("upvotes", {
   id: serial("id").primaryKey(),
   issueId: integer("issue_id").notNull(),
@@ -79,7 +79,7 @@ export const issueFormSchema = insertIssueSchema.extend({
   status: z.enum(["reported", "in_progress", "resolved"]).default("reported"),
 });
 
-export const upvoteFormSchema = insertUpvoteSchema.extend({
+export const supportFormSchema = insertUpvoteSchema.extend({
   issueId: z.number({
     required_error: "Issue ID is required",
   }),
