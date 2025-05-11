@@ -78,16 +78,41 @@ export function InstallPrompt() {
       <div className="bg-primary text-white rounded-lg p-4 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <h3 className="font-bold">{t('install.title', 'Install Lokisa App')}</h3>
-            <p className="text-sm">{t('install.description', 'Add to your home screen for easier access')}</p>
+            <h3 className="font-bold">
+              {promptType === 'ios' 
+                ? t('install.ios.title', 'Install on iOS') 
+                : promptType === 'android'
+                  ? t('install.android.title', 'Install on Android')
+                  : t('install.title', 'Install Lokisa App')}
+            </h3>
+            <p className="text-sm">
+              {promptType === 'ios' 
+                ? t('install.ios.description', 'Tap Share then "Add to Home Screen"') 
+                : t('install.description', 'Add to your home screen for easier access')}
+            </p>
           </div>
-          <Button 
-            className="ml-4 bg-white text-primary hover:bg-gray-100" 
-            onClick={handleInstallClick}
-          >
-            <DownloadIcon className="mr-2 h-4 w-4" />
-            {t('install.button', 'Install')}
-          </Button>
+          
+          {promptType === 'ios' ? (
+            <Button 
+              className="ml-4 bg-white text-primary hover:bg-gray-100" 
+              onClick={handleInstallClick}
+            >
+              <span className="mr-2">✕</span>
+              {t('install.got_it', 'Got it')}
+            </Button>
+          ) : (
+            <Button 
+              className="ml-4 bg-white text-primary hover:bg-gray-100" 
+              onClick={handleInstallClick}
+            >
+              {promptType === 'android' ? (
+                <SmartphoneIcon className="mr-2 h-4 w-4" />
+              ) : (
+                <DownloadIcon className="mr-2 h-4 w-4" />
+              )}
+              {t('install.button', 'Install')}
+            </Button>
+          )}
         </div>
       </div>
     </div>

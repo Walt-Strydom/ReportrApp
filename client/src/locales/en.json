@@ -163,6 +163,20 @@
     "queuedReports": "Your report has been saved and will be sent when you're back online",
     "queuedSupport": "Your support has been saved and will be sent when you're back online"
   },
+  "install": {
+    "title": "Install Lokisa App",
+    "description": "Add to your home screen for easier access",
+    "button": "Install",
+    "got_it": "Got it",
+    "ios": {
+      "title": "Install on iOS",
+      "description": "Tap Share then \"Add to Home Screen\""
+    },
+    "android": {
+      "title": "Install on Android",
+      "description": "Add to your home screen for easier access"
+    }
+  },
   "language": {
     "selector": "Change Language",
     "en": "English",

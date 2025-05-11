@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Guide - Lokisa</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    header img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #FF8C00;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    h2 {
+      color: #FF8C00;
+      font-size: 20px;
+      margin-top: 30px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    
+    p, ul, ol {
+      margin-bottom: 20px;
+    }
+    
+    ul, ol {
+      padding-left: 20px;
+    }
+    
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+    
+    a {
+      color: #FF8C00;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    .step {
+      margin-bottom: 30px;
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .step-number {
+      background-color: #FF8C00;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .platform-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .platform-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .platform-tab.active {
+      border-bottom: 2px solid #FF8C00;
+      color: #FF8C00;
+    }
+    
+    .platform-content {
+      display: none;
+    }
+    
+    .platform-content.active {
+      display: block;
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      h2 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/assets/lokisa-logo.png" alt="Lokisa Logo">
+    <h1>Lokisa Mobile Guide</h1>
+  </header>
+  
+  <main>
+    <p>Welcome to Lokisa! This guide will help you get the most out of the Lokisa app on your mobile device, whether you're using it as a Progressive Web App (PWA) or a native mobile app.</p>
+    
+    <div class="platform-tabs">
+      <div class="platform-tab active" onclick="showPlatform('pwa')">Web App (PWA)</div>
+      <div class="platform-tab" onclick="showPlatform('ios')">iOS App</div>
+      <div class="platform-tab" onclick="showPlatform('android')">Android App</div>
+    </div>
+    
+    <div id="pwa" class="platform-content active">
+      <h2>Using Lokisa as a Progressive Web App</h2>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Installing Lokisa on your device</h3>
+          <p>Lokisa can be installed as a Progressive Web App, which allows you to use it like a native app on your device.</p>
+          
+          <h4>On Chrome (Android)</h4>
+          <ol>
+            <li>Navigate to <a href="https://lokisa.replit.app">lokisa.replit.app</a></li>
+            <li>You'll see an installation prompt at the bottom of the screen</li>
+            <li>Tap "Install" to add Lokisa to your home screen</li>
+          </ol>
+          
+          <h4>On Safari (iOS)</h4>
+          <ol>
+            <li>Navigate to <a href="https://lokisa.replit.app">lokisa.replit.app</a></li>
+            <li>Tap the Share button (box with arrow up)</li>
+            <li>Scroll down and tap "Add to Home Screen"</li>
+            <li>Tap "Add" in the upper right corner</li>
+          </ol>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Offline Functionality</h3>
+          <p>Once installed, Lokisa can work offline for many functions:</p>
+          <ul>
+            <li>Viewing previously loaded issues</li>
+            <li>Creating new reports (which will be submitted when you're back online)</li>
+            <li>Supporting existing issues (which will be registered when you're back online)</li>
+          </ul>
+          <p>You'll see an offline indicator when your device doesn't have an internet connection.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="ios" class="platform-content">
+      <h2>Using Lokisa on iOS</h2>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Installing the App</h3>
+          <p>You can install Lokisa on your iOS device in two ways:</p>
+          
+          <h4>Option 1: App Store (Coming Soon)</h4>
+          <p>Lokisa will be available on the Apple App Store. Once available, you can search for "Lokisa" and install it directly.</p>
+          
+          <h4>Option 2: Add to Home Screen</h4>
+          <p>Until the App Store version is available, you can install Lokisa as a web app:</p>
+          <ol>
+            <li>Open Safari and navigate to <a href="https://lokisa.replit.app">lokisa.replit.app</a></li>
+            <li>Tap the Share button at the bottom of the screen (box with an arrow pointing up)</li>
+            <li>Scroll down and tap "Add to Home Screen"</li>
+            <li>Name the app "Lokisa" and tap "Add"</li>
+          </ol>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Using the Camera</h3>
+          <p>When reporting an issue, tap the camera button to take a photo. On iOS, you'll be prompted to allow camera access the first time.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Location Services</h3>
+          <p>Allow location access when prompted to accurately report and view issues near you.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="android" class="platform-content">
+      <h2>Using Lokisa on Android</h2>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Installing the App</h3>
+          <p>You can install Lokisa on your Android device in two ways:</p>
+          
+          <h4>Option 1: Google Play Store (Coming Soon)</h4>
+          <p>Lokisa will be available on the Google Play Store. Once available, you can search for "Lokisa" and install it directly.</p>
+          
+          <h4>Option 2: Install from Web</h4>
+          <p>Until the Play Store version is available, you can install Lokisa as a web app:</p>
+          <ol>
+            <li>Open Chrome and navigate to <a href="https://lokisa.replit.app">lokisa.replit.app</a></li>
+            <li>Tap the prompt that appears at the bottom of the screen</li>
+            <li>Or tap the menu (three dots) in the upper right and select "Install app"</li>
+          </ol>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Using the Camera</h3>
+          <p>When reporting an issue, tap the camera button to take a photo. On Android, you'll be prompted to allow camera access the first time.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Location Services</h3>
+          <p>Allow location access when prompted to accurately report and view issues near you.</p>
+        </div>
+      </div>
+    </div>
+    
+    <h2>General Tips</h2>
+    
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Reporting Issues</h3>
+        <ul>
+          <li>Be as specific as possible when selecting issue categories</li>
+          <li>Add a clear photo when possible - this helps officials identify the exact problem</li>
+          <li>Include notes about severity or safety concerns</li>
+          <li>Your reports are anonymous, but will be sent to relevant municipal officials</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Supporting Issues</h3>
+        <p>When you see an issue reported by another user that you also want fixed:</p>
+        <ul>
+          <li>Tap the "Support" button on the issue</li>
+          <li>This increases the issue's priority and helps officials understand which problems affect the most people</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>Offline Usage</h3>
+        <p>If you're in an area with poor connectivity:</p>
+        <ul>
+          <li>Reports will be stored on your device and sent when connectivity returns</li>
+          <li>You'll see a notification when this happens</li>
+          <li>Previously loaded issues and maps will still be viewable offline</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 Lokisa. All rights reserved.</p>
+    <p><a href="/">Back to App</a> | <a href="/privacy.html">Privacy Policy</a> | <a href="/terms.html">Terms of Service</a></p>
+  </footer>
+  
+  <script>
+    function showPlatform(platform) {
+      // Hide all platform content
+      const contents = document.querySelectorAll('.platform-content');
+      contents.forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Deactivate all tabs
+      const tabs = document.querySelectorAll('.platform-tab');
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected platform
+      document.getElementById(platform).classList.add('active');
+      
+      // Activate selected tab
+      document.querySelector(`.platform-tab[onclick="showPlatform('${platform}')"]`).classList.add('active');
+    }
+    
+    // Auto-detect platform
+    document.addEventListener('DOMContentLoaded', function() {
+      let defaultPlatform = 'pwa';
+      
+      // Check for iOS
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        defaultPlatform = 'ios';
+      } 
+      // Check for Android
+      else if (/Android/i.test(navigator.userAgent)) {
+        defaultPlatform = 'android';
+      }
+      
+      showPlatform(defaultPlatform);
+    });
+  </script>
+</body>
+</html>
