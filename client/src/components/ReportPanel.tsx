@@ -225,7 +225,7 @@ export default function ReportPanel({
           </button>
         </div>
         
-        <p className="text-neutral-800 mb-4">Select a category:</p>
+        <p className="text-neutral-800 mb-4">{t('report.form.category.label')}:</p>
         
         <div className="grid grid-cols-2 gap-4">
           {issueCategories.map((category) => (
@@ -263,7 +263,7 @@ export default function ReportPanel({
             }`}
             disabled={!selectedCategory}
           >
-            Next
+            {t('report.form.next')}
           </Button>
         </div>
       </div>
@@ -275,7 +275,7 @@ export default function ReportPanel({
             <button className="mr-2" onClick={goBackFromSubcategory}>
               <ArrowLeftIcon className="h-6 w-6" />
             </button>
-            <h2 className="font-bold text-xl">Select Issue Type</h2>
+            <h2 className="font-bold text-xl">{t('report.form.subcategory.label')}</h2>
           </div>
           <button className="text-neutral-800" onClick={handleClose}>
             <XIcon className="h-6 w-6" />
@@ -289,7 +289,7 @@ export default function ReportPanel({
               <p className="font-medium">{issueCategories.find(c => c.id === selectedCategory)?.name}</p>
             </div>
             
-            <p className="text-neutral-800 mb-4">Select a specific issue type:</p>
+            <p className="text-neutral-800 mb-4">{t('report.form.subcategory.placeholder')}:</p>
             
             <div className="grid grid-cols-1 gap-4">
               {issueCategories
@@ -333,7 +333,7 @@ export default function ReportPanel({
             }`}
             disabled={!selectedIssueType}
           >
-            Next
+            {t('report.form.next')}
           </Button>
         </div>
       </div>
@@ -341,7 +341,7 @@ export default function ReportPanel({
       {/* Step 2: Take Photo */}
       <div className={`p-6 min-h-screen snap-start ${step !== 2 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-xl">Take a Photo (Optional)</h2>
+          <h2 className="font-bold text-xl">{t('report.form.photo.title')}</h2>
           <button className="text-neutral-800" onClick={() => setStep(1)}>
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
@@ -353,8 +353,8 @@ export default function ReportPanel({
               <div className="w-16 h-16 rounded-full bg-neutral-300 flex items-center justify-center mx-auto mb-4">
                 <CameraIcon className="h-6 w-6 text-neutral-500" />
               </div>
-              <p className="text-neutral-600">Take a photo of the issue (optional)</p>
-              <p className="text-xs text-neutral-500 mt-2">Photos help officials identify and fix issues faster</p>
+              <p className="text-neutral-600">{t('report.form.photo.description')}</p>
+              <p className="text-xs text-neutral-500 mt-2">{t('report.form.photo.help')}</p>
             </div>
           ) : (
             <img 

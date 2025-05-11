@@ -57,12 +57,20 @@
       },
       "photo": {
         "label": "Photo (Optional)",
+        "title": "Take a Photo (Optional)",
+        "description": "Take a photo of the issue (optional)",
+        "help": "Photos help officials identify and fix issues faster",
+        "continue": "Continue with Photo",
+        "skip": "Skip Photo",
+        "remove": "Remove Photo",
         "dropzone": "Drag and drop an image here, or click to select one",
         "selected": "Image selected",
         "maxSize": "Maximum file size: 5MB"
       },
       "submit": "Submit Report",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "next": "Next",
+      "back": "Back"
     }
   },
   "issues": {
