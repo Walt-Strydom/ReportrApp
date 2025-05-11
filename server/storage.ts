@@ -4,6 +4,8 @@ import {
   upvotes, type Upvote, type InsertUpvote
 } from "@shared/schema";
 import { nanoid } from "nanoid";
+import { db } from "./db";
+import { eq, and, desc } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -156,4 +158,130 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage implementation
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  // Issue methods
+  async getIssues(): Promise<Issue[]> {
+    return await db.select().from(issues).orderBy(desc(issues.createdAt));
+  }
+
+  async getIssueById(id: number): Promise<Issue | undefined> {
+    const [issue] = await db.select().from(issues).where(eq(issues.id, id));
+    return issue || undefined;
+  }
+
+  async getIssuesByLocation(lat: number, lng: number, radius: number): Promise<Issue[]> {
+    // Get all issues and filter by distance (simplified approach)
+    const allIssues = await this.getIssues();
+    
+    return allIssues.filter(issue => {
+      const distance = this.calculateDistance(
+        lat, lng, 
+        issue.latitude, issue.longitude
+      );
+      return distance <= radius;
+    });
+  }
+
+  async createIssue(insertIssue: InsertIssue): Promise<Issue> {
+    const reportId = insertIssue.reportId || nanoid(10);
+    
+    // Ensure status is set
+    const issueData = { 
+      ...insertIssue, 
+      reportId,
+      status: insertIssue.status || "reported" 
+    };
+    
+    const [issue] = await db
+      .insert(issues)
+      .values(issueData)
+      .returning();
+      
+    return issue;
+  }
+
+  async updateIssue(id: number, partialIssue: Partial<Issue>): Promise<Issue | undefined> {
+    const [updatedIssue] = await db
+      .update(issues)
+      .set(partialIssue)
+      .where(eq(issues.id, id))
+      .returning();
+      
+    return updatedIssue || undefined;
+  }
+
+  async incrementUpvote(id: number): Promise<Issue | undefined> {
+    const issue = await this.getIssueById(id);
+    if (!issue) return undefined;
+    
+    const [updatedIssue] = await db
+      .update(issues)
+      .set({ upvotes: issue.upvotes + 1 })
+      .where(eq(issues.id, id))
+      .returning();
+      
+    return updatedIssue || undefined;
+  }
+
+  // Upvote methods
+  async createUpvote(insertUpvote: InsertUpvote): Promise<Upvote> {
+    const [upvote] = await db
+      .insert(upvotes)
+      .values(insertUpvote)
+      .returning();
+      
+    return upvote;
+  }
+
+  async getUpvoteByDeviceAndIssue(deviceId: string, issueId: number): Promise<Upvote | undefined> {
+    const [upvote] = await db
+      .select()
+      .from(upvotes)
+      .where(and(
+        eq(upvotes.deviceId, deviceId),
+        eq(upvotes.issueId, issueId)
+      ));
+      
+    return upvote || undefined;
+  }
+
+  // Helper method to calculate distance between two points using Haversine formula
+  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Radius of the earth in km
+    const dLat = this.deg2rad(lat2 - lat1);
+    const dLon = this.deg2rad(lon2 - lon1);
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    const d = R * c; // Distance in km
+    return d;
+  }
+
+  private deg2rad(deg: number): number {
+    return deg * (Math.PI/180);
+  }
+}
+
+// Use database storage instead of memory storage
+export const storage = new DatabaseStorage();
