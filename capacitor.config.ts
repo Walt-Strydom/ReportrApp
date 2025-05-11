@@ -4,7 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.lokisa.app',
   appName: 'Lokisa',
   webDir: 'client/dist',
-  bundledWebRuntime: false,
   server: {
     androidScheme: 'https',
     iosScheme: 'https',

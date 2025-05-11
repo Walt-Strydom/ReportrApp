@@ -5,6 +5,8 @@ import CreatePage from "@/pages/CreatePage";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import InstallPrompt from "@/components/InstallPrompt";
 import FooterLinks from "@/components/FooterLinks";
+import BackButtonHandler from "@/components/BackButtonHandler";
+import StatusBarHandler from "@/components/StatusBarHandler";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 function Router() {
@@ -21,12 +23,14 @@ function App() {
   const isMobile = useIsMobile();
 
   return (
-    <>
-      <Router />
-      <OfflineIndicator />
-      <InstallPrompt />
-      {!isMobile && <FooterLinks />}
-    </>
+    <StatusBarHandler>
+      <BackButtonHandler>
+        <Router />
+        <OfflineIndicator />
+        <InstallPrompt />
+        {!isMobile && <FooterLinks />}
+      </BackButtonHandler>
+    </StatusBarHandler>
   );
 }
 
