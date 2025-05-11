@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Lokisa - Report Infrastructure Issues</title>
+    <meta name="description" content="Anonymously report public infrastructure issues in Pretoria, South Africa. Report potholes, broken street lights, traffic signal failures and more." />
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Lokisa - Infrastructure Issue Reporting" />
+    <meta property="og:description" content="Anonymously report public infrastructure issues in Pretoria. Help improve your community infrastructure." />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Maps API script with environment variable API key -->
+    <script type="module">
+      // Dynamically insert the Google Maps API with the API key from environment variables
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
+      document.head.appendChild(script);
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
+</html>

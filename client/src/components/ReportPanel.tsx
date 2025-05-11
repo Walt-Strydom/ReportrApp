@@ -1,0 +1,377 @@
+import { useState, useRef } from 'react';
+import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import IssueTypeCard from './IssueTypeCard';
+import { nanoid } from 'nanoid';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { issueFormSchema } from '@shared/schema';
+import { resizeImage } from '@/lib/imageUtils';
+
+interface ReportPanelProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  currentLocation: {
+    latitude: number | null;
+    longitude: number | null;
+    address: string | null;
+  };
+}
+
+type FormData = z.infer<typeof issueFormSchema>;
+
+export default function ReportPanel({ 
+  isOpen, 
+  onClose, 
+  onSuccess,
+  currentLocation 
+}: ReportPanelProps) {
+  const [step, setStep] = useState(1);
+  const [selectedIssueType, setSelectedIssueType] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(issueFormSchema),
+    defaultValues: {
+      type: '',
+      latitude: 0,
+      longitude: 0,
+      address: '',
+      notes: '',
+      reportId: nanoid(10),
+      status: 'reported'
+    }
+  });
+
+  const resetForm = () => {
+    setStep(1);
+    setSelectedIssueType(null);
+    setPhoto(null);
+    form.reset();
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
+  const handleIssueTypeSelect = (type: string) => {
+    setSelectedIssueType(type);
+    form.setValue('type', type);
+  };
+
+  const goToStep2 = () => {
+    if (!selectedIssueType) {
+      toast({
+        title: "Error",
+        description: "Please select an issue type",
+        variant: "destructive"
+      });
+      return;
+    }
+    setStep(2);
+  };
+
+  const goToStep3 = () => {
+    if (!photo) {
+      toast({
+        title: "Error",
+        description: "Please take a photo of the issue",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Set location data in form
+    if (currentLocation.latitude && currentLocation.longitude && currentLocation.address) {
+      form.setValue('latitude', currentLocation.latitude);
+      form.setValue('longitude', currentLocation.longitude);
+      form.setValue('address', currentLocation.address);
+    } else {
+      toast({
+        title: "Location Error",
+        description: "Unable to get your current location. Please try again.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setStep(3);
+  };
+
+  const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Read the file as a data URL
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      // Resize image before storing
+      try {
+        const resizedFile = await resizeImage(file);
+        
+        // Convert the resized file to data URL for preview
+        const resizedReader = new FileReader();
+        resizedReader.onload = (e) => {
+          setPhoto(e.target?.result as string);
+        };
+        resizedReader.readAsDataURL(resizedFile);
+      } catch (error) {
+        console.error('Image resize error:', error);
+        // Fallback to original image if resize fails
+        setPhoto(event.target?.result as string);
+      }
+    };
+    
+    reader.readAsDataURL(file);
+  };
+
+  const triggerCamera = () => {
+    cameraInputRef.current?.click();
+  };
+
+  const onSubmit = async (data: FormData) => {
+    if (!photo) {
+      toast({
+        title: "Error",
+        description: "Please take a photo of the issue",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      
+      // Convert data URL to file
+      if (photo) {
+        // Fetch the file from the input rather than converting data URL
+        const photoFile = cameraInputRef.current?.files?.[0];
+        if (photoFile) {
+          formData.append('photo', photoFile);
+        }
+      }
+      
+      // Add other form fields
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, String(value));
+      });
+      
+      // Submit the form
+      const response = await fetch('/api/issues', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit report');
+      }
+      
+      // Show success message
+      toast({
+        title: "Report Submitted",
+        description: "Your report has been sent to the relevant authorities",
+      });
+      
+      // Reset form and show success
+      resetForm();
+      onSuccess();
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast({
+        title: "Submission Error",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    }
+  };
+
+  return (
+    <div 
+      className={`fixed top-0 left-0 right-0 h-screen bg-white z-20 rounded-t-3xl shadow-lg overflow-auto snap-y transform transition-transform duration-300 ${
+        isOpen ? 'translate-y-0' : 'translate-y-full'
+      }`}
+    >
+      {/* Step 1: Issue Type Selection */}
+      <div className={`p-6 min-h-screen snap-start ${step !== 1 && 'hidden'}`}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-bold text-xl">Report an Issue</h2>
+          <button className="text-neutral-800" onClick={handleClose}>
+            <XIcon className="h-6 w-6" />
+          </button>
+        </div>
+        
+        <p className="text-neutral-800 mb-4">Select the type of infrastructure issue:</p>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <IssueTypeCard 
+            type="pothole" 
+            name="Pothole" 
+            selected={selectedIssueType === 'pothole'} 
+            onClick={handleIssueTypeSelect} 
+          />
+          
+          <IssueTypeCard 
+            type="streetlight" 
+            name="Street Light" 
+            selected={selectedIssueType === 'streetlight'} 
+            onClick={handleIssueTypeSelect} 
+          />
+          
+          <IssueTypeCard 
+            type="trafficlight" 
+            name="Traffic Light" 
+            selected={selectedIssueType === 'trafficlight'} 
+            onClick={handleIssueTypeSelect} 
+          />
+          
+          <IssueTypeCard 
+            type="other" 
+            name="Other" 
+            selected={selectedIssueType === 'other'} 
+            onClick={handleIssueTypeSelect} 
+          />
+        </div>
+        
+        <div className="mt-8 mb-6">
+          <Button
+            onClick={goToStep2}
+            className={`w-full py-3 rounded-lg font-medium ${
+              selectedIssueType ? 'bg-primary text-white' : 'bg-neutral-300 text-neutral-500'
+            }`}
+            disabled={!selectedIssueType}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+      
+      {/* Step 2: Take Photo */}
+      <div className={`p-6 min-h-screen snap-start ${step !== 2 && 'hidden'}`}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-bold text-xl">Take a Photo</h2>
+          <button className="text-neutral-800" onClick={() => setStep(1)}>
+            <ArrowLeftIcon className="h-6 w-6" />
+          </button>
+        </div>
+        
+        <div className="bg-neutral-200 rounded-xl h-80 flex items-center justify-center mb-6">
+          {!photo ? (
+            <div className="text-center p-6">
+              <div className="w-16 h-16 rounded-full bg-neutral-300 flex items-center justify-center mx-auto mb-4">
+                <CameraIcon className="h-6 w-6 text-neutral-500" />
+              </div>
+              <p className="text-neutral-600">Take a clear photo of the issue</p>
+            </div>
+          ) : (
+            <img 
+              src={photo} 
+              className="w-full h-full object-cover rounded-xl" 
+              alt="Issue photo preview" 
+            />
+          )}
+        </div>
+        
+        <input
+          type="file"
+          ref={cameraInputRef}
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={handlePhotoCapture}
+        />
+        
+        <div className="flex justify-center mb-8">
+          <Button
+            onClick={triggerCamera}
+            className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center"
+          >
+            <CameraIcon className="h-6 w-6" />
+          </Button>
+        </div>
+        
+        <div className="mb-6">
+          <Button
+            onClick={goToStep3}
+            className={`w-full py-3 rounded-lg font-medium ${
+              photo ? 'bg-primary text-white' : 'bg-neutral-300 text-neutral-500'
+            }`}
+            disabled={!photo}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+      
+      {/* Step 3: Location & Details */}
+      <div className={`p-6 min-h-screen snap-start ${step !== 3 && 'hidden'}`}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-bold text-xl">Location & Details</h2>
+          <button className="text-neutral-800" onClick={() => setStep(2)}>
+            <ArrowLeftIcon className="h-6 w-6" />
+          </button>
+        </div>
+        
+        <div className="mb-6">
+          <div className="flex items-center mb-2">
+            <MapPinIcon className="text-destructive mr-2 h-5 w-5" />
+            <h3 className="font-medium">Current Location</h3>
+          </div>
+          <div className="bg-neutral-100 p-3 rounded-lg border border-neutral-200">
+            <p className="text-neutral-800">
+              {currentLocation.address || 'Locating...'}
+            </p>
+            <p className="text-xs text-neutral-500">
+              {currentLocation.latitude && currentLocation.longitude 
+                ? `${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`
+                : 'Acquiring coordinates...'}
+            </p>
+          </div>
+        </div>
+        
+        <div className="mb-6">
+          <label htmlFor="notes" className="block mb-2 font-medium">Additional Notes</label>
+          <Textarea 
+            id="notes" 
+            className="w-full p-3 border border-neutral-200 rounded-lg h-28" 
+            placeholder="Describe the issue in more detail (optional)"
+            {...form.register('notes')}
+          />
+        </div>
+        
+        <div className="mb-6">
+          <div className="p-4 bg-neutral-100 rounded-lg border border-neutral-200 mb-4">
+            <div className="flex items-start mb-2">
+              <div className="mr-2 pt-1">
+                <InfoIcon className="h-5 w-5 text-secondary" />
+              </div>
+              <div>
+                <h4 className="font-medium">Your report will be sent to:</h4>
+                <p className="text-sm text-neutral-600">• City of Tshwane Infrastructure team</p>
+                <p className="text-sm text-neutral-600">• Ward 60 Councillor</p>
+              </div>
+            </div>
+            <p className="text-xs text-neutral-500">All reports are submitted anonymously</p>
+          </div>
+        </div>
+        
+        <Button
+          onClick={form.handleSubmit(onSubmit)}
+          className="w-full bg-primary text-white py-3 rounded-lg font-medium"
+        >
+          Submit Report
+        </Button>
+      </div>
+    </div>
+  );
+}
