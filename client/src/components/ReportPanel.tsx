@@ -33,6 +33,7 @@ export default function ReportPanel({
   currentLocation 
 }: ReportPanelProps) {
   const [step, setStep] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedIssueType, setSelectedIssueType] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +54,7 @@ export default function ReportPanel({
 
   const resetForm = () => {
     setStep(1);
+    setSelectedCategory(null);
     setSelectedIssueType(null);
     setPhoto(null);
     form.reset();
@@ -62,6 +64,12 @@ export default function ReportPanel({
     resetForm();
     onClose();
   };
+  
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setSelectedIssueType(null); // Reset issue type when category changes
+    setStep(1.5); // Go to subcategory selection
+  };
 
   const handleIssueTypeSelect = (type: string) => {
     setSelectedIssueType(type);
@@ -69,7 +77,16 @@ export default function ReportPanel({
   };
 
   const goToStep2 = () => {
-    if (!selectedIssueType) {
+    if (step === 1 && !selectedCategory) {
+      toast({
+        title: "Error",
+        description: "Please select an issue category",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (step === 1.5 && !selectedIssueType) {
       toast({
         title: "Error",
         description: "Please select an issue type",
@@ -77,7 +94,14 @@ export default function ReportPanel({
       });
       return;
     }
+    
     setStep(2);
+  };
+  
+  const goBackFromSubcategory = () => {
+    setSelectedCategory(null);
+    setSelectedIssueType(null);
+    setStep(1);
   };
 
   const goToStep3 = () => {
@@ -203,7 +227,7 @@ export default function ReportPanel({
         isOpen ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
-      {/* Step 1: Issue Type Selection */}
+      {/* Step 1: Category Selection */}
       <div className={`p-6 min-h-screen snap-start ${step !== 1 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">Report an Issue</h2>
@@ -212,37 +236,105 @@ export default function ReportPanel({
           </button>
         </div>
         
-        <p className="text-neutral-800 mb-4">Select the type of infrastructure issue:</p>
+        <p className="text-neutral-800 mb-4">Select a category:</p>
         
         <div className="grid grid-cols-2 gap-4">
-          <IssueTypeCard 
-            type="pothole" 
-            name="Pothole" 
-            selected={selectedIssueType === 'pothole'} 
-            onClick={handleIssueTypeSelect} 
-          />
-          
-          <IssueTypeCard 
-            type="streetlight" 
-            name="Street Light" 
-            selected={selectedIssueType === 'streetlight'} 
-            onClick={handleIssueTypeSelect} 
-          />
-          
-          <IssueTypeCard 
-            type="trafficlight" 
-            name="Traffic Light" 
-            selected={selectedIssueType === 'trafficlight'} 
-            onClick={handleIssueTypeSelect} 
-          />
-          
-          <IssueTypeCard 
-            type="other" 
-            name="Other" 
-            selected={selectedIssueType === 'other'} 
-            onClick={handleIssueTypeSelect} 
-          />
+          {issueCategories.map((category) => (
+            <div 
+              key={category.id}
+              className={`p-4 border rounded-xl cursor-pointer transition-all ${
+                selectedCategory === category.id ? 'border-primary bg-primary/5' : 'border-neutral-200'
+              }`}
+              onClick={() => handleCategorySelect(category.id)}
+            >
+              <div className="flex flex-col items-center">
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-2"
+                  style={{ backgroundColor: `${category.color}20` }}
+                >
+                  <IssueTypeCard 
+                    type={category.icon}
+                    name=""
+                    selected={false}
+                    onClick={() => {}}
+                    color={category.color}
+                  />
+                </div>
+                <span className="font-medium text-center">{category.name}</span>
+              </div>
+            </div>
+          ))}
         </div>
+        
+        <div className="mt-8 mb-6">
+          <Button
+            onClick={goToStep2}
+            className={`w-full py-3 rounded-lg font-medium ${
+              selectedCategory ? 'bg-primary text-white' : 'bg-neutral-300 text-neutral-500'
+            }`}
+            disabled={!selectedCategory}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+      
+      {/* Step 1.5: Subcategory Selection */}
+      <div className={`p-6 min-h-screen snap-start ${step !== 1.5 && 'hidden'}`}>
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center">
+            <button className="mr-2" onClick={goBackFromSubcategory}>
+              <ArrowLeftIcon className="h-6 w-6" />
+            </button>
+            <h2 className="font-bold text-xl">Select Issue Type</h2>
+          </div>
+          <button className="text-neutral-800" onClick={handleClose}>
+            <XIcon className="h-6 w-6" />
+          </button>
+        </div>
+        
+        {selectedCategory && (
+          <>
+            <div className="mb-4 p-2 bg-neutral-100 rounded-lg">
+              <p className="text-sm text-neutral-600">Category:</p>
+              <p className="font-medium">{issueCategories.find(c => c.id === selectedCategory)?.name}</p>
+            </div>
+            
+            <p className="text-neutral-800 mb-4">Select a specific issue type:</p>
+            
+            <div className="grid grid-cols-1 gap-4">
+              {issueCategories
+                .find(c => c.id === selectedCategory)
+                ?.subcategories.map((subcat) => (
+                  <div 
+                    key={subcat.id}
+                    className={`p-4 border rounded-xl cursor-pointer transition-all flex items-center ${
+                      selectedIssueType === subcat.id ? 'border-primary bg-primary/5' : 'border-neutral-200'
+                    }`}
+                    onClick={() => handleIssueTypeSelect(subcat.id)}
+                  >
+                    <div 
+                      className="w-10 h-10 rounded-full flex items-center justify-center mr-4"
+                      style={{ backgroundColor: `${
+                        issueCategories.find(c => c.id === selectedCategory)?.color || '#666'
+                      }20` }}
+                    >
+                      <IssueTypeCard 
+                        type={subcat.icon}
+                        name=""
+                        selected={false}
+                        onClick={() => {}}
+                        color={issueCategories.find(c => c.id === selectedCategory)?.color}
+                      />
+                    </div>
+                    <span className="flex-1">{subcat.name}</span>
+                    <ChevronRightIcon className="h-5 w-5 text-neutral-400" />
+                  </div>
+                ))
+              }
+            </div>
+          </>
+        )}
         
         <div className="mt-8 mb-6">
           <Button

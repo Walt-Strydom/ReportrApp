@@ -7,6 +7,7 @@ import { formatDistanceToNow, format } from 'date-fns';
 import { Issue } from '@/types';
 import { generateDeviceId } from '@/lib/imageUtils';
 import { queryClient } from '@/lib/queryClient';
+import { getIssueTypeById } from '@/data/issueTypes';
 
 interface IssueDetailsPanelProps {
   issue: Issue | null;
@@ -31,23 +32,22 @@ export default function IssueDetailsPanel({
   const timeAgo = formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true });
   const formattedDate = format(new Date(issue.createdAt), 'MMM d, yyyy');
 
+  // Get issue type details  
+  const issueType = getIssueTypeById(issue.type);
+
   // Get badge color based on issue type
-  const getBadgeColor = (type: string) => {
-    switch (type) {
-      case 'pothole':
-        return 'bg-destructive';
-      case 'streetlight':
-        return 'bg-accent';
-      case 'trafficlight':
-        return 'bg-secondary';
-      default:
-        return 'bg-neutral-500';
-    }
+  const getBadgeColor = () => {
+    return issueType ? `bg-[${issueType.color}]` : 'bg-neutral-500';
   };
 
   // Format issue type for display
-  const formatIssueType = (type: string) => {
-    switch (type) {
+  const formatIssueType = () => {
+    if (issueType) {
+      return issueType.name;
+    }
+    
+    // Fallback for old issue types (backward compatibility)
+    switch (issue.type) {
       case 'pothole':
         return 'Pothole';
       case 'streetlight':
@@ -55,7 +55,7 @@ export default function IssueDetailsPanel({
       case 'trafficlight':
         return 'Traffic Light';
       default:
-        return 'Other';
+        return issue.type.charAt(0).toUpperCase() + issue.type.slice(1).replace(/-/g, ' ');
     }
   };
 
@@ -128,8 +128,8 @@ export default function IssueDetailsPanel({
           
           <div className="flex-1">
             <div className="flex items-center mb-1">
-              <span className={`inline-block px-2 py-1 ${getBadgeColor(issue.type)} text-white text-xs rounded-full mr-2`}>
-                {formatIssueType(issue.type)}
+              <span className={`inline-block px-2 py-1 ${getBadgeColor()} text-white text-xs rounded-full mr-2`}>
+                {formatIssueType()}
               </span>
               <span className="text-xs text-neutral-500">Reported {timeAgo}</span>
             </div>

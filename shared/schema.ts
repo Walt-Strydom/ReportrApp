@@ -60,7 +60,8 @@ export type Upvote = typeof upvotes.$inferSelect;
 
 // Create schemas with validation
 export const issueFormSchema = insertIssueSchema.extend({
-  type: z.enum(["pothole", "streetlight", "trafficlight", "other"], {
+  // Accept any string for type since we have many issue types now
+  type: z.string({
     required_error: "Please select an issue type",
   }),
   latitude: z.number({
