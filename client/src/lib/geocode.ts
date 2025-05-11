@@ -5,8 +5,15 @@ interface GeocodeResult {
 
 export async function reverseGeocode(latitude: number, longitude: number): Promise<GeocodeResult> {
   try {
+    // Get API key from environment
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('Google Maps API key is missing');
+    }
+    
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
     );
     
     if (!response.ok) {

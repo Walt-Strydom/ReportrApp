@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Issue, MapMarker, HeatmapData } from '@/types';
-import { Loader } from '@googlemaps/js-api-loader';
+import { Issue } from '@/types';
 
 interface MapProps {
   center: { lat: number; lng: number } | null;
@@ -9,12 +8,7 @@ interface MapProps {
   onMarkerClick: (issueId: number) => void;
 }
 
-// Types for Google Maps
-type GoogleMapsType = any;
-type GoogleMapType = any;
-type GoogleMapMarkerType = any;
-type GoogleMapHeatmapType = any;
-
+// Define map styles
 const MAP_STYLES = [
   {
     featureType: 'poi',
@@ -30,34 +24,33 @@ const MAP_STYLES = [
 
 export default function Map({ center, issues, heatmapActive, onMarkerClick }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [googleMapsLoaded, setGoogleMapsLoaded] = useState(false);
-  const [googleMaps, setGoogleMaps] = useState<GoogleMapsType>(null);
-  const [map, setMap] = useState<GoogleMapType>(null);
-  const [markers, setMarkers] = useState<GoogleMapMarkerType[]>([]);
-  const [heatmap, setHeatmap] = useState<GoogleMapHeatmapType>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-
+  
+  // State variables for Google Maps objects - using 'any' to avoid type issues
+  const [googleMap, setGoogleMap] = useState<any>(null);
+  const [mapMarkers, setMapMarkers] = useState<any[]>([]);
+  const [heatmapLayer, setHeatmapLayer] = useState<any>(null);
+  
   // Initialize the map
   useEffect(() => {
-    if (!mapRef.current || map || mapLoaded) return;
-
-    // Default to Pretoria central coordinates if user location is not available
+    // Skip if map is already initialized or div not available
+    if (googleMap || !mapRef.current) return;
+    
+    // Default to Pretoria central coordinates if user location not available
     const defaultCenter = { lat: -25.7461, lng: 28.1881 };
     
-    const loader = new Loader({
-      apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-      version: "weekly",
-      libraries: ["visualization"]
-    });
-
-    loader.load()
-      .then((google) => {
-        setGoogleMaps(google);
-        setGoogleMapsLoaded(true);
-        setMapLoaded(true);
-        
-        const mapOptions = {
+    // Load Google Maps script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
+    script.async = true;
+    script.defer = true;
+    
+    // Handle map initialization when script loads
+    script.onload = () => {
+      try {
+        // Create map instance
+        const newMap = new window.google.maps.Map(mapRef.current!, {
           center: center || defaultCenter,
           zoom: 15,
           mapTypeControl: false,
@@ -65,72 +58,64 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
           streetViewControl: false,
           zoomControl: true,
           zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP,
+            position: window.google.maps.ControlPosition.RIGHT_TOP,
           },
           styles: MAP_STYLES,
-        };
-
-        const newMap = new google.maps.Map(mapRef.current!, mapOptions);
-        setMap(newMap);
-
-        // Create the heatmap layer
-        try {
-          const heatmapLayer = new google.maps.visualization.HeatmapLayer({
-            map: newMap,
-            data: [],
-            dissipating: true,
-            radius: 50,
-            opacity: 0.7,
-            maxIntensity: 10,
-            gradient: [
-              'rgba(0, 255, 255, 0)',
-              'rgba(0, 255, 255, 1)',
-              'rgba(0, 191, 255, 1)',
-              'rgba(0, 127, 255, 1)',
-              'rgba(0, 63, 255, 1)',
-              'rgba(0, 0, 255, 1)',
-              'rgba(0, 0, 223, 1)',
-              'rgba(0, 0, 191, 1)',
-              'rgba(0, 0, 159, 1)',
-              'rgba(0, 0, 127, 1)',
-              'rgba(63, 0, 91, 1)',
-              'rgba(127, 0, 63, 1)',
-              'rgba(191, 0, 31, 1)',
-              'rgba(255, 0, 0, 1)'
-            ]
-          });
-          
-          heatmapLayer.setMap(null); // Initially hidden
-          setHeatmap(heatmapLayer);
-        } catch (error) {
-          console.error("Error creating heatmap layer:", error);
-        }
-      })
-      .catch((error) => {
-        console.error("Error loading Google Maps:", error);
-        setMapError("Failed to load Google Maps. Please try again later.");
-      });
-
-    return () => {
-      // Clean up markers on unmount
-      if (markers.length > 0) {
-        markers.forEach(marker => marker.setMap(null));
+        });
+        
+        setGoogleMap(newMap);
+        
+        // Create heatmap layer
+        const heatmap = new window.google.maps.visualization.HeatmapLayer({
+          map: heatmapActive ? newMap : null,
+          data: [],
+          dissipating: true,
+          radius: 50,
+          opacity: 0.7,
+          maxIntensity: 10,
+        });
+        
+        setHeatmapLayer(heatmap);
+        setMapLoaded(true);
+      } catch (error) {
+        console.error('Error initializing map:', error);
+        setMapError('Failed to initialize map. Please try again later.');
       }
     };
-  }, [mapRef]);
-
+    
+    script.onerror = () => {
+      setMapError('Failed to load Google Maps. Please check your internet connection.');
+    };
+    
+    document.head.appendChild(script);
+    
+    // Clean up on unmount
+    return () => {
+      // Remove script if component unmounts before script loads
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+      
+      // Clear markers
+      if (mapMarkers.length > 0) {
+        mapMarkers.forEach(marker => marker.setMap(null));
+      }
+    };
+  }, []);
+  
   // Update map center when user location changes
   useEffect(() => {
-    if (!map || !center || !googleMaps || !googleMapsLoaded) return;
+    if (!googleMap || !center) return;
     
-    map.setCenter(center);
+    // Update map center
+    googleMap.setCenter(center);
     
-    // Add user location marker
-    const userMarker = new googleMaps.maps.Marker({
+    // Add user location marker with pulse effect
+    const userMarker = new window.google.maps.Marker({
       position: center,
-      map: map,
+      map: googleMap,
       icon: {
-        path: googleMaps.maps.SymbolPath.CIRCLE,
+        path: window.google.maps.SymbolPath.CIRCLE,
         scale: 10,
         fillColor: "#0F71B3",
         fillOpacity: 1,
@@ -140,14 +125,14 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
       zIndex: 999, // Keep user marker on top
     });
     
-    // Add pulse animation
-    const userMarkerRadius = new googleMaps.maps.Circle({
+    // Add pulse animation circle
+    const userMarkerRadius = new window.google.maps.Circle({
       strokeColor: "#0F71B3",
       strokeOpacity: 0.8,
       strokeWeight: 1,
       fillColor: "#0F71B3",
       fillOpacity: 0.2,
-      map: map,
+      map: googleMap,
       center: center,
       radius: 50,
       zIndex: 998,
@@ -157,18 +142,18 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
       userMarker.setMap(null);
       userMarkerRadius.setMap(null);
     };
-  }, [map, center, googleMaps, googleMapsLoaded]);
-
+  }, [googleMap, center]);
+  
   // Update markers when issues change
   useEffect(() => {
-    if (!map || !googleMaps || !googleMapsLoaded) return;
+    if (!googleMap || !mapLoaded || !window.google) return;
     
-    // Clear old markers
-    markers.forEach(marker => marker.setMap(null));
-    const newMarkers: GoogleMapMarkerType[] = [];
+    // Clear existing markers
+    mapMarkers.forEach(marker => marker.setMap(null));
+    const newMarkers = [];
     
-    // Create marker for each issue
-    issues.forEach(issue => {
+    // Add issue markers
+    for (const issue of issues) {
       let iconUrl;
       
       // Set marker icon based on issue type
@@ -186,48 +171,42 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
           iconUrl = 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
       }
       
-      try {
-        const marker = new googleMaps.maps.Marker({
-          position: { lat: issue.latitude, lng: issue.longitude },
-          map: map,
-          icon: iconUrl,
-          title: issue.type,
-        });
-        
-        // Add click listener
-        marker.addListener('click', () => {
-          onMarkerClick(issue.id);
-        });
-        
-        newMarkers.push(marker);
-      } catch (error) {
-        console.error('Error creating marker:', error);
-      }
-    });
-    
-    setMarkers(newMarkers);
-    
-    // Update heatmap data
-    if (heatmap) {
-      try {
-        const heatmapPoints = issues.map(issue => ({
-          location: new googleMaps.maps.LatLng(issue.latitude, issue.longitude),
-          weight: issue.upvotes + 1, // Weight by upvotes (min weight of 1)
-        }));
-        
-        heatmap.setData(heatmapPoints);
-      } catch (error) {
-        console.error('Error updating heatmap:', error);
-      }
+      // Create marker
+      const marker = new window.google.maps.Marker({
+        position: { lat: issue.latitude, lng: issue.longitude },
+        map: googleMap,
+        icon: iconUrl,
+        title: issue.type,
+      });
+      
+      // Add click handler
+      marker.addListener('click', () => {
+        onMarkerClick(issue.id);
+      });
+      
+      newMarkers.push(marker);
     }
-  }, [map, issues, googleMaps, googleMapsLoaded]);
-
+    
+    setMapMarkers(newMarkers);
+    
+    // Update heatmap data if available
+    if (heatmapLayer && issues.length > 0) {
+      const heatmapData = issues.map(issue => ({
+        location: new window.google.maps.LatLng(issue.latitude, issue.longitude),
+        weight: issue.upvotes + 1 // Min weight of 1
+      }));
+      
+      heatmapLayer.setData(heatmapData);
+    }
+  }, [googleMap, issues, mapLoaded]);
+  
   // Toggle heatmap visibility
   useEffect(() => {
-    if (!heatmap) return;
-    heatmap.setMap(heatmapActive ? map : null);
-  }, [heatmap, heatmapActive, map]);
-
+    if (!heatmapLayer || !googleMap) return;
+    
+    heatmapLayer.setMap(heatmapActive ? googleMap : null);
+  }, [heatmapLayer, heatmapActive, googleMap]);
+  
   return (
     <div className="w-full h-full relative">
       <div ref={mapRef} className="w-full h-full" />
