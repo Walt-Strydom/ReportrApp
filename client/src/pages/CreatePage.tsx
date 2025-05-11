@@ -11,16 +11,19 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 export default function CreatePage() {
+  const { t } = useTranslation();
+  
   // State variables
   const [reportPanelActive, setReportPanelActive] = useState(true);
   const [successOverlayActive, setSuccessOverlayActive] = useState(false);
   const [locationModalActive, setLocationModalActive] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState({
-    title: 'Report Submitted!',
-    message: 'Your report has been sent to the relevant authorities.'
+    title: t('success.report.title'),
+    message: t('success.report.message')
   });
   const { toast } = useToast();
   const [, setLocation] = useLocation();
@@ -34,12 +37,12 @@ export default function CreatePage() {
       setLocationModalActive(true);
     } else if (geolocation.permissionStatus === 'denied') {
       toast({
-        title: "Location Access Denied",
-        description: "Please enable location access in your browser settings to use all features of Lokisa.",
+        title: t('errors.location.denied'),
+        description: t('errors.location.deniedDesc'),
         variant: "destructive",
       });
     }
-  }, [geolocation.permissionStatus, toast]);
+  }, [geolocation.permissionStatus, toast, t]);
 
   // Handle requesting location permission
   const handleRequestLocationPermission = () => {
@@ -48,8 +51,8 @@ export default function CreatePage() {
     geolocation.requestLocationAccess()
       .then(() => {
         toast({
-          title: "Location Access Granted",
-          description: "Lokisa can now accurately identify the location of reported issues.",
+          title: t('errors.location.granted'),
+          description: t('errors.location.grantedDesc'),
         });
       })
       .catch((error) => {
@@ -57,14 +60,14 @@ export default function CreatePage() {
         
         if (error.code === 1) { // PERMISSION_DENIED
           toast({
-            title: "Location Access Denied",
-            description: "Some features may not work correctly. You can enable location access in your browser settings.",
+            title: t('errors.location.denied'),
+            description: t('errors.location.deniedDesc'),
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Location Error",
-            description: "Unable to get your location. Please try again later.",
+            title: t('errors.location.error'),
+            description: t('errors.location.errorDesc'),
             variant: "destructive",
           });
         }

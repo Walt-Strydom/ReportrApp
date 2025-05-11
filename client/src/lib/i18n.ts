@@ -12,6 +12,15 @@ const resources = {
   en: { translation: enTranslation },
   af: { translation: afTranslation },
   zu: { translation: zuTranslation },
+  // Empty placeholders for other languages - will use fallback
+  xh: { translation: {} },
+  st: { translation: {} },
+  tn: { translation: {} },
+  nso: { translation: {} },
+  ts: { translation: {} },
+  ss: { translation: {} },
+  ve: { translation: {} },
+  nr: { translation: {} },
 };
 
 // Languages configuration
