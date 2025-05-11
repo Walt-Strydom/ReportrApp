@@ -105,14 +105,7 @@ export default function ReportPanel({
   };
 
   const goToStep3 = () => {
-    if (!photo) {
-      toast({
-        title: "Error",
-        description: "Please take a photo of the issue",
-        variant: "destructive"
-      });
-      return;
-    }
+    // Photos are now optional, no check required
     
     // Set location data in form
     if (currentLocation.latitude && currentLocation.longitude && currentLocation.address) {
@@ -163,14 +156,7 @@ export default function ReportPanel({
   };
 
   const onSubmit = async (data: FormData) => {
-    if (!photo) {
-      toast({
-        title: "Error",
-        description: "Please take a photo of the issue",
-        variant: "destructive"
-      });
-      return;
-    }
+    // Photos are now optional, so we don't need to check if one is provided
 
     try {
       // Create FormData for file upload
@@ -352,7 +338,7 @@ export default function ReportPanel({
       {/* Step 2: Take Photo */}
       <div className={`p-6 min-h-screen snap-start ${step !== 2 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-xl">Take a Photo</h2>
+          <h2 className="font-bold text-xl">Take a Photo (Optional)</h2>
           <button className="text-neutral-800" onClick={() => setStep(1)}>
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
@@ -364,7 +350,8 @@ export default function ReportPanel({
               <div className="w-16 h-16 rounded-full bg-neutral-300 flex items-center justify-center mx-auto mb-4">
                 <CameraIcon className="h-6 w-6 text-neutral-500" />
               </div>
-              <p className="text-neutral-600">Take a clear photo of the issue</p>
+              <p className="text-neutral-600">Take a photo of the issue (optional)</p>
+              <p className="text-xs text-neutral-500 mt-2">Photos help officials identify and fix issues faster</p>
             </div>
           ) : (
             <img 
@@ -393,16 +380,23 @@ export default function ReportPanel({
           </Button>
         </div>
         
-        <div className="mb-6">
+        <div className="flex flex-col gap-3 mb-6">
           <Button
             onClick={goToStep3}
-            className={`w-full py-3 rounded-lg font-medium ${
-              photo ? 'bg-primary text-white' : 'bg-neutral-300 text-neutral-500'
-            }`}
-            disabled={!photo}
+            className="w-full py-3 rounded-lg font-medium bg-primary text-white"
           >
-            Next
+            {photo ? "Continue with Photo" : "Skip Photo"}
           </Button>
+          
+          {photo && (
+            <Button
+              onClick={() => setPhoto(null)}
+              variant="outline"
+              className="w-full py-3 rounded-lg font-medium border-neutral-300"
+            >
+              Remove Photo
+            </Button>
+          )}
         </div>
       </div>
       

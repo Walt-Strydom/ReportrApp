@@ -83,8 +83,8 @@ export default function IssueDetailsPanel({
       
       // Show success message
       toast({
-        title: "Issue Upvoted",
-        description: "Thank you for confirming this issue. It helps prioritize repairs.",
+        title: "Issue Supported",
+        description: "Thank you for supporting this issue. It helps prioritize repairs.",
       });
       
       // Invalidate queries to refresh data
@@ -139,7 +139,7 @@ export default function IssueDetailsPanel({
             <div className="flex items-center">
               <div className="flex items-center mr-4">
                 <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
-                <span className="font-medium">{issue.upvotes}</span>
+                <span className="font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
               </div>
               <div className="text-xs text-neutral-500">
                 <ClockIcon className="inline mr-1 h-3 w-3" />
@@ -159,12 +159,12 @@ export default function IssueDetailsPanel({
           {isUpvoted ? (
             <>
               <span className="mr-2">✓</span>
-              <span>Upvoted</span>
+              <span>Supported</span>
             </>
           ) : (
             <>
               <ArrowUpIcon className="mr-2 h-5 w-5" />
-              <span>Upvote This Issue</span>
+              <span>Support This Issue</span>
             </>
           )}
         </Button>

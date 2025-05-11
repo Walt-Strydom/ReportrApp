@@ -120,7 +120,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
 }
 
 /**
- * Send an email notification for an upvoted issue
+ * Send an email notification for an issue that received support
  */
 export async function sendUpvoteEmail(issue: Issue): Promise<{ success: boolean; data?: any; error?: any }> {
   try {
@@ -148,15 +148,15 @@ export async function sendUpvoteEmail(issue: Issue): Promise<{ success: boolean;
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0; font-size: 24px;">⚠️ Issue Confirmation - Additional Report</h1>
+              <h1 style="margin: 0; font-size: 24px;">⚠️ Issue Support - Additional Confirmation</h1>
             </div>
             <div class="content">
-              <p><strong>Another citizen has confirmed</strong> an existing infrastructure issue in Pretoria. Details are as follows:</p>
+              <p><strong>Another citizen has supported</strong> an existing infrastructure issue in Pretoria. Details are as follows:</p>
               
               <div class="highlight">
                 <p class="detail-row"><span class="label">Original Report ID:</span> ${issue.reportId}</p>
                 <p class="detail-row"><span class="label">Issue Type:</span> ${issueType}</p>
-                <p class="detail-row"><span class="label">Current Upvotes:</span> ${issue.upvotes}</p>
+                <p class="detail-row"><span class="label">Current Supporters:</span> ${issue.upvotes}</p>
               </div>
               
               <h3>Location Details</h3>
@@ -182,7 +182,7 @@ export async function sendUpvoteEmail(issue: Issue): Promise<{ success: boolean;
     const data = await resend.emails.send({
       from: 'Lokisa Infrastructure Reports <reports@resend.dev>',
       to: defaultRecipients,
-      subject: `CONFIRMATION [${issue.reportId}]: ${issueType} at ${issue.address} (${issue.upvotes} reports)`,
+      subject: `SUPPORTED [${issue.reportId}]: ${issueType} at ${issue.address} (${issue.upvotes} ${issue.upvotes === 1 ? 'supporter' : 'supporters'})`,
       html: emailContent,
     });
     
