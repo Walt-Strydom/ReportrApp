@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { XIcon, SearchIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { XIcon, SearchIcon, ArrowUpIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Issue } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
+import { getIssueTypeById, issueCategories } from '@/data/issueTypes';
 
 interface NearbyIssuesPanelProps {
   issues: Issue[];
@@ -20,19 +21,36 @@ export default function NearbyIssuesPanel({
 }: NearbyIssuesPanelProps) {
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
-  // Filter issues based on current filter and search query
+  // Filter issues based on current filter, category, and search query
   const filteredIssues = issues.filter(issue => {
+    // If categoryFilter is set, check if the issue belongs to that category
+    const issueType = getIssueTypeById(issue.type);
+    
+    const matchesCategory = !categoryFilter || 
+      (issueType && issueType.categoryId === categoryFilter) || 
+      // Handle legacy types
+      (categoryFilter === 'roads-traffic' && (issue.type === 'pothole' || issue.type === 'trafficlight')) ||
+      (categoryFilter === 'street-lighting' && issue.type === 'streetlight');
+    
     const matchesFilter = filter === 'all' || issue.type === filter;
     const matchesSearch = !searchQuery || 
       issue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (issue.notes || '').toLowerCase().includes(searchQuery.toLowerCase());
     
-    return matchesFilter && matchesSearch;
+    return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
   });
 
-  // Get badge color based on issue type
+  // Get badge color based on issue type using the new category system
   const getBadgeColor = (type: string) => {
+    const issueType = getIssueTypeById(type);
+    
+    if (issueType) {
+      return `bg-[${issueType.color}]`;
+    }
+    
+    // Fall back to legacy types
     switch (type) {
       case 'pothole':
         return 'bg-destructive';
@@ -47,6 +65,13 @@ export default function NearbyIssuesPanel({
 
   // Format issue type for display
   const formatIssueType = (type: string) => {
+    const issueType = getIssueTypeById(type);
+    
+    if (issueType) {
+      return issueType.name;
+    }
+    
+    // Fall back to legacy types
     switch (type) {
       case 'pothole':
         return 'Pothole';
@@ -55,7 +80,7 @@ export default function NearbyIssuesPanel({
       case 'trafficlight':
         return 'Traffic Light';
       default:
-        return 'Other';
+        return type.charAt(0).toUpperCase() + type.slice(1).replace(/-/g, ' ');
     }
   };
 
@@ -87,56 +112,40 @@ export default function NearbyIssuesPanel({
         </div>
         
         <div className="mb-4">
+          {/* Category filter buttons */}
+          <h3 className="text-sm font-medium text-neutral-500 mb-2">Categories</h3>
           <div className="flex overflow-x-auto py-2 -mx-2 mb-4">
             <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
+              variant={categoryFilter === null ? 'default' : 'outline'}
               className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
-                filter === 'all' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
+                categoryFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
               }`}
-              onClick={() => setFilter('all')}
+              onClick={() => {
+                setCategoryFilter(null);
+                setFilter('all');
+              }}
             >
-              All Issues
+              All Categories
             </Button>
             
-            <Button
-              variant={filter === 'pothole' ? 'default' : 'outline'}
-              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
-                filter === 'pothole' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
-              }`}
-              onClick={() => setFilter('pothole')}
-            >
-              Potholes
-            </Button>
-            
-            <Button
-              variant={filter === 'streetlight' ? 'default' : 'outline'} 
-              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
-                filter === 'streetlight' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
-              }`}
-              onClick={() => setFilter('streetlight')}
-            >
-              Street Lights
-            </Button>
-            
-            <Button
-              variant={filter === 'trafficlight' ? 'default' : 'outline'}
-              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
-                filter === 'trafficlight' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
-              }`}
-              onClick={() => setFilter('trafficlight')}
-            >
-              Traffic Lights
-            </Button>
-            
-            <Button
-              variant={filter === 'other' ? 'default' : 'outline'}
-              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
-                filter === 'other' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
-              }`}
-              onClick={() => setFilter('other')}
-            >
-              Other
-            </Button>
+            {issueCategories.map(category => (
+              <Button
+                key={category.id}
+                variant={categoryFilter === category.id ? 'default' : 'outline'}
+                className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
+                  categoryFilter === category.id ? 
+                  `bg-[${category.color}] text-white` : 
+                  'bg-neutral-200 text-neutral-800'
+                }`}
+                onClick={() => {
+                  setCategoryFilter(category.id);
+                  setFilter('all');
+                }}
+                style={categoryFilter === category.id ? {backgroundColor: category.color} : {}}
+              >
+                {category.name}
+              </Button>
+            ))}
           </div>
         </div>
         
@@ -180,7 +189,7 @@ export default function NearbyIssuesPanel({
                     <div className="flex items-center">
                       <div className="flex items-center">
                         <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
-                        <span className="font-medium">{issue.upvotes}</span>
+                        <span className="font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
                       </div>
                     </div>
                   </div>
@@ -194,5 +203,4 @@ export default function NearbyIssuesPanel({
   );
 }
 
-// Import needed icon
-import { ArrowUpIcon } from 'lucide-react';
+// ArrowUpIcon already imported at the top

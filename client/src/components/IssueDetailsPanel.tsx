@@ -75,7 +75,7 @@ export default function IssueDetailsPanel({
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to upvote');
+        throw new Error(errorData.message || 'Failed to support this issue');
       }
       
       // Mark as upvoted
