@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon } from 'lucide-react';
+import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon, SmartphoneIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import IssueTypeCard from './IssueTypeCard';
@@ -14,6 +14,7 @@ import { resizeImage } from '@/lib/imageUtils';
 import { issueCategories, getAllIssueTypes } from '@/data/issueTypes';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from './LanguageSelector';
+import { useCapacitorCamera } from '@/hooks/useCapacitorCamera';
 
 interface ReportPanelProps {
   isOpen: boolean;
@@ -39,9 +40,11 @@ export default function ReportPanel({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedIssueType, setSelectedIssueType] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { takePicture, isCapacitorAvailable } = useCapacitorCamera();
 
   const form = useForm<FormData>({
     resolver: zodResolver(issueFormSchema),
@@ -61,6 +64,7 @@ export default function ReportPanel({
     setSelectedCategory(null);
     setSelectedIssueType(null);
     setPhoto(null);
+    setPhotoFile(null);
     form.reset();
   };
 
@@ -128,7 +132,7 @@ export default function ReportPanel({
     setStep(3);
   };
 
-  const handlePhotoCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -138,6 +142,7 @@ export default function ReportPanel({
       // Resize image before storing
       try {
         const resizedFile = await resizeImage(file);
+        setPhotoFile(resizedFile);
         
         // Convert the resized file to data URL for preview
         const resizedReader = new FileReader();
@@ -149,14 +154,46 @@ export default function ReportPanel({
         console.error('Image resize error:', error);
         // Fallback to original image if resize fails
         setPhoto(event.target?.result as string);
+        setPhotoFile(file);
       }
     };
     
     reader.readAsDataURL(file);
   };
 
-  const triggerCamera = () => {
-    cameraInputRef.current?.click();
+  const triggerCamera = async () => {
+    // If Capacitor is available, use native camera
+    if (isCapacitorAvailable) {
+      try {
+        const capturedFile = await takePicture({
+          quality: 90,
+          allowEditing: true,
+          resultType: 'base64',
+          saveToGallery: false
+        });
+        
+        if (capturedFile) {
+          setPhotoFile(capturedFile);
+          
+          // Create a preview
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            setPhoto(e.target?.result as string);
+          };
+          reader.readAsDataURL(capturedFile);
+        }
+      } catch (error) {
+        console.error('Capacitor camera error:', error);
+        toast({
+          title: t('errors.camera.title'),
+          description: t('errors.camera.message'),
+          variant: "destructive"
+        });
+      }
+    } else {
+      // Fall back to input file for web
+      cameraInputRef.current?.click();
+    }
   };
 
   const onSubmit = async (data: FormData) => {
@@ -169,13 +206,9 @@ export default function ReportPanel({
       // Create FormData for file upload
       const formData = new FormData();
       
-      // Convert data URL to file
-      if (photo) {
-        // Fetch the file from the input rather than converting data URL
-        const photoFile = cameraInputRef.current?.files?.[0];
-        if (photoFile) {
-          formData.append('photo', photoFile);
-        }
+      // Use stored photoFile
+      if (photo && photoFile) {
+        formData.append('photo', photoFile);
       }
       
       // Add other form fields
@@ -367,13 +400,20 @@ export default function ReportPanel({
           onChange={handlePhotoCapture}
         />
         
-        <div className="flex justify-center mb-8">
+        <div className="flex flex-col items-center mb-8">
           <Button
             onClick={triggerCamera}
-            className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center"
+            className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center mb-2"
           >
             <CameraIcon className="h-6 w-6" />
           </Button>
+          
+          {isCapacitorAvailable && (
+            <div className="flex items-center text-xs text-neutral-500 mt-1">
+              <SmartphoneIcon className="h-3 w-3 mr-1" />
+              <span>{t('report.form.photo.nativeCamera')}</span>
+            </div>
+          )}
         </div>
         
         <div className="flex flex-col gap-3 mb-6">
