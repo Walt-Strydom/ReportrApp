@@ -8,6 +8,7 @@ import { ZodError } from "zod-validation-error";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { sendNewIssueEmail, sendUpvoteEmail } from "./emailService";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -101,19 +102,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create issue in storage
       const issue = await storage.createIssue(validatedData);
       
-      // Send email notification (this would use Resend API in production)
-      // In this MVP, we just log the email that would be sent
-      console.log(`
-        Subject: New report: ${issue.type} at ${issue.address}
-        Body:
-        - Issue Type: ${issue.type}
-        - Location: ${issue.address}
-        - Coordinates: ${issue.latitude}, ${issue.longitude}
-        - Reported: ${issue.createdAt}
-        - Report ID: ${issue.reportId}
-        - Notes: ${issue.notes || 'None provided'}
-        - Status: ${issue.status}
-      `);
+      // Send email notification using Resend API
+      try {
+        const emailResult = await sendNewIssueEmail(issue);
+        console.log('Email notification sent:', emailResult.success ? 'Success' : 'Failed');
+        if (!emailResult.success) {
+          console.error('Email sending error:', emailResult.error);
+        }
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+        // Continue with response even if email fails
+      }
       
       res.status(201).json(issue);
     } catch (error) {
@@ -161,16 +160,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Increment upvote count on the issue
       const updatedIssue = await storage.incrementUpvote(id);
       
-      // Send email notification for upvote (this would use Resend API in production)
-      console.log(`
-        Subject: Additional complaint for ${issue.type} at ${issue.address}
-        Body:
-        - Original Report ID: ${issue.reportId}
-        - Current Upvote Count: ${updatedIssue?.upvotes || issue.upvotes + 1}
-        - Issue Type: ${issue.type}
-        - Location: ${issue.address}
-        - Coordinates: ${issue.latitude}, ${issue.longitude}
-      `);
+      // Use the updated issue or create a merged object with updated upvote count
+      const issueForEmail = updatedIssue || {
+        ...issue,
+        upvotes: issue.upvotes + 1
+      };
+      
+      // Send email notification using Resend API
+      try {
+        const emailResult = await sendUpvoteEmail(issueForEmail);
+        console.log('Upvote email notification sent:', emailResult.success ? 'Success' : 'Failed');
+        if (!emailResult.success) {
+          console.error('Upvote email sending error:', emailResult.error);
+        }
+      } catch (emailError) {
+        console.error('Failed to send upvote email notification:', emailError);
+        // Continue with response even if email fails
+      }
       
       res.json(updatedIssue);
     } catch (error) {
