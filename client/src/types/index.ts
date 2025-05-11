@@ -1,8 +1,24 @@
+export interface IssueSubcategory {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+export interface IssueCategory {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  subcategories: IssueSubcategory[];
+}
+
 export interface IssueType {
   id: string;
   name: string;
   icon: string;
   color: string;
+  categoryId?: string;
+  categoryName?: string;
 }
 
 export interface IssueLocation {

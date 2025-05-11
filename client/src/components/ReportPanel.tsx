@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon } from 'lucide-react';
+import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import IssueTypeCard from './IssueTypeCard';
@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { issueFormSchema } from '@shared/schema';
 import { resizeImage } from '@/lib/imageUtils';
+import { issueCategories, getAllIssueTypes } from '@/data/issueTypes';
 
 interface ReportPanelProps {
   isOpen: boolean;
