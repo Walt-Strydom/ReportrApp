@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { XIcon, SearchIcon, ArrowUpIcon, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -125,7 +125,7 @@ export default function NearbyIssuesPanel({
     </div>
   );
 
-  const renderContent = () => (
+  const panelContent = (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="font-bold text-xl">Nearby</h2>
@@ -292,10 +292,10 @@ export default function NearbyIssuesPanel({
           pullingContent={<div className="flex items-center justify-center p-3 text-neutral-500">Pull to refresh</div>}
           refreshingContent={refreshIndicator}
         >
-          {renderContent()}
+          {panelContent}
         </PullToRefresh>
       ) : (
-        renderContent()
+        panelContent
       )}
     </div>
   );

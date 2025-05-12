@@ -95,10 +95,31 @@ export default function Home() {
   };
 
   // Fetch issues data
-  const { data: issues = [], isLoading, error } = useQuery<Issue[]>({
+  const { 
+    data: issues = [], 
+    isLoading, 
+    error,
+    refetch: refetchIssues 
+  } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
     enabled: true, // Always fetch issues regardless of location status
   });
+  
+  // Function to refresh issues data
+  const handleRefreshIssues = async () => {
+    try {
+      await refetchIssues();
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Error refreshing issues:", error);
+      toast({
+        title: "Refresh Failed",
+        description: "Unable to refresh issues. Please try again.",
+        variant: "destructive",
+      });
+      return Promise.reject(error);
+    }
+  };
 
   // Sort issues by upvotes to get top issues
   const topIssues = [...(issues || [])].sort((a, b) => b.upvotes - a.upvotes).slice(0, 5);
@@ -368,6 +389,7 @@ export default function Home() {
         isOpen={nearbyIssuesPanelActive}
         onClose={() => setNearbyIssuesPanelActive(false)}
         onIssueClick={handleIssueClick}
+        onRefresh={handleRefreshIssues}
       />
       
       {/* Success Overlay */}
