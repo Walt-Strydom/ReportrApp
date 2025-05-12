@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "Lokisa",
-    "tagline": "Pretoria Infrastruktuur Verslagdoening"
+    "name": "Municipality",
+    "tagline": "Infrastruktuur Verslagdoening"
   },
   "nav": {
     "home": "Tuis",
@@ -12,7 +12,7 @@
   "home": {
     "cta": {
       "title": "Sien jy 'n infrastruktuur probleem?",
-      "description": "Rapporteer slaggate, gebreekte straatligte, waterlekkasies en meer om Pretoria te help verbeter.",
+      "description": "Rapporteer slaggate, gebreekte straatligte, waterlekkasies en meer om jou gemeenskap te help verbeter.",
       "button": "Dien 'n Klagte in"
     },
     "topIssues": {
@@ -101,9 +101,9 @@
   "errors": {
     "location": {
       "denied": "Liggingstoegang Geweier",
-      "deniedDesc": "Aktiveer asseblief liggingstoegang in jou blaaier-instellings om al die kenmerke van Lokisa te gebruik.",
+      "deniedDesc": "Aktiveer asseblief liggingstoegang in jou blaaier-instellings om al die kenmerke van hierdie toepassing te gebruik.",
       "granted": "Liggingstoegang Toegestaan",
-      "grantedDesc": "Lokisa kan nou akkuraat die ligging van gerapporteerde probleme identifiseer.",
+      "grantedDesc": "Die toepassing kan nou akkuraat die ligging van gerapporteerde probleme identifiseer.",
       "error": "Liggingsfout",
       "errorDesc": "Kon nie jou ligging kry nie. Probeer asseblief later weer.",
       "tryAgain": "Probeer weer"
