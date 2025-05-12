@@ -1,28 +1,44 @@
 import { useState, useEffect } from 'react';
-import { XIcon, SearchIcon, ArrowUpIcon } from 'lucide-react';
+import { XIcon, SearchIcon, ArrowUpIcon, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Issue } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById, issueCategories } from '@/data/issueTypes';
 import Icon from '@/components/Icon';
+import PullToRefresh from 'react-pull-to-refresh';
 
 interface NearbyIssuesPanelProps {
   issues: Issue[];
   isOpen: boolean;
   onClose: () => void;
   onIssueClick: (issueId: number) => void;
+  onRefresh?: () => Promise<any>;
 }
 
 export default function NearbyIssuesPanel({ 
   issues, 
   isOpen, 
   onClose, 
-  onIssueClick 
+  onIssueClick,
+  onRefresh = async () => {} 
 }: NearbyIssuesPanelProps) {
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  // Handle pull-to-refresh action
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await onRefresh();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Filter issues based on current filter, category, and search query
   const filteredIssues = issues.filter(issue => {
@@ -112,13 +128,29 @@ export default function NearbyIssuesPanel({
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-xl">Nearby</h2>
-          <button className="text-neutral-800" onClick={onClose}>
-            <XIcon className="h-6 w-6" />
-          </button>
-        </div>
+      <PullToRefresh
+        onRefresh={handleRefresh}
+        className="h-full"
+        distanceToRefresh={80}
+        resistance={2.5}
+        pullingContent={
+          <div className="refresh-box">
+            <RotateCw className="h-6 w-6 text-orange-500" />
+          </div>
+        }
+        refreshingContent={
+          <div className="refresh-box">
+            <RotateCw className="h-6 w-6 text-orange-500 animate-spin" />
+          </div>
+        }
+      >
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="font-bold text-xl">Nearby</h2>
+            <button className="text-neutral-800" onClick={onClose}>
+              <XIcon className="h-6 w-6" />
+            </button>
+          </div>
         
         <div className="mb-4">
           <div className="relative">
@@ -263,7 +295,8 @@ export default function NearbyIssuesPanel({
             ))}
           </div>
         )}
-      </div>
+        </div>
+      </PullToRefresh>
     </div>
   );
 }
