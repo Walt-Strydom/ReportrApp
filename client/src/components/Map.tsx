@@ -9,6 +9,13 @@ interface MapProps {
   onMarkerClick: (issueId: number) => void;
 }
 
+// Add types for window.google
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
 // Define map styles
 const MAP_STYLES = [
   {
@@ -29,9 +36,9 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
   const [mapError, setMapError] = useState<string | null>(null);
   
   // State variables for Google Maps objects
-  const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
-  const [mapMarkers, setMapMarkers] = useState<google.maps.Marker[]>([]);
-  const [heatmapLayer, setHeatmapLayer] = useState<google.maps.visualization.HeatmapLayer | null>(null);
+  const [googleMap, setGoogleMap] = useState<any>(null);
+  const [mapMarkers, setMapMarkers] = useState<any[]>([]);
+  const [heatmapLayer, setHeatmapLayer] = useState<any>(null);
   
   // Default to Pretoria central coordinates if user location not available
   const defaultCenter = { lat: -25.7461, lng: 28.1881 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Issue } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon, Heart, HeartOff, Loader2, RotateCw } from 'lucide-react';
+import { X as XIcon, ArrowUp as ArrowUpIcon, MapPin as MapPinIcon, Calendar as CalendarIcon, Clock3 as Clock3Icon, MessageSquare as MessageSquareIcon, Heart, HeartOff, Loader2, RotateCw } from 'lucide-react';
 import PullToRefresh from 'react-pull-to-refresh';
 import Map from '@/components/Map';
 import { formatDistanceToNow } from 'date-fns';

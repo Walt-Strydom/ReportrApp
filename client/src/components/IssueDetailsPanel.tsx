@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { XIcon, ArrowUpIcon, ClockIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
+import { X as XIcon, ArrowUp as ArrowUpIcon, Clock as ClockIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
