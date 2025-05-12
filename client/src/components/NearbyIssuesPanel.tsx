@@ -275,7 +275,7 @@ export default function NearbyIssuesPanel({
       }`}
     >
       {onRefresh ? (
-        <div className="h-full overflow-scroll pb-20" style={{ 
+        <div className="h-full overflow-auto pb-20 absolute inset-0" style={{ 
           WebkitOverflowScrolling: 'touch',
           msOverflowStyle: '-ms-autohiding-scrollbar'
         }}>
@@ -283,6 +283,7 @@ export default function NearbyIssuesPanel({
             onRefresh={handleRefresh}
             pullDownThreshold={40}
             maxPullDownDistance={120}
+            className="h-full"
             pullingContent={
               <div className="flex items-center justify-center p-3 text-neutral-500">
                 {t('pullToRefresh.pulling', 'Pull to refresh')}
@@ -294,7 +295,7 @@ export default function NearbyIssuesPanel({
           </PullToRefresh>
         </div>
       ) : (
-        <div className="h-full overflow-scroll pb-20" style={{ 
+        <div className="h-full overflow-auto pb-20 absolute inset-0" style={{ 
           WebkitOverflowScrolling: 'touch',
           msOverflowStyle: '-ms-autohiding-scrollbar' 
         }}>

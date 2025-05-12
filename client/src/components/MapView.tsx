@@ -28,10 +28,16 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
   const { toast } = useToast();
   const geolocation = useGeolocation();
   
-  // Get current location as center for map
-  const mapCenter = geolocation.latitude && geolocation.longitude
-    ? { lat: geolocation.latitude, lng: geolocation.longitude }
-    : null;
+  // Get current location as center for map but only use it initially
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
+  
+  // Only use geolocation for initial centering when map first opens
+  useEffect(() => {
+    if (isOpen && geolocation.latitude && geolocation.longitude && !mapCenter) {
+      setMapCenter({ lat: geolocation.latitude, lng: geolocation.longitude });
+      console.log('Initial map center set:', { lat: geolocation.latitude, lng: geolocation.longitude });
+    }
+  }, [isOpen, geolocation.latitude, geolocation.longitude, mapCenter]);
   
   // Fetch issues data
   const { data: issues = [] } = useQuery<Issue[]>({

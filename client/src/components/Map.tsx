@@ -108,10 +108,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
   useEffect(() => {
     if (!googleMap || !center) return;
     
-    // Update map center
-    googleMap.setCenter(center);
-    
-    // Add user location marker with pulse effect
+    // Add user location marker with pulse effect - center only once
     const userMarker = new window.google.maps.Marker({
       position: center,
       map: googleMap,
@@ -138,6 +135,14 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
       radius: 50,
       zIndex: 998,
     });
+    
+    // Only set the center on initial load, then let user pan freely
+    const isInitialLoad = !googleMap.get('initialized');
+    if (isInitialLoad) {
+      googleMap.set('initialized', true);
+      googleMap.setCenter(center);
+      console.log('Setting initial map center, subsequent movements will be user-controlled');
+    }
     
     return () => {
       userMarker.setMap(null);
