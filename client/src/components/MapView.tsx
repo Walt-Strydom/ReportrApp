@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { X as XIcon, ArrowUp as ArrowUpIcon, MapPin as MapPinIcon, Calendar as CalendarIcon, Clock3 as Clock3Icon, MessageSquare as MessageSquareIcon, Heart, HeartOff, Loader2, RotateCw, Flame } from 'lucide-react';
 import PullToRefresh from 'react-pull-to-refresh';
+import MapFixed from '@/components/MapFixed';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
 import { Button } from '@/components/ui/button';
@@ -600,15 +601,13 @@ export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = asy
             </div>
           }
         >
-          <div className="w-full h-full relative" style={{ minHeight: '350px' }}>
-            <div id="map-container" className="w-full h-full">
-              <SimpleMap 
-                center={mapCenter} 
-                issues={issues} 
-                heatmapActive={heatmapActive} 
-                onMarkerClick={handleMarkerClick} 
-              />
-            </div>
+          <div className="w-full h-full relative" style={{ minHeight: '400px' }}>
+            <MapFixed
+              center={mapCenter} 
+              issues={issues} 
+              heatmapActive={heatmapActive} 
+              onMarkerClick={handleMarkerClick} 
+            />
           </div>
         </PullToRefresh>
       </div>
