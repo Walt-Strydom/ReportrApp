@@ -121,7 +121,7 @@ export default function CreatePage() {
   return (
     <div className="relative h-screen overflow-hidden">
       {/* Map View */}
-      <div className="map-container relative">
+      <div className="map-container relative h-full">
         <Map 
           center={
             geolocation.latitude && geolocation.longitude 

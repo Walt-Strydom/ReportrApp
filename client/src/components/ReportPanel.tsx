@@ -252,7 +252,7 @@ export default function ReportPanel({
 
   return (
     <div 
-      className={`fixed top-0 left-0 right-0 h-screen bg-white z-20 rounded-t-3xl shadow-lg overflow-auto snap-y transform transition-transform duration-300 ${
+      className={`fixed top-0 left-0 right-0 h-screen bg-white z-20 rounded-t-3xl shadow-lg overflow-y-auto pb-20 transform transition-transform duration-300 ${
         isOpen ? 'translate-y-0' : 'translate-y-full'
       }`}
     >

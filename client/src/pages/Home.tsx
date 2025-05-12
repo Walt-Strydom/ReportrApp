@@ -38,8 +38,14 @@ export default function Home() {
     title: t('success.support.title'),
     message: t('success.support.message')
   });
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  
+  // Check if app is installed (PWA)
+  useEffect(() => {
+    setIsAppInstalled(isInstalledPWA());
+  }, []);
 
   // Get user's geolocation with enhanced permissions handling
   const geolocation = useGeolocation();
@@ -222,6 +228,16 @@ export default function Home() {
           </div>
         </section>
 
+        {/* My Complaints Section - Only shown when app is installed */}
+        {isAppInstalled && (
+          <section className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">{t('myComplaints.title')}</h2>
+            </div>
+            <MyComplaints onIssueClick={handleIssueClick} />
+          </section>
+        )}
+        
         {/* Top Issues Section */}
         <section className="mb-8">
           <div className="flex justify-between items-center mb-4">

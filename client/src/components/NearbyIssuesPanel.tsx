@@ -107,7 +107,7 @@ export default function NearbyIssuesPanel({
 
   return (
     <div 
-      className={`fixed inset-0 bg-white z-20 transform transition-transform duration-300 ${
+      className={`fixed inset-0 bg-white z-20 transform transition-transform duration-300 overflow-y-auto pb-20 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
