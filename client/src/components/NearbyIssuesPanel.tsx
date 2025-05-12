@@ -131,6 +131,21 @@ export default function NearbyIssuesPanel({
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
+      {/* Header - Keep outside of PullToRefresh to ensure it's always clickable */}
+      <div className="sticky top-0 bg-white p-6 pb-2 z-30 border-b">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-bold text-xl">Nearby Issues</h2>
+          <button 
+            className="text-neutral-800 hover:bg-gray-100 p-2 rounded-full transition-colors" 
+            onClick={onClose}
+            aria-label="Close panel"
+          >
+            <XIcon className="h-6 w-6" />
+          </button>
+        </div>
+        <p className="text-sm text-gray-500 mb-2">Showing newest reports first</p>
+      </div>
+      
       <PullToRefresh
         onRefresh={handleRefresh}
         className="h-full"
@@ -147,14 +162,7 @@ export default function NearbyIssuesPanel({
           </div>
         }
       >
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="font-bold text-xl">Nearby Issues</h2>
-            <button className="text-neutral-800" onClick={onClose}>
-              <XIcon className="h-6 w-6" />
-            </button>
-          </div>
-          <p className="text-sm text-gray-500 mb-4">Showing newest reports first</p>
+        <div className="p-6 pt-2">
         
         <div className="mb-4">
           <div className="relative">

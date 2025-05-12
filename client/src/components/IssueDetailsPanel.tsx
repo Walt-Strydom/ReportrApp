@@ -191,7 +191,16 @@ export default function IssueDetailsPanel({
       }`}
     >
       <div className="p-6 pb-12">
-        <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-6"></div>
+        <div className="flex justify-between items-center mb-6">
+          <div className="w-12 h-1 bg-neutral-300 rounded-full"></div>
+          <button 
+            className="text-neutral-800 hover:bg-gray-100 p-2 rounded-full transition-colors" 
+            onClick={onClose}
+            aria-label="Close panel"
+          >
+            <XIcon className="h-6 w-6" />
+          </button>
+        </div>
         
         <div className="flex items-start mb-6">
           {issue.photoUrl ? (
