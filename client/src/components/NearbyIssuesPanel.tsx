@@ -188,7 +188,13 @@ export default function NearbyIssuesPanel({
                       <img 
                         src={issue.photoUrl} 
                         alt={`${issue.type} issue`} 
-                        className="w-full h-full object-cover" 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // If image fails to load, replace with logo
+                          e.currentTarget.src = '/assets/logo-orange.png';
+                          e.currentTarget.style.padding = '5px';
+                          e.currentTarget.style.objectFit = 'contain';
+                        }}
                       />
                     </div>
                   ) : (

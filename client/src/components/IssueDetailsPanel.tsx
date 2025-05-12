@@ -122,11 +122,17 @@ export default function IssueDetailsPanel({
         
         <div className="flex items-start mb-6">
           {issue.photoUrl ? (
-            <div className="w-20 h-20 rounded-lg overflow-hidden mr-4">
+            <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-gray-200">
               <img 
                 src={issue.photoUrl} 
                 alt={`${issue.type} issue`} 
                 className="w-full h-full object-cover" 
+                onError={(e) => {
+                  // If image fails to load, replace with logo
+                  e.currentTarget.src = '/assets/logo-orange.png';
+                  e.currentTarget.style.padding = '5px';
+                  e.currentTarget.style.objectFit = 'contain';
+                }}
               />
             </div>
           ) : (
