@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon, SmartphoneIcon } from 'lucide-react';
+import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon, SmartphoneIcon, TrashIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import IssueTypeCard from './IssueTypeCard';
@@ -439,13 +439,13 @@ export default function ReportPanel({
         <div className="flex flex-col items-center mb-8">
           <Button
             onClick={triggerCamera}
-            className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center mb-2"
+            className="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-primary-dark text-white flex items-center justify-center mb-2 shadow-md hover:shadow-lg transition-shadow"
           >
-            <CameraIcon className="h-6 w-6" />
+            <CameraIcon className="h-7 w-7" />
           </Button>
           
           {isCapacitorAvailable && (
-            <div className="flex items-center text-xs text-neutral-500 mt-1">
+            <div className="flex items-center text-xs text-neutral-500 mt-2 bg-neutral-50 px-3 py-1 rounded-full">
               <SmartphoneIcon className="h-3 w-3 mr-1" />
               <span>{t('report.form.photo.nativeCamera')}</span>
             </div>
@@ -455,18 +455,19 @@ export default function ReportPanel({
         <div className="flex flex-col gap-3 mb-6">
           <Button
             onClick={goToStep3}
-            className="w-full py-3 rounded-lg font-medium bg-primary text-white"
+            className="w-full py-3 rounded-lg font-medium bg-gradient-to-r from-primary to-primary-dark text-white shadow-md"
           >
-            {photo ? "Continue with Photo" : "Skip Photo"}
+            {photo ? t('report.form.photo.continue') : t('report.form.photo.skip')}
           </Button>
           
           {photo && (
             <Button
               onClick={() => setPhoto(null)}
               variant="outline"
-              className="w-full py-3 rounded-lg font-medium border-neutral-300"
+              className="w-full py-3 rounded-lg font-medium border-neutral-200 hover:bg-neutral-50 transition-colors"
             >
-              Remove Photo
+              <TrashIcon className="h-4 w-4 mr-2 text-neutral-500" />
+              {t('report.form.photo.remove')}
             </Button>
           )}
         </div>
