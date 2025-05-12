@@ -17,7 +17,7 @@ interface MapViewProps {
   isOpen: boolean;
   onClose: () => void;
   onIssueClick: (issueId: number) => void;
-  onRefresh?: () => Promise<void>;
+  onRefresh?: () => Promise<any>;
 }
 
 export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = async () => {} }: MapViewProps) {
@@ -37,10 +37,15 @@ export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = asy
     : null;
   
   // Fetch issues data
-  const { data: issues = [] } = useQuery<Issue[]>({
+  const { data: rawIssues = [] } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
     enabled: isOpen, // Only fetch when map is open
   });
+  
+  // Sort issues by date (newest first)
+  const issues = [...rawIssues].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   // Initialize device ID for supporting issues
   useEffect(() => {

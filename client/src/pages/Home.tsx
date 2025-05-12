@@ -101,7 +101,7 @@ export default function Home() {
   });
   
   // Handle data refresh for both panels
-  const handleRefreshData = async () => {
+  const handleRefreshData = async (): Promise<any> => {
     try {
       await refetch();
       toast({
@@ -120,8 +120,13 @@ export default function Home() {
     }
   };
 
-  // Sort issues by upvotes to get top issues
+  // Sort issues by upvotes to get top issues (most upvotes first)
   const topIssues = [...(issues || [])].sort((a, b) => b.upvotes - a.upvotes).slice(0, 5);
+  
+  // Sort issues by date to get newest issues (most recent first)
+  const newestIssues = [...(issues || [])].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  ).slice(0, 5);
 
   // Get selected issue details
   const selectedIssue = selectedIssueId 
@@ -251,10 +256,10 @@ export default function Home() {
 
 
         
-        {/* Top Issues Section */}
+        {/* Latest Issues Section */}
         <section className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">{t('home.topIssues.title')}</h2>
+            <h2 className="text-xl font-bold">Latest Reports</h2>
             <Button 
               variant="outline" 
               onClick={() => setNearbyIssuesPanelActive(true)}
@@ -272,7 +277,7 @@ export default function Home() {
             <div className="bg-red-50 text-red-600 p-4 rounded-lg">
               <p>{t('home.topIssues.error')}</p>
             </div>
-          ) : topIssues.length === 0 ? (
+          ) : newestIssues.length === 0 ? (
             <div className="bg-gray-100 p-6 rounded-lg text-center">
               <Megaphone className="h-12 w-12 mx-auto mb-4 text-gray-400" />
               <h3 className="text-lg font-medium mb-2">{t('home.topIssues.empty.title')}</h3>
@@ -283,7 +288,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="space-y-4">
-              {topIssues.map(issue => (
+              {newestIssues.map(issue => (
                 <div
                   key={issue.id}
                   className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"

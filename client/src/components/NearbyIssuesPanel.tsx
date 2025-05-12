@@ -41,23 +41,26 @@ export default function NearbyIssuesPanel({
   };
 
   // Filter issues based on current filter, category, and search query
-  const filteredIssues = issues.filter(issue => {
-    // If categoryFilter is set, check if the issue belongs to that category
-    const issueType = getIssueTypeById(issue.type);
-    
-    const matchesCategory = !categoryFilter || 
-      (issueType && issueType.categoryId === categoryFilter) || 
-      // Handle legacy types
-      (categoryFilter === 'roads-traffic' && (issue.type === 'pothole' || issue.type === 'trafficlight')) ||
-      (categoryFilter === 'street-lighting' && issue.type === 'streetlight');
-    
-    const matchesFilter = filter === 'all' || issue.type === filter;
-    const matchesSearch = !searchQuery || 
-      issue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (issue.notes || '').toLowerCase().includes(searchQuery.toLowerCase());
-    
-    return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
-  });
+  const filteredIssues = issues
+    .filter(issue => {
+      // If categoryFilter is set, check if the issue belongs to that category
+      const issueType = getIssueTypeById(issue.type);
+      
+      const matchesCategory = !categoryFilter || 
+        (issueType && issueType.categoryId === categoryFilter) || 
+        // Handle legacy types
+        (categoryFilter === 'roads-traffic' && (issue.type === 'pothole' || issue.type === 'trafficlight')) ||
+        (categoryFilter === 'street-lighting' && issue.type === 'streetlight');
+      
+      const matchesFilter = filter === 'all' || issue.type === filter;
+      const matchesSearch = !searchQuery || 
+        issue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (issue.notes || '').toLowerCase().includes(searchQuery.toLowerCase());
+      
+      return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
+    })
+    // Sort by date (newest first)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   // Get badge color based on issue type using the new category system
   const getBadgeColor = (type: string) => {
@@ -146,7 +149,7 @@ export default function NearbyIssuesPanel({
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="font-bold text-xl">Nearby</h2>
+            <h2 className="font-bold text-xl">Latest Reports</h2>
             <button className="text-neutral-800" onClick={onClose}>
               <XIcon className="h-6 w-6" />
             </button>
