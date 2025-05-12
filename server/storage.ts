@@ -21,10 +21,12 @@ export interface IStorage {
   createIssue(issue: InsertIssue): Promise<Issue>;
   updateIssue(id: number, issue: Partial<Issue>): Promise<Issue | undefined>;
   incrementUpvote(id: number): Promise<Issue | undefined>;
+  decrementUpvote(id: number): Promise<Issue | undefined>;
   
   // Upvote methods
   createUpvote(upvote: InsertUpvote): Promise<Upvote>;
   getUpvoteByDeviceAndIssue(deviceId: string, issueId: number): Promise<Upvote | undefined>;
+  deleteUpvoteByDeviceAndIssue(deviceId: string, issueId: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -119,6 +121,19 @@ export class MemStorage implements IStorage {
     this.issues.set(id, updatedIssue);
     return updatedIssue;
   }
+  
+  async decrementUpvote(id: number): Promise<Issue | undefined> {
+    const issue = this.issues.get(id);
+    if (!issue) return undefined;
+    
+    const updatedIssue = { 
+      ...issue, 
+      upvotes: Math.max(0, issue.upvotes - 1) // Ensure upvotes don't go below 0
+    };
+    
+    this.issues.set(id, updatedIssue);
+    return updatedIssue;
+  }
 
   // Upvote methods
   async createUpvote(insertUpvote: InsertUpvote): Promise<Upvote> {
@@ -137,6 +152,19 @@ export class MemStorage implements IStorage {
     return Array.from(this.upvotes.values()).find(
       (upvote) => upvote.deviceId === deviceId && upvote.issueId === issueId
     );
+  }
+  
+  async deleteUpvoteByDeviceAndIssue(deviceId: string, issueId: number): Promise<boolean> {
+    const upvotes = Array.from(this.upvotes.entries());
+    
+    for (const [id, upvote] of upvotes) {
+      if (upvote.deviceId === deviceId && upvote.issueId === issueId) {
+        this.upvotes.delete(id);
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   // Helper method to calculate distance between two points using Haversine formula
@@ -241,6 +269,19 @@ export class DatabaseStorage implements IStorage {
       
     return updatedIssue || undefined;
   }
+  
+  async decrementUpvote(id: number): Promise<Issue | undefined> {
+    const issue = await this.getIssueById(id);
+    if (!issue) return undefined;
+    
+    const [updatedIssue] = await db
+      .update(issues)
+      .set({ upvotes: Math.max(0, issue.upvotes - 1) }) // Ensure upvotes don't go below 0
+      .where(eq(issues.id, id))
+      .returning();
+      
+    return updatedIssue || undefined;
+  }
 
   // Upvote methods
   async createUpvote(insertUpvote: InsertUpvote): Promise<Upvote> {
@@ -262,6 +303,18 @@ export class DatabaseStorage implements IStorage {
       ));
       
     return upvote || undefined;
+  }
+  
+  async deleteUpvoteByDeviceAndIssue(deviceId: string, issueId: number): Promise<boolean> {
+    const result = await db
+      .delete(upvotes)
+      .where(and(
+        eq(upvotes.deviceId, deviceId),
+        eq(upvotes.issueId, issueId)
+      ))
+      .returning();
+      
+    return result.length > 0;
   }
 
   // Helper method to calculate distance between two points using Haversine formula
