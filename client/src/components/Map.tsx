@@ -60,6 +60,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
           zoomControlOptions: {
             position: window.google.maps.ControlPosition.RIGHT_TOP,
           },
+          gestureHandling: 'greedy', // Enable one-finger panning and two-finger zooming
           styles: MAP_STYLES,
         });
         

@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById, issueCategories } from '@/data/issueTypes';
 import Icon from '@/components/Icon';
 import PullToRefresh from 'react-pull-to-refresh';
+import { useTranslation } from 'react-i18next';
 
 interface NearbyIssuesPanelProps {
   issues: Issue[];
@@ -23,6 +24,7 @@ export default function NearbyIssuesPanel({
   onIssueClick,
   onRefresh 
 }: NearbyIssuesPanelProps) {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
@@ -45,27 +47,6 @@ export default function NearbyIssuesPanel({
     
     return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
   });
-
-  // Get badge color based on issue type using the new category system
-  const getBadgeColor = (type: string) => {
-    const issueType = getIssueTypeById(type);
-    
-    if (issueType) {
-      return `bg-[${issueType.color}]`;
-    }
-    
-    // Fall back to legacy types
-    switch (type) {
-      case 'pothole':
-        return 'bg-destructive';
-      case 'streetlight':
-        return 'bg-accent';
-      case 'trafficlight':
-        return 'bg-secondary';
-      default:
-        return 'bg-neutral-500';
-    }
-  };
   
   // Get the actual color value (not class name) for backgrounds
   const getColorValue = (type: string) => {
@@ -127,7 +108,7 @@ export default function NearbyIssuesPanel({
   const renderContent = () => (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="font-bold text-xl">Nearby</h2>
+        <h2 className="font-bold text-xl">{t('nearby.title', 'Nearby')}</h2>
         <button className="text-neutral-800" onClick={onClose}>
           <XIcon className="h-6 w-6" />
         </button>
@@ -138,7 +119,7 @@ export default function NearbyIssuesPanel({
           <Input 
             type="text" 
             className="w-full p-3 pl-10 border border-neutral-200 rounded-lg" 
-            placeholder="Search..."
+            placeholder={t('search.placeholder', 'Search...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -148,7 +129,7 @@ export default function NearbyIssuesPanel({
       
       <div className="mb-4">
         {/* Category filter buttons */}
-        <h3 className="text-sm font-medium text-neutral-500 mb-2">Categories</h3>
+        <h3 className="text-sm font-medium text-neutral-500 mb-2">{t('categories.label', 'Categories')}</h3>
         <div className="flex overflow-x-auto py-2 -mx-2 mb-4">
           <Button
             variant={categoryFilter === null ? 'default' : 'outline'}
@@ -161,7 +142,7 @@ export default function NearbyIssuesPanel({
             }}
           >
             <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
-            All Categories
+            {t('categories.all', 'All Categories')}
           </Button>
           
           {issueCategories.map(category => (
@@ -209,7 +190,7 @@ export default function NearbyIssuesPanel({
       
       {filteredIssues.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-neutral-600">No issues found matching your criteria</p>
+          <p className="text-neutral-600">{t('nearby.noIssues', 'No issues found matching your criteria')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -261,13 +242,17 @@ export default function NearbyIssuesPanel({
                   </div>
                   <h3 className="font-medium mb-1">{issue.address}</h3>
                   <p className="text-sm text-neutral-600 mb-2 line-clamp-2">
-                    {issue.notes || 'No additional details provided.'}
+                    {issue.notes || t('issue.noDetails', 'No additional details provided.')}
                   </p>
                   
                   <div className="flex items-center">
                     <div className="flex items-center">
                       <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
-                      <span className="font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
+                      <span className="font-medium">
+                        {issue.upvotes} {issue.upvotes === 1 ? 
+                          t('issue.supporter', 'supporter') : 
+                          t('issue.supporters', 'supporters')}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -284,19 +269,35 @@ export default function NearbyIssuesPanel({
   }
 
   return (
-    <div className="fixed inset-0 bg-white z-20 transition-transform duration-300">
+    <div 
+      className={`fixed inset-0 bg-white z-20 transform transition-transform duration-300 ${
+        isOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}
+    >
       {onRefresh ? (
-        <div className="h-full overflow-y-auto pb-20" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="h-full overflow-scroll pb-20" style={{ 
+          WebkitOverflowScrolling: 'touch',
+          msOverflowStyle: '-ms-autohiding-scrollbar'
+        }}>
           <PullToRefresh
             onRefresh={handleRefresh}
-            pullingContent={<div className="text-center p-2 text-gray-500">Pull down to refresh</div>}
+            pullDownThreshold={40}
+            maxPullDownDistance={120}
+            pullingContent={
+              <div className="flex items-center justify-center p-3 text-neutral-500">
+                {t('pullToRefresh.pulling', 'Pull to refresh')}
+              </div>
+            }
             refreshingContent={refreshIndicator}
           >
             {renderContent()}
           </PullToRefresh>
         </div>
       ) : (
-        <div className="h-full overflow-y-auto pb-20">
+        <div className="h-full overflow-scroll pb-20" style={{ 
+          WebkitOverflowScrolling: 'touch',
+          msOverflowStyle: '-ms-autohiding-scrollbar' 
+        }}>
           {renderContent()}
         </div>
       )}

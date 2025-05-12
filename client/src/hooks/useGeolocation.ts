@@ -69,14 +69,21 @@ export function useGeolocation() {
     }
 
     return new Promise<GeolocationPosition>((resolve, reject) => {
+      // iOS Safari has different behavior - lower timeout, less strict high accuracy
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      
       const options = {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 10000
+        enableHighAccuracy: !isIOS, // Disable high accuracy on iOS to improve reliability
+        maximumAge: isIOS ? 60000 : 0, // Increase cache time on iOS
+        timeout: isIOS ? 30000 : 10000 // Longer timeout on iOS to avoid premature errors
       };
+
+      console.log('Requesting location with options:', options);
+      console.log('Device detected as iOS:', isIOS);
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log('Location obtained successfully');
           setLocation({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -88,17 +95,24 @@ export function useGeolocation() {
           resolve(position);
         },
         (error) => {
+          console.error('Location error:', error.code, error.message);
           let permissionStatus: 'denied' | 'prompt' | 'unknown' = 'unknown';
+          let errorMessage = error.message;
           
+          // More descriptive error messages
           if (error.code === error.PERMISSION_DENIED) {
             permissionStatus = 'denied';
+            errorMessage = 'Location access denied. Please enable location services in your device settings.';
           } else if (error.code === error.TIMEOUT) {
             permissionStatus = 'prompt';
+            errorMessage = 'Location request timed out. Please check your connection and try again.';
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            errorMessage = 'Unable to determine your location. Please check your device settings.';
           }
           
           setLocation(prev => ({
             ...prev,
-            error: error.message,
+            error: errorMessage,
             loading: false,
             permissionStatus
           }));
@@ -117,13 +131,19 @@ export function useGeolocation() {
       return;
     }
 
+    // iOS Safari has different behavior
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    
     const options = {
-      enableHighAccuracy: true,
-      maximumAge: 30000,
-      timeout: 27000
+      enableHighAccuracy: !isIOS, // Disable high accuracy on iOS to improve reliability
+      maximumAge: isIOS ? 60000 : 30000, // Increase cache time on iOS
+      timeout: isIOS ? 30000 : 27000 // Longer timeout on iOS
     };
 
+    console.log('Setting up watchPosition with options:', options);
+
     const geoSuccess = (position: GeolocationPosition) => {
+      console.log('Watch position updated successfully');
       setLocation(prev => ({
         ...prev,
         latitude: position.coords.latitude,
@@ -135,9 +155,21 @@ export function useGeolocation() {
     };
 
     const geoError = (error: GeolocationPositionError) => {
+      console.error('Watch position error:', error.code, error.message);
+      let errorMessage = error.message;
+      
+      // More descriptive error messages
+      if (error.code === error.PERMISSION_DENIED) {
+        errorMessage = 'Location access denied. Please enable location services in your device settings.';
+      } else if (error.code === error.TIMEOUT) {
+        errorMessage = 'Location request timed out. Please check your connection and try again.';
+      } else if (error.code === error.POSITION_UNAVAILABLE) {
+        errorMessage = 'Unable to determine your location. Please check your device settings.';
+      }
+      
       setLocation(prev => ({
         ...prev,
-        error: error.message,
+        error: errorMessage,
         loading: false,
         permissionStatus: error.code === error.PERMISSION_DENIED ? 'denied' : prev.permissionStatus
       }));
