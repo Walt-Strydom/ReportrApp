@@ -96,18 +96,6 @@ export default function NearbyIssuesPanel({
     }
   };
 
-  // Handle pull-to-refresh
-  const handleRefresh = async () => {
-    if (onRefresh) {
-      setIsRefreshing(true);
-      try {
-        await onRefresh();
-      } finally {
-        setIsRefreshing(false);
-      }
-    }
-  };
-  
   // Reset pull-to-refresh state after animation completes
   useEffect(() => {
     if (!isRefreshing && pullDistance > 0) {
@@ -119,6 +107,18 @@ export default function NearbyIssuesPanel({
       return () => clearTimeout(timer);
     }
   }, [isRefreshing, pullDistance]);
+  
+  // Handle pull-to-refresh
+  const handleRefresh = async () => {
+    if (onRefresh) {
+      setIsRefreshing(true);
+      try {
+        await onRefresh();
+      } finally {
+        setIsRefreshing(false);
+      }
+    }
+  };
   
   // Touch handlers for custom pull-to-refresh
   const touchStartHandler = (e: React.TouchEvent) => {
@@ -249,15 +249,24 @@ export default function NearbyIssuesPanel({
         {/* Fixed header at the top */}
         <div className="flex justify-between items-center px-6 py-4 bg-white shadow-sm">
           <h2 className="font-bold text-xl">{t('nearby.title', 'Nearby')}</h2>
-          <button className="text-neutral-800" onClick={onClose}>
+          <button 
+            className="text-neutral-800 p-2" 
+            onClick={onClose}
+            aria-label="Close"
+          >
             <XIcon className="h-6 w-6" />
           </button>
         </div>
         
-        {/* This is a simple refresh indicator if pull-to-refresh is enabled */}
-        {isRefreshing && (
-          <div className="sticky top-0 z-10 flex items-center justify-center p-2 bg-white/80 backdrop-blur-sm">
-            {refreshIndicator}
+        {/* Pull-to-refresh indicator */}
+        {(pullDistance > 0 || isRefreshing) && (
+          <div 
+            className="absolute top-16 left-0 right-0 z-10 flex justify-center"
+            style={{
+              transform: pullDistance > 0 && !isRefreshing ? `translateY(${pullDistance}px)` : 'none'
+            }}
+          >
+            {pullToRefreshIndicator()}
           </div>
         )}
         
