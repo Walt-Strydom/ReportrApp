@@ -181,7 +181,7 @@ export default function Home() {
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center">
               <img 
-                src="/assets/logo-white.png" 
+                src="/logo-white.png" 
                 alt="Municipality Logo" 
                 className="h-12 w-auto drop-shadow-md"
               />
@@ -287,7 +287,7 @@ export default function Home() {
                           className="w-full h-full object-cover" 
                           onError={(e) => {
                             // If image fails to load, replace with logo
-                            e.currentTarget.src = '/assets/logo-orange.png';
+                            e.currentTarget.src = '/logo-orange.png';
                             e.currentTarget.style.padding = '5px';
                             e.currentTarget.style.objectFit = 'contain';
                           }}
@@ -297,7 +297,7 @@ export default function Home() {
                       <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
                         style={{backgroundColor: `${getBadgeColor(issue.type)}25`}}>
                         <img 
-                          src="/assets/logo-orange.png" 
+                          src="/logo-orange.png" 
                           alt="Municipality Logo" 
                           className="h-10 w-auto" 
                           style={{opacity: 0.8}}
