@@ -8,7 +8,7 @@ import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
-import MapView from '@/components/MapView';
+import MapDisplay from '@/components/MapDisplay';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -412,11 +412,11 @@ export default function Home() {
       />
       
       {/* Map View */}
-      <MapView
+      <MapDisplay
         isOpen={mapViewActive}
         onClose={() => setMapViewActive(false)}
-        onIssueClick={(issueId) => {
-          // This is now handled internally in the MapView component
+        onIssueClick={(issueId: number) => {
+          // Handle issue selection the MapView component
           // We leave the prop for compatibility, but it's not used anymore
         }}
         onRefresh={handleRefreshData}
