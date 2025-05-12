@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Add health check endpoint for Autoscale
-app.get('/', (_req, res) => {
+app.get('/_health', (_req, res) => {
   res.status(200).send('OK');
 });
 
