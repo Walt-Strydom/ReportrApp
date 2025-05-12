@@ -57,7 +57,7 @@ export default function Home() {
     } else if (geolocation.permissionStatus === 'denied') {
       toast({
         title: "Location Access Denied",
-        description: "Please enable location access in your browser settings to use all features of Lokisa.",
+        description: "Please enable location access in your browser settings to use all features of this app.",
         variant: "destructive",
       });
     }
@@ -71,7 +71,7 @@ export default function Home() {
       .then(() => {
         toast({
           title: "Location Access Granted",
-          description: "Lokisa can now accurately identify the location of reported issues.",
+          description: "The app can now accurately identify the location of reported issues.",
         });
       })
       .catch((error) => {
