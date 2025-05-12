@@ -14,7 +14,7 @@ export function OfflineIndicator() {
       // This is a placeholder for actual IndexedDB operation
       // In a real implementation, we would check if there are any
       // pending reports or support actions in the database
-      const db = await window.indexedDB.open('lokisa', 1);
+      const db = await window.indexedDB.open('municipality', 1);
       // Logic to check for pending changes
     } catch (error) {
       console.error('Error checking for pending changes:', error);

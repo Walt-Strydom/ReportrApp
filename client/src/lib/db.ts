@@ -2,7 +2,7 @@ import { openDB } from 'idb';
 import type { DBSchema } from 'idb';
 import { Issue } from '@/types';
 
-interface LokisaDB extends DBSchema {
+interface MunicipalityDB extends DBSchema {
   issues: {
     key: number;
     value: Issue;
@@ -35,7 +35,7 @@ interface LokisaDB extends DBSchema {
 }
 
 // Open and initialize the database
-export const dbPromise = openDB<LokisaDB>('lokisa', 1, {
+export const dbPromise = openDB<MunicipalityDB>('municipality', 1, {
   upgrade(db) {
     // Store for cached issues
     if (!db.objectStoreNames.contains('issues')) {
@@ -76,13 +76,13 @@ export async function getIssueById(id: number): Promise<Issue | undefined> {
 }
 
 // Function to add a pending report for offline synchronization
-export async function addPendingReport(report: LokisaDB['pendingReports']['value']) {
+export async function addPendingReport(report: MunicipalityDB['pendingReports']['value']) {
   const db = await dbPromise;
   return db.add('pendingReports', report);
 }
 
 // Function to add a pending support for offline synchronization
-export async function addPendingSupport(support: LokisaDB['pendingSupports']['value']) {
+export async function addPendingSupport(support: MunicipalityDB['pendingSupports']['value']) {
   const db = await dbPromise;
   return db.add('pendingSupports', support);
 }

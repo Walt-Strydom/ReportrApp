@@ -78,12 +78,12 @@ export async function resizeImage(file: File, maxWidth: number = 800, maxHeight:
 
 export function generateDeviceId(): string {
   // Get existing device ID or create a new one
-  let deviceId = localStorage.getItem('lokisa_device_id');
+  let deviceId = localStorage.getItem('municipality_device_id');
   
   if (!deviceId) {
     // Generate a random ID if none exists
     deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
-    localStorage.setItem('lokisa_device_id', deviceId);
+    localStorage.setItem('municipality_device_id', deviceId);
   }
   
   return deviceId;
