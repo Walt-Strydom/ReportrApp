@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Issue } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
+import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon, Heart, HeartOff, Loader2, RotateCw } from 'lucide-react';
+import PullToRefresh from 'react-pull-to-refresh';
 import Map from '@/components/Map';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
@@ -16,15 +17,17 @@ interface MapViewProps {
   isOpen: boolean;
   onClose: () => void;
   onIssueClick: (issueId: number) => void;
+  onRefresh?: () => Promise<void>;
 }
 
-export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps) {
+export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = async () => {} }: MapViewProps) {
   const [heatmapActive, setHeatmapActive] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [isSupporting, setIsSupporting] = useState(false);
   const [isRevoking, setIsRevoking] = useState(false);
   const [deviceId, setDeviceId] = useState<string>('');
   const [hasSupported, setHasSupported] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
   const geolocation = useGeolocation();
   
@@ -176,6 +179,31 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
       });
     } finally {
       setIsRevoking(false);
+    }
+  };
+  
+  // Handle pull-to-refresh action
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      // Refresh data by invalidating the query cache
+      await queryClient.invalidateQueries({ queryKey: ['/api/issues'] });
+      await onRefresh();
+      
+      // Show a small toast notification
+      toast({
+        title: "Updated",
+        description: "Issue data has been refreshed",
+      });
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+      toast({
+        title: "Refresh Failed",
+        description: "Could not update the map data",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -361,12 +389,28 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
       )}
       
       <div className="h-full w-full">
-        <Map 
-          center={mapCenter} 
-          issues={issues} 
-          heatmapActive={heatmapActive} 
-          onMarkerClick={handleMarkerClick} 
-        />
+        <PullToRefresh
+          onRefresh={handleRefresh}
+          distanceToRefresh={80}
+          resistance={2.5}
+          pullingContent={
+            <div className="refresh-box">
+              <RotateCw className="h-6 w-6 text-orange-500" />
+            </div>
+          }
+          refreshingContent={
+            <div className="refresh-box">
+              <RotateCw className="h-6 w-6 text-orange-500 animate-spin" />
+            </div>
+          }
+        >
+          <Map 
+            center={mapCenter} 
+            issues={issues} 
+            heatmapActive={heatmapActive} 
+            onMarkerClick={handleMarkerClick} 
+          />
+        </PullToRefresh>
       </div>
     </div>
   );
