@@ -57,11 +57,11 @@
       },
       "photo": {
         "label": "Photo (Optional)",
-        "title": "Take a Photo (Optional)",
+        "title": "Take a Photo",
         "description": "Take a photo of the issue (optional)",
         "help": "Photos help officials identify and fix issues faster",
-        "continue": "Continue with Photo",
-        "skip": "Skip Photo",
+        "continue": "Continue",
+        "skip": "Skip",
         "remove": "Remove Photo",
         "dropzone": "Drag and drop an image here, or click to select one",
         "selected": "Image selected",
@@ -82,22 +82,22 @@
       "resolved": "Resolved"
     },
     "details": {
-      "title": "Issue Details",
+      "title": "Details",
       "reported": "Reported {{timeAgo}}",
       "notes": "No additional details provided.",
       "supporters": "{{count}} supporter",
       "supporters_plural": "{{count}} supporters",
-      "support": "Support This Issue",
+      "support": "Support",
       "supported": "Supported",
       "close": "Close"
     },
     "nearby": {
-      "title": "Nearby Issues",
-      "search": "Search issues...",
+      "title": "Nearby",
+      "search": "Search...",
       "allCategories": "All Categories",
       "allIssues": "All Issues",
       "noResults": "No issues found matching your criteria",
-      "viewAll": "View All Reported Issues"
+      "viewAll": "View All"
     }
   },
   "success": {
