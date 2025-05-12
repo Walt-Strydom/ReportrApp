@@ -113,11 +113,11 @@ export default function IssueDetailsPanel({
   
   return (
     <div 
-      className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg z-20 transform transition-transform duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg z-20 max-h-[90vh] overflow-y-auto transform transition-transform duration-300 ${
         isOpen ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
-      <div className="p-6">
+      <div className="p-6 pb-12">
         <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-6"></div>
         
         <div className="flex items-start mb-6">

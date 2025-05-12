@@ -257,7 +257,7 @@ export default function ReportPanel({
       }`}
     >
       {/* Step 1: Category Selection */}
-      <div className={`p-6 min-h-screen snap-start ${step !== 1 && 'hidden'}`}>
+      <div className={`p-6 pb-24 ${step !== 1 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">{t('report.title')}</h2>
           <button className="text-neutral-800" onClick={handleClose}>
@@ -304,7 +304,7 @@ export default function ReportPanel({
       </div>
       
       {/* Step 1.5: Subcategory Selection */}
-      <div className={`p-6 min-h-screen snap-start ${step !== 1.5 && 'hidden'}`}>
+      <div className={`p-6 pb-24 ${step !== 1.5 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <button className="mr-2" onClick={goBackFromSubcategory}>
@@ -367,7 +367,7 @@ export default function ReportPanel({
       </div>
       
       {/* Step 2: Take Photo */}
-      <div className={`p-6 min-h-screen snap-start ${step !== 2 && 'hidden'}`}>
+      <div className={`p-6 pb-24 ${step !== 2 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">{t('report.form.photo.title')}</h2>
           <button className="text-neutral-800" onClick={() => setStep(1)}>
@@ -437,7 +437,7 @@ export default function ReportPanel({
       </div>
       
       {/* Step 3: Location & Details */}
-      <div className={`p-6 min-h-screen snap-start ${step !== 3 && 'hidden'}`}>
+      <div className={`p-6 pb-24 ${step !== 3 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">Location & Details</h2>
           <button className="text-neutral-800" onClick={() => setStep(2)}>
