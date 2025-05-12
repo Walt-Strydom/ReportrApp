@@ -213,15 +213,13 @@ export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = asy
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-4">
+      <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/60 to-transparent p-4">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-xl text-white">Map</h2>
           <button 
-            className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-full" 
-            onClick={() => {
-              setSelectedIssue(null);
-              onClose();
-            }}
+            className="bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white p-2 rounded-full transition-colors" 
+            onClick={onClose}
+            aria-label="Close map view"
           >
             <XIcon className="h-6 w-6" />
           </button>
