@@ -439,7 +439,7 @@ export default function ReportPanel({
       {/* Step 3: Location & Details */}
       <div className={`p-6 pb-24 ${step !== 3 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-xl">Location & Details</h2>
+          <h2 className="font-bold text-xl">Details</h2>
           <button className="text-neutral-800" onClick={() => setStep(2)}>
             <ArrowLeftIcon className="h-6 w-6" />
           </button>
@@ -463,11 +463,11 @@ export default function ReportPanel({
         </div>
         
         <div className="mb-6">
-          <label htmlFor="notes" className="block mb-2 font-medium">Additional Notes</label>
+          <label htmlFor="notes" className="block mb-2 font-medium">Notes</label>
           <Textarea 
             id="notes" 
             className="w-full p-3 border border-neutral-200 rounded-lg h-28" 
-            placeholder="Describe the issue in more detail (optional)"
+            placeholder="Describe the issue (optional)"
             {...form.register('notes')}
           />
         </div>
@@ -479,7 +479,7 @@ export default function ReportPanel({
                 <InfoIcon className="h-5 w-5 text-secondary" />
               </div>
               <div>
-                <h4 className="font-medium">Your report will be sent to:</h4>
+                <h4 className="font-medium">Recipients:</h4>
                 <p className="text-sm text-neutral-600">• City of Tshwane Infrastructure team</p>
                 <p className="text-sm text-neutral-600">• Ward 60 Councillor</p>
               </div>
