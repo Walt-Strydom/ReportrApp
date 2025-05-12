@@ -31,7 +31,7 @@ export default function LocationPermissionModal({
           </div>
           
           <p className="text-neutral-800 mb-4">
-            Lokisa needs access to your location to:
+            This app needs access to your location to:
           </p>
           
           <ul className="list-disc pl-5 mb-4 text-neutral-700">

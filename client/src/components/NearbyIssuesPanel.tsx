@@ -196,7 +196,7 @@ export default function NearbyIssuesPanel({
                       style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
                       <img 
                         src="/assets/lokisa-logo.png" 
-                        alt="Lokisa Logo" 
+                        alt="Municipality Logo" 
                         className="h-10 w-auto" 
                         style={{opacity: 0.8}}
                       />
