@@ -117,7 +117,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
     >
       <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-xl text-white">Issues Map</h2>
+          <h2 className="font-bold text-xl text-white">Map</h2>
           <button 
             className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-full" 
             onClick={() => {
@@ -138,7 +138,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
             }`}
             onClick={() => setHeatmapActive(!heatmapActive)}
           >
-            {heatmapActive ? 'Hide Heatmap' : 'Show Heatmap'}
+            {heatmapActive ? 'Hide Heat' : 'Show Heat'}
           </button>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
             <div className="flex items-start">
               <MapPinIcon className="h-5 w-5 text-neutral-500 mr-2 mt-0.5" />
               <div>
-                <p className="text-sm font-medium">Location</p>
+                <p className="text-sm font-medium">Address</p>
                 <p className="text-sm text-neutral-600">{selectedIssue.address}</p>
                 <p className="text-xs text-neutral-500">
                   {selectedIssue.latitude.toFixed(6)}, {selectedIssue.longitude.toFixed(6)}
@@ -220,7 +220,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
               <div className="flex items-start">
                 <MessageSquareIcon className="h-5 w-5 text-neutral-500 mr-2 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium">Additional Notes</p>
+                  <p className="text-sm font-medium">Notes</p>
                   <p className="text-sm text-neutral-600">{selectedIssue.notes}</p>
                 </div>
               </div>
@@ -255,7 +255,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
             disabled={isSupporting}
           >
             <ArrowUpIcon className="mr-2 h-4 w-4" />
-            {isSupporting ? 'Supporting...' : 'Support This Issue'}
+            {isSupporting ? 'Supporting...' : 'Support'}
           </Button>
         </div>
       )}

@@ -113,7 +113,7 @@ export default function NearbyIssuesPanel({
     >
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-xl">Nearby Issues</h2>
+          <h2 className="font-bold text-xl">Nearby</h2>
           <button className="text-neutral-800" onClick={onClose}>
             <XIcon className="h-6 w-6" />
           </button>
@@ -124,7 +124,7 @@ export default function NearbyIssuesPanel({
             <Input 
               type="text" 
               className="w-full p-3 pl-10 border border-neutral-200 rounded-lg" 
-              placeholder="Search issues..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

@@ -8,7 +8,6 @@ import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
-import MyComplaints from '@/components/MyComplaints';
 import MapView from '@/components/MapView';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
@@ -230,15 +229,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* My Complaints Section - Only shown when app is installed */}
-        {isAppInstalled && (
-          <section className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">{t('myComplaints.title')}</h2>
-            </div>
-            <MyComplaints onIssueClick={handleIssueClick} />
-          </section>
-        )}
+
         
         {/* Top Issues Section */}
         <section className="mb-8">
