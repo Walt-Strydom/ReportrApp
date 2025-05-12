@@ -5,7 +5,7 @@ interface BackButtonHandlerProps {
   children: React.ReactNode;
 }
 
-const BackButtonHandler: React.FC<BackButtonHandlerProps> = ({ children }) => {
+const BackButtonHandler = ({ children }: BackButtonHandlerProps) => {
   const [location, setLocation] = useLocation();
   
   useEffect(() => {
@@ -21,17 +21,12 @@ const BackButtonHandler: React.FC<BackButtonHandlerProps> = ({ children }) => {
     // Check if we're running in a Capacitor environment with the Android platform
     const setupBackButtonHandler = async () => {
       // The condition checks if the global 'Capacitor' object exists and if the platform is Android
-      if (window.hasOwnProperty('Capacitor') && 
-          // @ts-ignore - Capacitor will be available at runtime in native apps
-          window.Capacitor.getPlatform() === 'android') {
+      if (typeof window !== 'undefined' && 
+          window.hasOwnProperty('Capacitor')) {
         try {
           // @ts-ignore - App will be available at runtime in Capacitor environment
           const { App } = window.Capacitor.Plugins;
           App.addListener('backButton', handleBackButton);
-          
-          return () => {
-            App.removeAllListeners();
-          };
         } catch (error) {
           console.error('Error setting up back button handler:', error);
         }
@@ -42,7 +37,7 @@ const BackButtonHandler: React.FC<BackButtonHandlerProps> = ({ children }) => {
     
     // Cleanup
     return () => {
-      if (window.hasOwnProperty('Capacitor')) {
+      if (typeof window !== 'undefined' && window.hasOwnProperty('Capacitor')) {
         try {
           // @ts-ignore - App will be available at runtime in Capacitor environment
           const { App } = window.Capacitor.Plugins;

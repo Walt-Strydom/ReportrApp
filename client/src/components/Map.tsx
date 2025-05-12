@@ -27,30 +27,107 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-  
-  // State variables for Google Maps objects - using 'any' to avoid type issues
   const [googleMap, setGoogleMap] = useState<any>(null);
   const [mapMarkers, setMapMarkers] = useState<any[]>([]);
   const [heatmapLayer, setHeatmapLayer] = useState<any>(null);
+  const [userMarker, setUserMarker] = useState<any>(null);
+  const [userMarkerRadius, setUserMarkerRadius] = useState<any>(null);
   
-  // Initialize the map
+  // Format issue title for marker tooltip
+  const formatIssueTitle = (issue: Issue) => {
+    return `${issue.type.charAt(0).toUpperCase() + issue.type.slice(1).replace(/-/g, ' ')} - ${issue.address}`;
+  };
+  
+  // Initialize map
   useEffect(() => {
-    // Skip if map is already initialized or div not available
-    if (googleMap || !mapRef.current) return;
+    if (!mapRef.current || mapLoaded) return;
     
-    // Default to Pretoria central coordinates if user location not available
-    const defaultCenter = { lat: -25.7461, lng: 28.1881 };
+    const defaultCenter = { lat: -25.7461, lng: 28.1881 }; // Pretoria, South Africa
     
-    // Load Google Maps script
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
-    script.async = true;
-    script.defer = true;
-    
-    // Handle map initialization when script loads
-    script.onload = () => {
+    // Only load Google Maps if it's not already loaded
+    if (!window.google) {
+      // Create script element
+      const script = document.createElement('script');
+      const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+      
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=visualization`;
+      script.async = true;
+      script.defer = true;
+      
+      // Handle script load error
+      script.onerror = () => {
+        setMapError("Failed to load Google Maps. Please check your connection and try again.");
+      };
+      
+      // Handle map initialization when script loads
+      script.onload = () => {
+        try {
+          // Create map instance
+          const newMap = new window.google.maps.Map(mapRef.current!, {
+            center: center || defaultCenter,
+            zoom: 15,
+            mapTypeControl: false,
+            fullscreenControl: false,
+            streetViewControl: false,
+            zoomControl: true,
+            zoomControlOptions: {
+              position: window.google.maps.ControlPosition.RIGHT_TOP,
+            },
+            gestureHandling: 'greedy', // Enable one-finger panning and two-finger zooming
+            styles: MAP_STYLES,
+            optimized: true,
+            clickableIcons: false, // Disable default POI clicking for better performance
+            disableDefaultUI: false,
+            minZoom: 5,
+            maxZoom: 20,
+            backgroundColor: '#FFFFFF',
+          });
+          
+          setGoogleMap(newMap);
+          
+          // Share the map instance with parent component if callback provided
+          if (onMapInitialized) {
+            onMapInitialized(newMap);
+          }
+          
+          // Create heatmap layer
+          const heatmap = new window.google.maps.visualization.HeatmapLayer({
+            map: heatmapActive ? newMap : null,
+            data: [],
+            dissipating: true,
+            radius: 50,
+            maxIntensity: 10,
+            gradient: [
+              'rgba(0, 255, 255, 0)',
+              'rgba(0, 255, 255, 1)',
+              'rgba(0, 191, 255, 1)',
+              'rgba(0, 127, 255, 1)',
+              'rgba(0, 63, 255, 1)',
+              'rgba(0, 0, 255, 1)',
+              'rgba(0, 0, 223, 1)',
+              'rgba(0, 0, 191, 1)',
+              'rgba(0, 0, 159, 1)',
+              'rgba(0, 0, 127, 1)',
+              'rgba(63, 0, 91, 1)',
+              'rgba(127, 0, 63, 1)',
+              'rgba(191, 0, 31, 1)',
+              'rgba(255, 0, 0, 1)',
+            ],
+          });
+          
+          setHeatmapLayer(heatmap);
+          setMapLoaded(true);
+        } catch (error) {
+          console.error("Error initializing map:", error);
+          setMapError("Failed to initialize map. Please try refreshing the page.");
+        }
+      };
+      
+      // Add script to document
+      document.head.appendChild(script);
+    } else {
+      // Google Maps already loaded, initialize map
       try {
-        // Create map instance
         const newMap = new window.google.maps.Map(mapRef.current!, {
           center: center || defaultCenter,
           zoom: 15,
@@ -61,106 +138,83 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
           zoomControlOptions: {
             position: window.google.maps.ControlPosition.RIGHT_TOP,
           },
-          gestureHandling: 'greedy', // Enable one-finger panning and two-finger zooming
+          gestureHandling: 'greedy',
           styles: MAP_STYLES,
-          optimized: true,
-          clickableIcons: false, // Disable default POI clicking for better performance
-          disableDefaultUI: false,
-          minZoom: 5,
-          maxZoom: 20,
-          backgroundColor: '#FFFFFF',
         });
         
         setGoogleMap(newMap);
         
-        // Share the map instance with parent component if callback provided
         if (onMapInitialized) {
           onMapInitialized(newMap);
         }
         
-        // Create heatmap layer
         const heatmap = new window.google.maps.visualization.HeatmapLayer({
           map: heatmapActive ? newMap : null,
           data: [],
           dissipating: true,
           radius: 50,
-          opacity: 0.7,
           maxIntensity: 10,
         });
         
         setHeatmapLayer(heatmap);
         setMapLoaded(true);
       } catch (error) {
-        console.error('Error initializing map:', error);
-        setMapError('Failed to initialize map. Please try again later.');
+        console.error("Error initializing map:", error);
+        setMapError("Failed to initialize map. Please try refreshing the page.");
       }
-    };
+    }
     
-    script.onerror = () => {
-      setMapError('Failed to load Google Maps. Please check your internet connection.');
-    };
-    
-    document.head.appendChild(script);
-    
-    // Clean up on unmount
+    // Cleanup function
     return () => {
-      // Remove script if component unmounts before script loads
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-      
-      // Clear markers
-      if (mapMarkers.length > 0) {
-        mapMarkers.forEach(marker => marker.setMap(null));
-      }
+      setMapLoaded(false);
+      setGoogleMap(null);
+      setHeatmapLayer(null);
     };
-  }, []);
+  }, [center, heatmapActive, mapLoaded, onMapInitialized]);
   
-  // Update map center when user location changes
+  // Update user location marker when center changes
   useEffect(() => {
-    if (!googleMap || !center) return;
+    if (!googleMap || !mapLoaded || !window.google || !center) return;
     
-    // Add user location marker with pulse effect - center only once
-    const userMarker = new window.google.maps.Marker({
+    // Clear existing user marker
+    if (userMarker) userMarker.setMap(null);
+    if (userMarkerRadius) userMarkerRadius.setMap(null);
+    
+    // Create new user marker
+    const newUserMarker = new window.google.maps.Marker({
       position: center,
       map: googleMap,
       icon: {
         path: window.google.maps.SymbolPath.CIRCLE,
-        scale: 10,
-        fillColor: "#0F71B3",
+        scale: 7,
+        fillColor: '#4285F4',
         fillOpacity: 1,
-        strokeColor: "#FFFFFF",
+        strokeColor: '#FFFFFF',
         strokeWeight: 2,
       },
-      zIndex: 999, // Keep user marker on top
+      zIndex: 1000, // Always on top
     });
     
-    // Add pulse animation circle
-    const userMarkerRadius = new window.google.maps.Circle({
-      strokeColor: "#0F71B3",
-      strokeOpacity: 0.8,
-      strokeWeight: 1,
-      fillColor: "#0F71B3",
-      fillOpacity: 0.2,
+    // Create accuracy radius circle
+    const newUserMarkerRadius = new window.google.maps.Circle({
       map: googleMap,
       center: center,
-      radius: 50,
-      zIndex: 998,
+      radius: 50, // Arbitrary radius of 50 meters
+      strokeColor: '#4285F4',
+      strokeOpacity: 0.3,
+      strokeWeight: 1,
+      fillColor: '#4285F4',
+      fillOpacity: 0.1,
     });
     
-    // Only set the center on initial load, then let user pan freely
-    const isInitialLoad = !googleMap.get('initialized');
-    if (isInitialLoad) {
-      googleMap.set('initialized', true);
-      googleMap.setCenter(center);
-      console.log('Setting initial map center, subsequent movements will be user-controlled');
-    }
+    setUserMarker(newUserMarker);
+    setUserMarkerRadius(newUserMarkerRadius);
     
     return () => {
-      userMarker.setMap(null);
-      userMarkerRadius.setMap(null);
+      if (newUserMarker) newUserMarker.setMap(null);
+      if (newUserMarkerRadius) newUserMarkerRadius.setMap(null);
     };
-  }, [googleMap, center]);
+  }, [googleMap, center, mapLoaded]);
   
   // Update markers when issues change
   useEffect(() => {
@@ -170,31 +224,40 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
     mapMarkers.forEach(marker => marker.setMap(null));
     const newMarkers = [];
     
-    // Add issue markers
-    for (const issue of issues) {
-      let iconUrl;
-      
-      // Set marker icon based on issue type
-      switch (issue.type) {
-        case 'pothole':
-          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
-          break;
-        case 'streetlight':
-          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
-          break;
-        case 'trafficlight':
-          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-          break;
-        default:
-          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
+    // Cache icon objects for better performance
+    const iconCache = {
+      pothole: {
+        url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+        scaledSize: new window.google.maps.Size(32, 32)
+      },
+      streetlight: {
+        url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
+        scaledSize: new window.google.maps.Size(32, 32)
+      },
+      trafficlight: {
+        url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+        scaledSize: new window.google.maps.Size(32, 32)
+      },
+      default: {
+        url: 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png',
+        scaledSize: new window.google.maps.Size(32, 32)
       }
+    };
+    
+    // Add markers for all issues
+    for (const issue of issues) {
+      // Get icon from cache or use default
+      const icon = 
+        iconCache[issue.type as keyof typeof iconCache] || 
+        iconCache.default;
       
-      // Create marker
+      // Create marker with optimized settings
       const marker = new window.google.maps.Marker({
         position: { lat: issue.latitude, lng: issue.longitude },
         map: googleMap,
-        icon: iconUrl,
-        title: issue.type,
+        icon: icon,
+        title: formatIssueTitle(issue),
+        optimized: true
       });
       
       // Add click handler
@@ -216,37 +279,27 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
       
       heatmapLayer.setData(heatmapData);
     }
-  }, [googleMap, issues, mapLoaded]);
+  }, [googleMap, issues, mapLoaded, onMarkerClick]);
   
-  // Toggle heatmap visibility
+  // Toggle heatmap when heatmapActive changes
   useEffect(() => {
-    if (!heatmapLayer || !googleMap) return;
+    if (!heatmapLayer) return;
     
     heatmapLayer.setMap(heatmapActive ? googleMap : null);
-  }, [heatmapLayer, heatmapActive, googleMap]);
-  
+  }, [heatmapActive, googleMap, heatmapLayer]);
+
   return (
-    <div className="w-full h-full relative">
-      <div ref={mapRef} className="w-full h-full" />
-      
-      {/* Display error message if map fails to load */}
+    <div className="relative w-full h-full">
       {mapError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 z-10">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-            <h3 className="font-bold text-lg text-destructive mb-2">Map Error</h3>
-            <p className="text-neutral-800">{mapError}</p>
-          </div>
+        <div className="absolute top-0 left-0 right-0 z-10 bg-red-500 text-white p-2 text-center">
+          {mapError}
         </div>
       )}
-      
-      {/* Display loading indicator while map is initializing */}
-      {!mapLoaded && !mapError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 z-10">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-            <p className="text-neutral-800">Loading map...</p>
-          </div>
-        </div>
-      )}
+      <div 
+        ref={mapRef} 
+        className="w-full h-full"
+        aria-label="Google Map showing infrastructure issues"
+      />
     </div>
   );
 }

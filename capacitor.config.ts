@@ -13,7 +13,8 @@ const config: CapacitorConfig = {
     allowMixedContent: true,
     captureInput: true,
     webContentsDebuggingEnabled: true,
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#FFFFFF",
+    appendUserAgent: "MunicipalityApp/1.0"
   },
   ios: {
     contentInset: 'always',
@@ -22,10 +23,11 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 3000,
+      launchShowDuration: 2000,
       backgroundColor: "#FF8C00",
       androidSplashResourceName: "splash",
-      androidScaleType: "CENTER_CROP"
+      androidScaleType: "CENTER_CROP",
+      showSpinner: false
     },
     CapacitorHttp: {
       enabled: true
@@ -37,6 +39,26 @@ const config: CapacitorConfig = {
       allowFileAccess: true,
       allowFileAccessFromFileURLs: true,
       allowUniversalAccessFromFileURLs: true
+    },
+    StatusBar: {
+      style: "LIGHT",
+      backgroundColor: "#FF8C00",
+      overlaysWebView: true
+    },
+    Keyboard: {
+      resize: "body",
+      style: "DARK",
+      resizeOnFullScreen: true
+    },
+    App: {
+      backgroundColor: "#FFFFFF"
+    },
+    Geolocation: {
+      permissions: {
+        android: {
+          alias: "COARSE"
+        }
+      }
     }
   }
 };
