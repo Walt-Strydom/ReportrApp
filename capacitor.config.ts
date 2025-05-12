@@ -12,7 +12,8 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: true,
     captureInput: true,
-    useLegacyBridge: false
+    webContentsDebuggingEnabled: true,
+    backgroundColor: "#FFFFFF"
   },
   ios: {
     contentInset: 'always',
@@ -25,6 +26,17 @@ const config: CapacitorConfig = {
       backgroundColor: "#FF8C00",
       androidSplashResourceName: "splash",
       androidScaleType: "CENTER_CROP"
+    },
+    CapacitorHttp: {
+      enabled: true
+    },
+    CapacitorCookies: {
+      enabled: true
+    },
+    WebView: {
+      allowFileAccess: true,
+      allowFileAccessFromFileURLs: true,
+      allowUniversalAccessFromFileURLs: true
     }
   }
 };

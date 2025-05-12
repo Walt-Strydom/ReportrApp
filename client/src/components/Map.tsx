@@ -63,6 +63,12 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
           },
           gestureHandling: 'greedy', // Enable one-finger panning and two-finger zooming
           styles: MAP_STYLES,
+          optimized: true,
+          clickableIcons: false, // Disable default POI clicking for better performance
+          disableDefaultUI: false,
+          minZoom: 5,
+          maxZoom: 20,
+          backgroundColor: '#FFFFFF',
         });
         
         setGoogleMap(newMap);
