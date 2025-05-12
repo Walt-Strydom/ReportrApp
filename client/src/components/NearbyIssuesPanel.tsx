@@ -21,46 +21,30 @@ export default function NearbyIssuesPanel({
   isOpen, 
   onClose, 
   onIssueClick,
-  onRefresh = async () => {} 
+  onRefresh 
 }: NearbyIssuesPanelProps) {
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  
-  // Handle pull-to-refresh action
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      await onRefresh();
-    } catch (error) {
-      console.error("Error refreshing data:", error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
 
   // Filter issues based on current filter, category, and search query
-  const filteredIssues = issues
-    .filter(issue => {
-      // If categoryFilter is set, check if the issue belongs to that category
-      const issueType = getIssueTypeById(issue.type);
-      
-      const matchesCategory = !categoryFilter || 
-        (issueType && issueType.categoryId === categoryFilter) || 
-        // Handle legacy types
-        (categoryFilter === 'roads-traffic' && (issue.type === 'pothole' || issue.type === 'trafficlight')) ||
-        (categoryFilter === 'street-lighting' && issue.type === 'streetlight');
-      
-      const matchesFilter = filter === 'all' || issue.type === filter;
-      const matchesSearch = !searchQuery || 
-        issue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (issue.notes || '').toLowerCase().includes(searchQuery.toLowerCase());
-      
-      return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
-    })
-    // Sort by date (newest first)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const filteredIssues = issues.filter(issue => {
+    // If categoryFilter is set, check if the issue belongs to that category
+    const issueType = getIssueTypeById(issue.type);
+    
+    const matchesCategory = !categoryFilter || 
+      (issueType && issueType.categoryId === categoryFilter) || 
+      // Handle legacy types
+      (categoryFilter === 'roads-traffic' && (issue.type === 'pothole' || issue.type === 'trafficlight')) ||
+      (categoryFilter === 'street-lighting' && issue.type === 'streetlight');
+    
+    const matchesFilter = filter === 'all' || issue.type === filter;
+    const matchesSearch = !searchQuery || 
+      issue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (issue.notes || '').toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
+  });
 
   // Get badge color based on issue type using the new category system
   const getBadgeColor = (type: string) => {
@@ -125,192 +109,194 @@ export default function NearbyIssuesPanel({
     }
   };
 
+  // Handle pull-to-refresh
+  const handleRefresh = async () => {
+    if (onRefresh) {
+      return onRefresh();
+    }
+    return Promise.resolve();
+  };
+
+  // Custom refresh indicator
+  const refreshIndicator = (
+    <div className="flex items-center justify-center p-3 text-neutral-500">
+      <RotateCw className="animate-spin h-5 w-5 mr-2" />
+      <span>Refreshing...</span>
+    </div>
+  );
+
+  const renderContent = () => (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="font-bold text-xl">Nearby</h2>
+        <button className="text-neutral-800" onClick={onClose}>
+          <XIcon className="h-6 w-6" />
+        </button>
+      </div>
+      
+      <div className="mb-4">
+        <div className="relative">
+          <Input 
+            type="text" 
+            className="w-full p-3 pl-10 border border-neutral-200 rounded-lg" 
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 h-5 w-5" />
+        </div>
+      </div>
+      
+      <div className="mb-4">
+        {/* Category filter buttons */}
+        <h3 className="text-sm font-medium text-neutral-500 mb-2">Categories</h3>
+        <div className="flex overflow-x-auto py-2 -mx-2 mb-4">
+          <Button
+            variant={categoryFilter === null ? 'default' : 'outline'}
+            className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
+              categoryFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
+            }`}
+            onClick={() => {
+              setCategoryFilter(null);
+              setFilter('all');
+            }}
+          >
+            <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
+            All Categories
+          </Button>
+          
+          {issueCategories.map(category => (
+            <Button
+              key={category.id}
+              variant={categoryFilter === category.id ? 'default' : 'outline'}
+              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
+                categoryFilter === category.id ? 
+                `text-white` : 
+                'bg-neutral-200 text-neutral-800'
+              }`}
+              onClick={() => {
+                setCategoryFilter(category.id);
+                setFilter('all');
+              }}
+              style={categoryFilter === category.id ? {backgroundColor: category.color} : {}}
+            >
+              {/* Show a representative icon for the category */}
+              {category.id === 'roads-traffic' && 
+                <Icon name="pothole" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.id === 'street-lighting' && 
+                <Icon name="lightbulb" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.id === 'water' && 
+                <Icon name="droplets" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.id === 'electricity' && 
+                <Icon name="zap" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.id === 'waste' && 
+                <Icon name="trash" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.id === 'public-spaces' && 
+                <Icon name="building" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.id === 'environmental' && 
+                <Icon name="palmtree" className="mr-1.5 h-3.5 w-3.5" />
+              }
+              {category.name}
+            </Button>
+          ))}
+        </div>
+      </div>
+      
+      {filteredIssues.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-neutral-600">No issues found matching your criteria</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredIssues.map(issue => (
+            <div 
+              key={issue.id}
+              className="border border-neutral-200 rounded-lg overflow-hidden cursor-pointer"
+              onClick={() => onIssueClick(issue.id)}
+            >
+              <div className="flex items-start p-4">
+                {issue.photoUrl ? (
+                  <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">
+                    <img 
+                      src={issue.photoUrl} 
+                      alt={`${issue.type} issue`} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // If image fails to load, replace with logo
+                        e.currentTarget.src = '/logo-orange.png';
+                        e.currentTarget.style.padding = '5px';
+                        e.currentTarget.style.objectFit = 'contain';
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
+                    style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
+                    <img 
+                      src="/logo-orange.png" 
+                      alt="Municipality Logo" 
+                      className="h-10 w-auto" 
+                      style={{opacity: 0.8}}
+                    />
+                  </div>
+                )}
+                
+                <div className="flex-1">
+                  <div className="flex items-center mb-1">
+                    <div
+                      className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
+                      style={{ backgroundColor: getColorValue(issue.type) }}
+                    >
+                      <Icon name={issue.type} className="mr-1.5 h-3.5 w-3.5" />
+                      {formatIssueType(issue.type)}
+                    </div>
+                    <span className="text-xs text-neutral-500">
+                      {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
+                    </span>
+                  </div>
+                  <h3 className="font-medium mb-1">{issue.address}</h3>
+                  <p className="text-sm text-neutral-600 mb-2 line-clamp-2">
+                    {issue.notes || 'No additional details provided.'}
+                  </p>
+                  
+                  <div className="flex items-center">
+                    <div className="flex items-center">
+                      <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
+                      <span className="font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div 
       className={`fixed inset-0 bg-white z-20 transform transition-transform duration-300 overflow-y-auto pb-20 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
-      {/* Header - Keep outside of PullToRefresh to ensure it's always clickable */}
-      <div className="sticky top-0 bg-white p-6 pb-2 z-30 border-b">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="font-bold text-xl">Nearby Issues</h2>
-          <button 
-            className="text-neutral-800 hover:bg-gray-100 p-2 rounded-full transition-colors" 
-            onClick={onClose}
-            aria-label="Close panel"
-          >
-            <XIcon className="h-6 w-6" />
-          </button>
-        </div>
-        <p className="text-sm text-gray-500 mb-2">Showing newest reports first</p>
-      </div>
-      
-      <PullToRefresh
-        onRefresh={handleRefresh}
-        className="h-full"
-        distanceToRefresh={80}
-        resistance={2.5}
-        pullingContent={
-          <div className="refresh-box">
-            <RotateCw className="h-6 w-6 text-orange-500" />
-          </div>
-        }
-        refreshingContent={
-          <div className="refresh-box">
-            <RotateCw className="h-6 w-6 text-orange-500 animate-spin" />
-          </div>
-        }
-      >
-        <div className="p-6 pt-2">
-        
-        <div className="mb-4">
-          <div className="relative">
-            <Input 
-              type="text" 
-              className="w-full p-3 pl-10 border border-neutral-200 rounded-lg" 
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 h-5 w-5" />
-          </div>
-        </div>
-        
-        <div className="mb-4">
-          {/* Category filter buttons */}
-          <h3 className="text-sm font-medium text-neutral-500 mb-2">Categories</h3>
-          <div className="flex overflow-x-auto py-2 -mx-2 mb-4">
-            <Button
-              variant={categoryFilter === null ? 'default' : 'outline'}
-              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
-                categoryFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
-              }`}
-              onClick={() => {
-                setCategoryFilter(null);
-                setFilter('all');
-              }}
-            >
-              <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
-              All Categories
-            </Button>
-            
-            {issueCategories.map(category => (
-              <Button
-                key={category.id}
-                variant={categoryFilter === category.id ? 'default' : 'outline'}
-                className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
-                  categoryFilter === category.id ? 
-                  `text-white` : 
-                  'bg-neutral-200 text-neutral-800'
-                }`}
-                onClick={() => {
-                  setCategoryFilter(category.id);
-                  setFilter('all');
-                }}
-                style={categoryFilter === category.id ? {backgroundColor: category.color} : {}}
-              >
-                {/* Show a representative icon for the category */}
-                {category.id === 'roads-traffic' && 
-                  <Icon name="pothole" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.id === 'street-lighting' && 
-                  <Icon name="lightbulb" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.id === 'water' && 
-                  <Icon name="droplets" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.id === 'electricity' && 
-                  <Icon name="zap" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.id === 'waste' && 
-                  <Icon name="trash" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.id === 'public-spaces' && 
-                  <Icon name="building" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.id === 'environmental' && 
-                  <Icon name="palmtree" className="mr-1.5 h-3.5 w-3.5" />
-                }
-                {category.name}
-              </Button>
-            ))}
-          </div>
-        </div>
-        
-        {filteredIssues.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-neutral-600">No issues found matching your criteria</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredIssues.map(issue => (
-              <div 
-                key={issue.id}
-                className="border border-neutral-200 rounded-lg overflow-hidden cursor-pointer"
-                onClick={() => onIssueClick(issue.id)}
-              >
-                <div className="flex items-start p-4">
-                  {issue.photoUrl ? (
-                    <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">
-                      <img 
-                        src={issue.photoUrl} 
-                        alt={`${issue.type} issue`} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          // If image fails to load, replace with logo
-                          e.currentTarget.src = '/logo-orange.png';
-                          e.currentTarget.style.padding = '5px';
-                          e.currentTarget.style.objectFit = 'contain';
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
-                      style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
-                      <img 
-                        src="/logo-orange.png" 
-                        alt="Municipality Logo" 
-                        className="h-10 w-auto" 
-                        style={{opacity: 0.8}}
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="flex-1">
-                    <div className="flex items-center mb-1">
-                      <div
-                        className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
-                        style={{ backgroundColor: getColorValue(issue.type) }}
-                      >
-                        <Icon name={issue.type} className="mr-1.5 h-3.5 w-3.5" />
-                        {formatIssueType(issue.type)}
-                      </div>
-                      <span className="text-xs text-neutral-500">
-                        {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
-                      </span>
-                    </div>
-                    <h3 className="font-medium mb-1">{issue.address}</h3>
-                    <p className="text-sm text-neutral-600 mb-2 line-clamp-2">
-                      {issue.notes || 'No additional details provided.'}
-                    </p>
-                    
-                    <div className="flex items-center">
-                      <div className="flex items-center">
-                        <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
-                        <span className="font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        </div>
-      </PullToRefresh>
+      {onRefresh ? (
+        <PullToRefresh
+          onRefresh={handleRefresh}
+          pullingContent={<div className="flex items-center justify-center p-3 text-neutral-500">Pull to refresh</div>}
+          refreshingContent={refreshIndicator}
+        >
+          {renderContent()}
+        </PullToRefresh>
+      ) : (
+        renderContent()
+      )}
     </div>
   );
 }
-
-// ArrowUpIcon already imported at the top

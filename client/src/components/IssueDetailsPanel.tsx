@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X as XIcon, ArrowUp as ArrowUpIcon, Clock as ClockIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
+import { XIcon, ArrowUpIcon, ClockIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -191,16 +191,7 @@ export default function IssueDetailsPanel({
       }`}
     >
       <div className="p-6 pb-12">
-        <div className="flex justify-between items-center mb-6">
-          <div className="w-12 h-1 bg-neutral-300 rounded-full"></div>
-          <button 
-            className="text-neutral-800 hover:bg-gray-100 p-2 rounded-full transition-colors" 
-            onClick={onClose}
-            aria-label="Close panel"
-          >
-            <XIcon className="h-6 w-6" />
-          </button>
-        </div>
+        <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-6"></div>
         
         <div className="flex items-start mb-6">
           {issue.photoUrl ? (

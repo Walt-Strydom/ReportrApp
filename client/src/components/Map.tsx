@@ -8,13 +8,6 @@ interface MapProps {
   onMarkerClick: (issueId: number) => void;
 }
 
-// Define the window.google type for TypeScript
-declare global {
-  interface Window {
-    google: any;
-  }
-}
-
 // Define map styles
 const MAP_STYLES = [
   {
@@ -108,7 +101,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
         mapMarkers.forEach(marker => marker.setMap(null));
       }
     };
-  }, [center, heatmapActive]);
+  }, []);
   
   // Update map center when user location changes
   useEffect(() => {
@@ -153,7 +146,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
   
   // Update markers when issues change
   useEffect(() => {
-    if (!googleMap || !mapLoaded) return;
+    if (!googleMap || !mapLoaded || !window.google) return;
     
     // Clear existing markers
     mapMarkers.forEach(marker => marker.setMap(null));
@@ -205,7 +198,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
       
       heatmapLayer.setData(heatmapData);
     }
-  }, [googleMap, issues, mapLoaded, onMarkerClick]);
+  }, [googleMap, issues, mapLoaded]);
   
   // Toggle heatmap visibility
   useEffect(() => {
@@ -222,7 +215,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
       {mapError && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 z-10">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-            <h3 className="font-bold text-lg text-red-500 mb-2">Map Error</h3>
+            <h3 className="font-bold text-lg text-destructive mb-2">Map Error</h3>
             <p className="text-neutral-800">{mapError}</p>
           </div>
         </div>

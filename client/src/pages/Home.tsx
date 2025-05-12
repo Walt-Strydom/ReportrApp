@@ -8,11 +8,11 @@ import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
-import Map from '@/components/Map';
+import MapView from '@/components/MapView';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, MapPin, ThumbsUp, Megaphone } from 'lucide-react';
+import { AlertTriangle, MapPin, ThumbsUp, Megaphone, X as XIcon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
 import { useTranslation } from 'react-i18next';
@@ -95,38 +95,13 @@ export default function Home() {
   };
 
   // Fetch issues data
-  const { data: issues = [], isLoading, error, refetch } = useQuery<Issue[]>({
+  const { data: issues = [], isLoading, error } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
     enabled: true, // Always fetch issues regardless of location status
   });
-  
-  // Handle data refresh for both panels
-  const handleRefreshData = async (): Promise<any> => {
-    try {
-      await refetch();
-      toast({
-        title: "Data Refreshed",
-        description: "Latest issues data has been loaded",
-      });
-      return true;
-    } catch (error) {
-      console.error("Error refreshing data:", error);
-      toast({
-        title: "Refresh Failed",
-        description: "Could not update the issue data",
-        variant: "destructive"
-      });
-      return false;
-    }
-  };
 
-  // Sort issues by upvotes to get top issues (most upvotes first)
+  // Sort issues by upvotes to get top issues
   const topIssues = [...(issues || [])].sort((a, b) => b.upvotes - a.upvotes).slice(0, 5);
-  
-  // Sort issues by date to get newest issues (most recent first)
-  const newestIssues = [...(issues || [])].sort((a, b) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  ).slice(0, 5);
 
   // Get selected issue details
   const selectedIssue = selectedIssueId 
@@ -393,7 +368,6 @@ export default function Home() {
         isOpen={nearbyIssuesPanelActive}
         onClose={() => setNearbyIssuesPanelActive(false)}
         onIssueClick={handleIssueClick}
-        onRefresh={handleRefreshData}
       />
       
       {/* Success Overlay */}
@@ -411,45 +385,15 @@ export default function Home() {
         onRequestPermission={handleRequestLocationPermission}
       />
       
-      {/* Map View Panel */}
-      {mapViewActive && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          {/* Header */}
-          <div className="bg-orange-500 py-3 px-4 flex justify-between items-center shadow-md">
-            <h2 className="text-xl font-semibold text-white">{t('map.title')}</h2>
-            <button 
-              onClick={() => setMapViewActive(false)}
-              className="p-1 rounded-full hover:bg-orange-600 transition-colors"
-              aria-label="Close"
-            >
-              <XIcon className="h-6 w-6 text-white" />
-            </button>
-          </div>
-          
-          {/* Map Container */}
-          <div className="flex-grow relative">
-            <Map
-              center={geolocation.latitude && geolocation.longitude 
-                ? { lat: geolocation.latitude, lng: geolocation.longitude } 
-                : null
-              }
-              issues={issues}
-              heatmapActive={false}
-              onMarkerClick={handleIssueClick}
-            />
-            
-            {/* Show loading indicator while geolocation is loading */}
-            {geolocation.loading && (
-              <div className="absolute top-4 left-0 right-0 flex justify-center">
-                <div className="bg-white py-2 px-4 rounded-full shadow-md text-sm flex items-center">
-                  <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mr-2"></div>
-                  {t('map.locating')}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Map View */}
+      <MapView
+        isOpen={mapViewActive}
+        onClose={() => setMapViewActive(false)}
+        onIssueClick={(issueId) => {
+          // This is now handled internally in the MapView component
+          // We leave the prop for compatibility, but it's not used anymore
+        }}
+      />
       
       {/* Display error if geolocation fails */}
       {geolocation.error && !geolocation.loading && (
