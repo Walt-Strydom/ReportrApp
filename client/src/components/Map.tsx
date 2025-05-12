@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { Issue } from '@/types';
-import { Loader } from '@googlemaps/js-api-loader';
 
 interface MapProps {
   center: { lat: number; lng: number } | null;
@@ -9,7 +8,7 @@ interface MapProps {
   onMarkerClick: (issueId: number) => void;
 }
 
-// Add types for window.google
+// Define the window.google type for TypeScript
 declare global {
   interface Window {
     google: any;
@@ -35,30 +34,30 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   
-  // State variables for Google Maps objects
+  // State variables for Google Maps objects - using 'any' to avoid type issues
   const [googleMap, setGoogleMap] = useState<any>(null);
   const [mapMarkers, setMapMarkers] = useState<any[]>([]);
   const [heatmapLayer, setHeatmapLayer] = useState<any>(null);
   
-  // Default to Pretoria central coordinates if user location not available
-  const defaultCenter = { lat: -25.7461, lng: 28.1881 };
-  
   // Initialize the map
   useEffect(() => {
+    // Skip if map is already initialized or div not available
     if (googleMap || !mapRef.current) return;
     
-    const initMap = async () => {
+    // Default to Pretoria central coordinates if user location not available
+    const defaultCenter = { lat: -25.7461, lng: 28.1881 };
+    
+    // Load Google Maps script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
+    script.async = true;
+    script.defer = true;
+    
+    // Handle map initialization when script loads
+    script.onload = () => {
       try {
-        const loader = new Loader({
-          apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
-          version: 'weekly',
-          libraries: ['visualization']
-        });
-        
-        await loader.load();
-        
         // Create map instance
-        const map = new google.maps.Map(mapRef.current!, {
+        const newMap = new window.google.maps.Map(mapRef.current!, {
           center: center || defaultCenter,
           zoom: 15,
           mapTypeControl: false,
@@ -66,16 +65,16 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
           streetViewControl: false,
           zoomControl: true,
           zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP,
+            position: window.google.maps.ControlPosition.RIGHT_TOP,
           },
           styles: MAP_STYLES,
         });
         
-        setGoogleMap(map);
+        setGoogleMap(newMap);
         
         // Create heatmap layer
-        const heatmap = new google.maps.visualization.HeatmapLayer({
-          map: heatmapActive ? map : null,
+        const heatmap = new window.google.maps.visualization.HeatmapLayer({
+          map: heatmapActive ? newMap : null,
           data: [],
           dissipating: true,
           radius: 50,
@@ -87,11 +86,28 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
         setMapLoaded(true);
       } catch (error) {
         console.error('Error initializing map:', error);
-        setMapError('Failed to initialize map. Please try again.');
+        setMapError('Failed to initialize map. Please try again later.');
       }
     };
     
-    initMap();
+    script.onerror = () => {
+      setMapError('Failed to load Google Maps. Please check your internet connection.');
+    };
+    
+    document.head.appendChild(script);
+    
+    // Clean up on unmount
+    return () => {
+      // Remove script if component unmounts before script loads
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+      
+      // Clear markers
+      if (mapMarkers.length > 0) {
+        mapMarkers.forEach(marker => marker.setMap(null));
+      }
+    };
   }, [center, heatmapActive]);
   
   // Update map center when user location changes
@@ -102,11 +118,11 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
     googleMap.setCenter(center);
     
     // Add user location marker with pulse effect
-    const userMarker = new google.maps.Marker({
+    const userMarker = new window.google.maps.Marker({
       position: center,
       map: googleMap,
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
+        path: window.google.maps.SymbolPath.CIRCLE,
         scale: 10,
         fillColor: "#0F71B3",
         fillOpacity: 1,
@@ -117,7 +133,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
     });
     
     // Add pulse animation circle
-    const userMarkerRadius = new google.maps.Circle({
+    const userMarkerRadius = new window.google.maps.Circle({
       strokeColor: "#0F71B3",
       strokeOpacity: 0.8,
       strokeWeight: 1,
@@ -141,7 +157,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
     
     // Clear existing markers
     mapMarkers.forEach(marker => marker.setMap(null));
-    const newMarkers: google.maps.Marker[] = [];
+    const newMarkers = [];
     
     // Add issue markers
     for (const issue of issues) {
@@ -163,7 +179,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
       }
       
       // Create marker
-      const marker = new google.maps.Marker({
+      const marker = new window.google.maps.Marker({
         position: { lat: issue.latitude, lng: issue.longitude },
         map: googleMap,
         icon: iconUrl,
@@ -183,7 +199,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
     // Update heatmap data if available
     if (heatmapLayer && issues.length > 0) {
       const heatmapData = issues.map(issue => ({
-        location: new google.maps.LatLng(issue.latitude, issue.longitude),
+        location: new window.google.maps.LatLng(issue.latitude, issue.longitude),
         weight: issue.upvotes + 1 // Min weight of 1
       }));
       
