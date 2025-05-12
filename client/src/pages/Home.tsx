@@ -95,10 +95,30 @@ export default function Home() {
   };
 
   // Fetch issues data
-  const { data: issues = [], isLoading, error } = useQuery<Issue[]>({
+  const { data: issues = [], isLoading, error, refetch } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
     enabled: true, // Always fetch issues regardless of location status
   });
+  
+  // Handle data refresh for both panels
+  const handleRefreshData = async () => {
+    try {
+      await refetch();
+      toast({
+        title: "Data Refreshed",
+        description: "Latest issues data has been loaded",
+      });
+      return true;
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+      toast({
+        title: "Refresh Failed",
+        description: "Could not update the issue data",
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
 
   // Sort issues by upvotes to get top issues
   const topIssues = [...(issues || [])].sort((a, b) => b.upvotes - a.upvotes).slice(0, 5);
@@ -368,6 +388,7 @@ export default function Home() {
         isOpen={nearbyIssuesPanelActive}
         onClose={() => setNearbyIssuesPanelActive(false)}
         onIssueClick={handleIssueClick}
+        onRefresh={handleRefreshData}
       />
       
       {/* Success Overlay */}
@@ -393,6 +414,7 @@ export default function Home() {
           // This is now handled internally in the MapView component
           // We leave the prop for compatibility, but it's not used anymore
         }}
+        onRefresh={handleRefreshData}
       />
       
       {/* Display error if geolocation fails */}
