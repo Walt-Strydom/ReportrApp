@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { XIcon, ArrowUpIcon, ClockIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { XIcon, ArrowUpIcon, ClockIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -24,8 +24,40 @@ export default function IssueDetailsPanel({
   onSuccess 
 }: IssueDetailsPanelProps) {
   const [isSupporting, setIsSupporting] = useState(false);
+  const [isRevoking, setIsRevoking] = useState(false);
   const [hasSupported, setHasSupported] = useState(false);
+  const [deviceId, setDeviceId] = useState<string>('');
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Initialize device ID
+    const storedId = localStorage.getItem('deviceId') || generateDeviceId();
+    localStorage.setItem('deviceId', storedId);
+    setDeviceId(storedId);
+
+    // Check if user has already supported this issue
+    if (issue && storedId) {
+      const checkSupportStatus = async () => {
+        try {
+          const response = await fetch(`/api/issues/${issue.id}/support/${storedId}`, {
+            method: 'GET'
+          });
+          
+          if (response.ok) {
+            // User has already supported this issue
+            setHasSupported(true);
+          } else {
+            // User has not supported this issue yet
+            setHasSupported(false);
+          }
+        } catch (error) {
+          console.error('Error checking support status:', error);
+        }
+      };
+      
+      checkSupportStatus();
+    }
+  }, [issue]);
 
   if (!issue) return null;
 
@@ -66,9 +98,6 @@ export default function IssueDetailsPanel({
     try {
       setIsSupporting(true);
       
-      // Get device ID
-      const deviceId = generateDeviceId();
-      
       // Send support request
       const response = await apiRequest('POST', `/api/issues/${issue.id}/support`, {
         deviceId
@@ -104,6 +133,54 @@ export default function IssueDetailsPanel({
       });
     } finally {
       setIsSupporting(false);
+    }
+  };
+  
+  const handleRevokeSupport = async () => {
+    if (isRevoking || !hasSupported || !issue) return;
+    
+    try {
+      setIsRevoking(true);
+      
+      // Use fetch with DELETE method to revoke support
+      const response = await fetch(`/api/issues/${issue.id}/support`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ deviceId })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to revoke support');
+      }
+      
+      // Mark as not supported
+      setHasSupported(false);
+      
+      // Show success message
+      toast({
+        title: "Support Revoked",
+        description: "Your support has been withdrawn.",
+      });
+      
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['/api/issues'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/issues/nearby'] });
+      
+      // Close panel and show success
+      onClose();
+      onSuccess();
+    } catch (error) {
+      console.error('Revoke support error:', error);
+      toast({
+        title: "Failed to Revoke Support",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRevoking(false);
     }
   };
   
@@ -172,25 +249,43 @@ export default function IssueDetailsPanel({
           </div>
         </div>
         
-        <Button
-          onClick={handleSupport}
-          className={`w-full py-3 rounded-lg font-medium mb-4 flex items-center justify-center ${
-            hasSupported ? 'bg-success' : 'bg-primary'
-          } text-white`}
-          disabled={isSupporting || hasSupported}
-        >
-          {hasSupported ? (
-            <>
-              <span className="mr-2">✓</span>
-              <span>Supported</span>
-            </>
-          ) : (
-            <>
-              <ArrowUpIcon className="mr-2 h-5 w-5" />
-              <span>Support</span>
-            </>
-          )}
-        </Button>
+        {!hasSupported ? (
+          <Button
+            onClick={handleSupport}
+            className="w-full py-3 rounded-lg font-medium mb-4 flex items-center justify-center bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white"
+            disabled={isSupporting}
+          >
+            {isSupporting ? (
+              <>
+                <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                <span>Supporting...</span>
+              </>
+            ) : (
+              <>
+                <Heart className="mr-2 h-5 w-5" />
+                <span>Support</span>
+              </>
+            )}
+          </Button>
+        ) : (
+          <Button
+            onClick={handleRevokeSupport}
+            className="w-full py-3 rounded-lg font-medium mb-4 flex items-center justify-center bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white"
+            disabled={isRevoking}
+          >
+            {isRevoking ? (
+              <>
+                <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                <span>Revoking...</span>
+              </>
+            ) : (
+              <>
+                <HeartOff className="mr-2 h-5 w-5" />
+                <span>Revoke Support</span>
+              </>
+            )}
+          </Button>
+        )}
         
         <Button
           onClick={onClose}

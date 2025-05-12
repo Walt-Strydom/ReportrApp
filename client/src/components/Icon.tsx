@@ -4,6 +4,7 @@ import {
   Circle, BellOff, Paintbrush, Landmark, StopCircle, Footprints, Wind,
   Gauge, Package, Scissors, Construction, Waves, Skull, Grid, Home, Info
 } from 'lucide-react';
+import { getIssueTypeById, getCategoryById } from '@/data/issueTypes';
 
 type IconName = 
   | 'road' | 'lightbulb' | 'droplets' | 'zap' | 'trash' | 'building' 
@@ -20,7 +21,68 @@ interface IconProps {
 
 export default function Icon({ name, className = '' }: IconProps) {
   const iconProps = { className };
+  
+  // Check if this is an issue type ID (like 'pothole', 'burst-pipe', etc.)
+  const issueType = getIssueTypeById(name);
+  
+  // If it's an issue type, first try to get its specific icon, or fallback to category icon
+  if (issueType) {
+    // Try to get the icon via its icon name directly
+    const iconName = issueType.icon;
+    if (iconName) {
+      // Return the specific icon for this issue type if we have a mapping
+      switch (iconName) {
+        case 'road':
+          return <MapPin {...iconProps} />;
+        case 'lightbulb':
+          return <Lightbulb {...iconProps} />;
+        case 'droplets':
+          return <Droplets {...iconProps} />;
+        case 'zap':
+          return <Zap {...iconProps} />;
+        case 'trash':
+          return <Trash {...iconProps} />;
+        case 'building':
+          return <Building {...iconProps} />;
+        case 'palmtree':
+          return <Trees {...iconProps} />;
+        case 'mountain':
+          return <Mountain {...iconProps} />;
+        case 'paw':
+          return <Landmark {...iconProps} />;
+        default:
+          // If no specific mapping, try to get the parent category's icon
+          const category = getCategoryById(issueType.categoryId);
+          if (category) {
+            // Return category icon
+            switch (category.icon) {
+              case 'road':
+                return <MapPin {...iconProps} />;
+              case 'lightbulb':
+                return <Lightbulb {...iconProps} />;
+              case 'droplets':
+                return <Droplets {...iconProps} />;
+              case 'zap':
+                return <Zap {...iconProps} />;
+              case 'trash':
+                return <Trash {...iconProps} />;
+              case 'building':
+                return <Building {...iconProps} />;
+              case 'palmtree':
+                return <Trees {...iconProps} />;
+              case 'mountain':
+                return <Mountain {...iconProps} />;
+              case 'paw':
+                return <Landmark {...iconProps} />;
+              default:
+                return <Circle {...iconProps} />;
+            }
+          }
+      }
+    }
+  }
 
+  // If not an issue type, or if no icon found above, use the direct mapping
   switch (name) {
     case 'road':
       return <MapPin {...iconProps} />;
