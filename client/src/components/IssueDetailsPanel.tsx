@@ -133,7 +133,7 @@ export default function IssueDetailsPanel({
             <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
               style={{backgroundColor: `${getColorValue()}25`}}>
               <img 
-                src="/assets/municipality-logo.png" 
+                src="/assets/logo-orange.png" 
                 alt="Municipality Logo" 
                 className="h-10 w-auto" 
                 style={{opacity: 0.8}}
