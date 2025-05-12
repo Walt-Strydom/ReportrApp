@@ -30,6 +30,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
   
   // Get current location as center for map but only use it initially
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
+  const [googleMap, setGoogleMap] = useState<any>(null);
   
   // Only use geolocation for initial centering when map first opens
   useEffect(() => {
@@ -216,6 +217,24 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
           >
             {heatmapActive ? 'Hide Heat' : 'Show Heat'}
           </button>
+          {mapCenter && (
+            <button 
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium flex items-center justify-center"
+              onClick={() => {
+                if (mapCenter && googleMap) {
+                  googleMap.panTo(mapCenter);
+                  googleMap.setZoom(15);
+                  toast({
+                    title: "Location Reset",
+                    description: "Map centered on your location",
+                  });
+                }
+              }}
+            >
+              <MapPinIcon className="h-4 w-4 mr-1" />
+              My Location
+            </button>
+          )}
         </div>
       </div>
       
@@ -371,7 +390,8 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
           center={mapCenter} 
           issues={issues} 
           heatmapActive={heatmapActive} 
-          onMarkerClick={handleMarkerClick} 
+          onMarkerClick={handleMarkerClick}
+          onMapInitialized={setGoogleMap} 
         />
       </div>
     </div>

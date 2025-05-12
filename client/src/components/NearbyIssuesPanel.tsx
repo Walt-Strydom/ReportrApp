@@ -275,31 +275,46 @@ export default function NearbyIssuesPanel({
       }`}
     >
       {onRefresh ? (
-        <div className="h-full overflow-auto pb-20 absolute inset-0" style={{ 
-          WebkitOverflowScrolling: 'touch',
-          msOverflowStyle: '-ms-autohiding-scrollbar'
-        }}>
-          <PullToRefresh
-            onRefresh={handleRefresh}
-            pullDownThreshold={40}
-            maxPullDownDistance={120}
-            className="h-full"
-            pullingContent={
-              <div className="flex items-center justify-center p-3 text-neutral-500">
-                {t('pullToRefresh.pulling', 'Pull to refresh')}
-              </div>
-            }
-            refreshingContent={refreshIndicator}
+        <div className="fixed inset-0 flex flex-col">
+          <div 
+            className="flex-1 overflow-y-scroll -webkit-overflow-scrolling-touch" 
+            style={{ 
+              WebkitOverflowScrolling: 'touch',
+              overflowScrolling: 'touch',
+              msOverflowStyle: 'none'
+            }}
           >
-            {renderContent()}
-          </PullToRefresh>
+            <PullToRefresh
+              onRefresh={handleRefresh}
+              pullDownThreshold={40}
+              maxPullDownDistance={120}
+              pullingContent={
+                <div className="flex items-center justify-center p-3 text-neutral-500">
+                  {t('pullToRefresh.pulling', 'Pull to refresh')}
+                </div>
+              }
+              refreshingContent={refreshIndicator}
+            >
+              {renderContent()}
+              {/* Extra padding at bottom to ensure scrollability past bottom navigation */}
+              <div className="h-24"></div>
+            </PullToRefresh>
+          </div>
         </div>
       ) : (
-        <div className="h-full overflow-auto pb-20 absolute inset-0" style={{ 
-          WebkitOverflowScrolling: 'touch',
-          msOverflowStyle: '-ms-autohiding-scrollbar' 
-        }}>
-          {renderContent()}
+        <div className="fixed inset-0 flex flex-col">
+          <div 
+            className="flex-1 overflow-y-scroll -webkit-overflow-scrolling-touch" 
+            style={{ 
+              WebkitOverflowScrolling: 'touch',
+              overflowScrolling: 'touch',
+              msOverflowStyle: 'none'
+            }}
+          >
+            {renderContent()}
+            {/* Extra padding at bottom to ensure scrollability past bottom navigation */}
+            <div className="h-24"></div>
+          </div>
         </div>
       )}
     </div>

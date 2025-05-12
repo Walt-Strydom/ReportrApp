@@ -6,6 +6,7 @@ interface MapProps {
   issues: Issue[];
   heatmapActive: boolean;
   onMarkerClick: (issueId: number) => void;
+  onMapInitialized?: (map: any) => void;
 }
 
 // Define map styles
@@ -22,7 +23,7 @@ const MAP_STYLES = [
   },
 ];
 
-export default function Map({ center, issues, heatmapActive, onMarkerClick }: MapProps) {
+export default function Map({ center, issues, heatmapActive, onMarkerClick, onMapInitialized }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
@@ -65,6 +66,11 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick }: Ma
         });
         
         setGoogleMap(newMap);
+        
+        // Share the map instance with parent component if callback provided
+        if (onMapInitialized) {
+          onMapInitialized(newMap);
+        }
         
         // Create heatmap layer
         const heatmap = new window.google.maps.visualization.HeatmapLayer({
