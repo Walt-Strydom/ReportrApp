@@ -148,12 +148,13 @@ export default function NearbyIssuesPanel({
         }
       >
         <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="font-bold text-xl">Latest Reports</h2>
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="font-bold text-xl">Nearby Issues</h2>
             <button className="text-neutral-800" onClick={onClose}>
               <XIcon className="h-6 w-6" />
             </button>
           </div>
+          <p className="text-sm text-gray-500 mb-4">Showing newest reports first</p>
         
         <div className="mb-4">
           <div className="relative">
