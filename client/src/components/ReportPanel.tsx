@@ -265,26 +265,36 @@ export default function ReportPanel({
           </button>
         </div>
         
-        <p className="text-neutral-800 mb-4">{t('report.form.category.label')}:</p>
+        <p className="text-neutral-600 text-sm font-medium mb-4">{t('report.form.category.label')}</p>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {issueCategories.map((category) => (
             <div 
               key={category.id}
-              className={`p-4 border rounded-xl cursor-pointer transition-all ${
-                selectedCategory === category.id ? 'border-primary bg-primary/5' : 'border-neutral-200'
+              className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                selectedCategory === category.id 
+                  ? 'bg-primary/10 shadow-sm' 
+                  : 'bg-neutral-50 hover:bg-neutral-100'
               }`}
               onClick={() => handleCategorySelect(category.id)}
             >
               <div className="flex flex-col items-center">
-                <IssueTypeCard 
-                  type={category.icon}
-                  name=""
-                  selected={false}
-                  onClick={() => {}}
-                  color={category.color}
-                />
-                <span className="font-medium text-center">{category.name}</span>
+                <div className={`flex items-center justify-center w-12 h-12 rounded-full mb-2 ${
+                  selectedCategory === category.id 
+                    ? 'bg-primary/20' 
+                    : 'bg-white'
+                }`}>
+                  <img 
+                    src={`/icons/${category.icon}.svg`} 
+                    alt={category.name}
+                    className="w-6 h-6" 
+                    onError={(e) => {
+                      e.currentTarget.src = '/logo-orange.png';
+                      e.currentTarget.className = 'w-5 h-5';
+                    }}
+                  />
+                </div>
+                <span className="font-medium text-center text-sm">{category.name}</span>
               </div>
             </div>
           ))}
@@ -294,7 +304,9 @@ export default function ReportPanel({
           <Button
             onClick={goToStep2}
             className={`w-full py-3 rounded-lg font-medium ${
-              selectedCategory ? 'bg-primary text-white' : 'bg-neutral-300 text-neutral-500'
+              selectedCategory 
+                ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-md' 
+                : 'bg-neutral-200 text-neutral-400'
             }`}
             disabled={!selectedCategory}
           >
@@ -463,34 +475,29 @@ export default function ReportPanel({
         </div>
         
         <div className="mb-6">
-          <label htmlFor="notes" className="block mb-2 font-medium">Notes</label>
+          <label htmlFor="notes" className="block mb-2 text-sm font-medium text-neutral-700">Notes</label>
           <Textarea 
             id="notes" 
-            className="w-full p-3 border border-neutral-200 rounded-lg h-28" 
+            className="w-full p-3 border border-neutral-200 rounded-lg h-28 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" 
             placeholder="Describe the issue (optional)"
             {...form.register('notes')}
           />
         </div>
         
         <div className="mb-6">
-          <div className="p-4 bg-neutral-100 rounded-lg border border-neutral-200 mb-4">
-            <div className="flex items-start mb-2">
+          <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-100 mb-4">
+            <div className="flex items-start">
               <div className="mr-2 pt-1">
                 <InfoIcon className="h-5 w-5 text-secondary" />
               </div>
-              <div>
-                <h4 className="font-medium">Recipients:</h4>
-                <p className="text-sm text-neutral-600">• City of Tshwane Infrastructure team</p>
-                <p className="text-sm text-neutral-600">• Ward 60 Councillor</p>
-              </div>
+              <p className="text-sm text-neutral-600">All reports are submitted anonymously</p>
             </div>
-            <p className="text-xs text-neutral-500">All reports are submitted anonymously</p>
           </div>
         </div>
         
         <Button
           onClick={form.handleSubmit(onSubmit)}
-          className="w-full bg-primary text-white py-3 rounded-lg font-medium"
+          className="w-full bg-gradient-to-r from-primary to-primary-dark text-white py-3 rounded-lg font-medium shadow-md"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

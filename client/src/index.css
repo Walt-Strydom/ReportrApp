@@ -135,6 +135,11 @@
   @apply text-[#212529];
 }
 
+/* Custom gradient colors */
+.bg-primary-dark {
+  @apply bg-[#C14E16];
+}
+
 /* Font families */
 .font-sans {
   font-family: 'Roboto', sans-serif;
