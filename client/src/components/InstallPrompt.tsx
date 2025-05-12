@@ -83,7 +83,7 @@ export function InstallPrompt() {
                 ? t('install.ios.title', 'Install on iOS') 
                 : promptType === 'android'
                   ? t('install.android.title', 'Install on Android')
-                  : t('install.title', 'Install Lokisa App')}
+                  : t('install.title', 'Install Municipality App')}
             </h3>
             <p className="text-sm">
               {promptType === 'ios' 

@@ -179,7 +179,7 @@ export default function Home() {
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center">
               <img 
-                src="/assets/lokisa-logo.png" 
+                src="/assets/municipality-logo.png" 
                 alt="Municipality Logo" 
                 className="h-12 w-auto drop-shadow-md"
               />
@@ -289,8 +289,8 @@ export default function Home() {
                       <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
                         style={{backgroundColor: `${getBadgeColor(issue.type)}25`}}>
                         <img 
-                          src="/assets/lokisa-logo.png" 
-                          alt="Lokisa Logo" 
+                          src="/assets/municipality-logo.png" 
+                          alt="Municipality Logo" 
                           className="h-10 w-auto" 
                           style={{opacity: 0.8}}
                         />
