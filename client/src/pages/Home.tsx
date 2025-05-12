@@ -398,7 +398,10 @@ export default function Home() {
       <MapView
         isOpen={mapViewActive}
         onClose={() => setMapViewActive(false)}
-        onIssueClick={handleIssueClick}
+        onIssueClick={(issueId) => {
+          // This is now handled internally in the MapView component
+          // We leave the prop for compatibility, but it's not used anymore
+        }}
       />
       
       {/* Display error if geolocation fails */}
