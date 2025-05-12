@@ -8,6 +8,7 @@ import { Issue } from '@/types';
 import { generateDeviceId } from '@/lib/imageUtils';
 import { queryClient } from '@/lib/queryClient';
 import { getIssueTypeById } from '@/data/issueTypes';
+import Icon from '@/components/Icon';
 
 interface IssueDetailsPanelProps {
   issue: Issue | null;
@@ -35,12 +36,7 @@ export default function IssueDetailsPanel({
   // Get issue type details  
   const issueType = getIssueTypeById(issue.type);
 
-  // Get badge color based on issue type
-  const getBadgeColor = () => {
-    return issueType ? `bg-[${issueType.color}]` : 'bg-neutral-500';
-  };
-  
-  // Get the actual color value for backgrounds
+  // Get the actual color value for backgrounds and badges
   const getColorValue = () => {
     return issueType ? issueType.color : '#6b7280';  // neutral gray as fallback
   };
@@ -148,10 +144,16 @@ export default function IssueDetailsPanel({
           )}
           
           <div className="flex-1">
-            <div className="flex items-center mb-1">
-              <span className={`inline-block px-2 py-1 ${getBadgeColor()} text-white text-xs rounded-full mr-2`}>
+            <div className="flex items-center mb-2">
+              <div 
+                className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
+                style={{ backgroundColor: getColorValue() }}
+              >
+                {issueType && (
+                  <Icon name={issue.type} className="mr-1.5 h-3.5 w-3.5" />
+                )}
                 {formatIssueType()}
-              </span>
+              </div>
               <span className="text-xs text-neutral-500">Reported {timeAgo}</span>
             </div>
             <h3 className="font-bold text-lg mb-1">{issue.address}</h3>

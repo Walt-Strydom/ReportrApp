@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Issue } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon } from 'lucide-react';
+import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
 import Map from '@/components/Map';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { generateDeviceId } from '@/lib/imageUtils';
 import { queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import Icon from '@/components/Icon';
 
 interface MapViewProps {
   isOpen: boolean;
@@ -246,12 +247,13 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
             
             <div className="flex-1">
               <div className="flex items-center mb-1">
-                <span 
-                  className="inline-block px-2 py-1 text-white text-xs rounded-full mr-2" 
+                <div 
+                  className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
                   style={{backgroundColor: getBadgeColor(selectedIssue.type)}}
                 >
+                  <Icon name={selectedIssue.type} className="mr-1.5 h-3.5 w-3.5" />
                   {formatIssueType(selectedIssue.type)}
-                </span>
+                </div>
                 <span className="text-xs text-gray-500">
                   {formatDistanceToNow(new Date(selectedIssue.createdAt), { addSuffix: true })}
                 </span>
