@@ -289,8 +289,8 @@ export default function NearbyIssuesPanel({
       {onRefresh ? (
         <PullToRefresh
           onRefresh={handleRefresh}
-          pullingContent={<div className="flex items-center justify-center p-3 text-neutral-500">Pull to refresh</div>}
-          refreshingContent={refreshIndicator}
+          pullingcontent={<div className="flex items-center justify-center p-3 text-neutral-500">Pull to refresh</div>}
+          refreshingcontent={refreshIndicator}
         >
           {panelContent}
         </PullToRefresh>
