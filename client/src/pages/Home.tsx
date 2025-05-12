@@ -8,7 +8,7 @@ import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
-import MapDisplay from '@/components/MapDisplay';
+import Map from '@/components/Map';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -411,16 +411,45 @@ export default function Home() {
         onRequestPermission={handleRequestLocationPermission}
       />
       
-      {/* Map View */}
-      <MapDisplay
-        isOpen={mapViewActive}
-        onClose={() => setMapViewActive(false)}
-        onIssueClick={(issueId: number) => {
-          // Handle issue selection the MapView component
-          // We leave the prop for compatibility, but it's not used anymore
-        }}
-        onRefresh={handleRefreshData}
-      />
+      {/* Map View Panel */}
+      {mapViewActive && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col">
+          {/* Header */}
+          <div className="bg-orange-500 py-3 px-4 flex justify-between items-center shadow-md">
+            <h2 className="text-xl font-semibold text-white">{t('map.title')}</h2>
+            <button 
+              onClick={() => setMapViewActive(false)}
+              className="p-1 rounded-full hover:bg-orange-600 transition-colors"
+              aria-label="Close"
+            >
+              <XIcon className="h-6 w-6 text-white" />
+            </button>
+          </div>
+          
+          {/* Map Container */}
+          <div className="flex-grow relative">
+            <Map
+              center={geolocation.latitude && geolocation.longitude 
+                ? { lat: geolocation.latitude, lng: geolocation.longitude } 
+                : null
+              }
+              issues={issues}
+              heatmapActive={false}
+              onMarkerClick={handleIssueClick}
+            />
+            
+            {/* Show loading indicator while geolocation is loading */}
+            {geolocation.loading && (
+              <div className="absolute top-4 left-0 right-0 flex justify-center">
+                <div className="bg-white py-2 px-4 rounded-full shadow-md text-sm flex items-center">
+                  <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mr-2"></div>
+                  {t('map.locating')}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       
       {/* Display error if geolocation fails */}
       {geolocation.error && !geolocation.loading && (
