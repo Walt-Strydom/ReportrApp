@@ -1,5 +1,8 @@
 import { useState, useRef } from 'react';
 import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon, SmartphoneIcon, TrashIcon } from 'lucide-react';
+import Icon from './Icon';
+import { queryClient } from '@/lib/queryClient';
+import { Issue } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import IssueTypeCard from './IssueTypeCard';
@@ -228,6 +231,17 @@ export default function ReportPanel({
         throw new Error(errorData.message || t('errors.submission.failed'));
       }
       
+      // Get the new issue data
+      const newIssue = await response.json();
+      
+      // Update the query cache with the new issue
+      queryClient.setQueryData<Issue[]>(['/api/issues'], (oldData) => {
+        // If there's no old data, create an array with just the new issue
+        if (!oldData) return [newIssue];
+        // Otherwise, add the new issue to the existing array
+        return [...oldData, newIssue];
+      });
+      
       // Show success message
       toast({
         title: t('success.report.title'),
@@ -284,14 +298,9 @@ export default function ReportPanel({
                     ? 'bg-primary/20' 
                     : 'bg-white'
                 }`}>
-                  <img 
-                    src={`/icons/${category.icon}.svg`} 
-                    alt={category.name}
-                    className="w-6 h-6" 
-                    onError={(e) => {
-                      e.currentTarget.src = '/logo-orange.png';
-                      e.currentTarget.className = 'w-5 h-5';
-                    }}
+                  <Icon 
+                    name={category.icon}
+                    className="w-6 h-6 text-neutral-700" 
                   />
                 </div>
                 <span className="font-medium text-center text-sm">{category.name}</span>
