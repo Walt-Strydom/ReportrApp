@@ -9,6 +9,7 @@ import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
 import MyComplaints from '@/components/MyComplaints';
+import MapView from '@/components/MapView';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -30,6 +31,7 @@ export default function Home() {
   // State variables
   const [issueDetailsPanelActive, setIssueDetailsPanelActive] = useState(!!issueIdParam);
   const [nearbyIssuesPanelActive, setNearbyIssuesPanelActive] = useState(false);
+  const [mapViewActive, setMapViewActive] = useState(false);
   const [successOverlayActive, setSuccessOverlayActive] = useState(false);
   const [locationModalActive, setLocationModalActive] = useState(false);
   const [selectedIssueId, setSelectedIssueId] = useState<number | null>(issueIdParam ? parseInt(issueIdParam) : null);
@@ -344,7 +346,14 @@ export default function Home() {
       {/* Bottom Navigation */}
       <BottomNavigation 
         onReportButtonClick={handleReportButtonClick}
-        onMapButtonClick={() => setLocation('/create?showMap=true')}
+        onMapButtonClick={() => {
+          // If location permission is not granted, show permission modal
+          if (geolocation.permissionStatus !== 'granted') {
+            setLocationModalActive(true);
+            return;
+          }
+          setMapViewActive(true);
+        }}
         onNearbyButtonClick={() => setNearbyIssuesPanelActive(true)}
       />
       
@@ -377,6 +386,13 @@ export default function Home() {
         isOpen={locationModalActive}
         onClose={() => setLocationModalActive(false)}
         onRequestPermission={handleRequestLocationPermission}
+      />
+      
+      {/* Map View */}
+      <MapView
+        isOpen={mapViewActive}
+        onClose={() => setMapViewActive(false)}
+        onIssueClick={handleIssueClick}
       />
       
       {/* Display error if geolocation fails */}

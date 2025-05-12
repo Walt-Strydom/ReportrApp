@@ -1,13 +1,13 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.lokisa.app',
-  appName: 'Lokisa',
+  appId: 'com.municipality.app',
+  appName: 'Municipality',
   webDir: 'client/dist',
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
-    hostname: 'lokisa.app'
+    hostname: 'municipality.app'
   },
   android: {
     allowMixedContent: true,
