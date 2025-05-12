@@ -191,6 +191,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to support this issue' });
     }
   });
+  
+  // Check if a device has supported an issue
+  app.get('/api/issues/:id/support/:deviceId', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deviceId = req.params.deviceId;
+      
+      // Validate input
+      if (!id || isNaN(id) || !deviceId) {
+        return res.status(400).json({ message: 'Invalid issue ID or device ID' });
+      }
+      
+      const existingUpvote = await storage.getUpvoteByDeviceAndIssue(deviceId, id);
+      
+      if (existingUpvote) {
+        return res.status(200).json({ supported: true });
+      } else {
+        return res.status(404).json({ supported: false });
+      }
+    } catch (error) {
+      console.error('Support status check error:', error);
+      res.status(500).json({ message: 'Failed to check support status' });
+    }
+  });
+  
+  // Revoke support for an issue
+  app.delete('/api/issues/:id/support', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const issue = await storage.getIssueById(id);
+      
+      if (!issue) {
+        return res.status(404).json({ message: 'Issue not found' });
+      }
+      
+      // Validate the device ID
+      const deviceId = req.body.deviceId;
+      if (!deviceId) {
+        return res.status(400).json({ message: 'Device ID is required' });
+      }
+      
+      // Check if this device has supported this issue
+      const existingUpvote = await storage.getUpvoteByDeviceAndIssue(deviceId, id);
+      
+      if (!existingUpvote) {
+        return res.status(404).json({ message: 'No support record found for this issue' });
+      }
+      
+      // Delete the support record
+      const deleteResult = await storage.deleteUpvoteByDeviceAndIssue(deviceId, id);
+      
+      if (!deleteResult) {
+        return res.status(500).json({ message: 'Failed to revoke support' });
+      }
+      
+      // Decrement support count on the issue
+      const updatedIssue = await storage.decrementUpvote(id);
+      
+      res.json(updatedIssue);
+    } catch (error) {
+      console.error('Revoke support error:', error);
+      res.status(500).json({ message: 'Failed to revoke support for this issue' });
+    }
+  });
 
   return httpServer;
 }

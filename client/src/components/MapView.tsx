@@ -21,7 +21,9 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
   const [heatmapActive, setHeatmapActive] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [isSupporting, setIsSupporting] = useState(false);
+  const [isRevoking, setIsRevoking] = useState(false);
   const [deviceId, setDeviceId] = useState<string>('');
+  const [hasSupported, setHasSupported] = useState(false);
   const { toast } = useToast();
   const geolocation = useGeolocation();
   
@@ -44,10 +46,30 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
   }, []);
 
   // Handle marker click
-  const handleMarkerClick = (issueId: number) => {
+  const handleMarkerClick = async (issueId: number) => {
     const issue = issues.find(i => i.id === issueId);
     if (issue) {
       setSelectedIssue(issue);
+      
+      // Check if user has already supported this issue
+      if (deviceId) {
+        try {
+          const response = await fetch(`/api/issues/${issueId}/support/${deviceId}`, {
+            method: 'GET'
+          });
+          
+          if (response.ok) {
+            // User has already supported this issue
+            setHasSupported(true);
+          } else {
+            // User has not supported this issue yet
+            setHasSupported(false);
+          }
+        } catch (error) {
+          console.error('Error checking support status:', error);
+          setHasSupported(false);
+        }
+      }
     }
   };
 
@@ -96,6 +118,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
       // Update selected issue with new upvote count
       const updatedIssue = {...selectedIssue, upvotes: selectedIssue.upvotes + 1};
       setSelectedIssue(updatedIssue);
+      setHasSupported(true);
       
     } catch (error) {
       console.error('Support error:', error);
@@ -106,6 +129,52 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
       });
     } finally {
       setIsSupporting(false);
+    }
+  };
+  
+  // Handle revoke support button click
+  const handleRevokeSupport = async () => {
+    if (!selectedIssue || isRevoking) return;
+    
+    try {
+      setIsRevoking(true);
+      
+      // Use fetch with DELETE method to revoke support
+      const response = await fetch(`/api/issues/${selectedIssue.id}/support`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ deviceId })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to revoke support');
+      }
+      
+      // Update the issue with the new upvote count
+      queryClient.invalidateQueries({ queryKey: ['/api/issues'] });
+      
+      toast({
+        title: "Support Revoked",
+        description: "Your support has been withdrawn.",
+      });
+      
+      // Update selected issue with new upvote count
+      const updatedIssue = {...selectedIssue, upvotes: Math.max(0, selectedIssue.upvotes - 1)};
+      setSelectedIssue(updatedIssue);
+      setHasSupported(false);
+      
+    } catch (error) {
+      console.error('Revoke support error:', error);
+      toast({
+        title: "Failed to Revoke Support",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRevoking(false);
     }
   };
 
@@ -248,15 +317,44 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
             </div>
           </div>
           
-          {/* Support Button */}
-          <Button
-            onClick={handleSupportClick}
-            className="w-full py-2"
-            disabled={isSupporting}
-          >
-            <ArrowUpIcon className="mr-2 h-4 w-4" />
-            {isSupporting ? 'Supporting...' : 'Support'}
-          </Button>
+          {/* Support/Revoke Button */}
+          {!hasSupported ? (
+            <Button
+              onClick={handleSupportClick}
+              className="w-full py-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
+              disabled={isSupporting}
+            >
+              {isSupporting ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                  Supporting...
+                </>
+              ) : (
+                <>
+                  <ArrowUpIcon className="mr-2 h-4 w-4" />
+                  Support
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleRevokeSupport}
+              className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800"
+              disabled={isRevoking}
+            >
+              {isRevoking ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                  Revoking...
+                </>
+              ) : (
+                <>
+                  <ArrowUpIcon className="mr-2 h-4 w-4 transform rotate-180" />
+                  Revoke Support
+                </>
+              )}
+            </Button>
+          )}
         </div>
       )}
       
