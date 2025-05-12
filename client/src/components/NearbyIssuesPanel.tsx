@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Issue } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById, issueCategories } from '@/data/issueTypes';
+import Icon from '@/components/Icon';
 
 interface NearbyIssuesPanelProps {
   issues: Issue[];
@@ -138,7 +139,7 @@ export default function NearbyIssuesPanel({
           <div className="flex overflow-x-auto py-2 -mx-2 mb-4">
             <Button
               variant={categoryFilter === null ? 'default' : 'outline'}
-              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
+              className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
                 categoryFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
               }`}
               onClick={() => {
@@ -146,6 +147,7 @@ export default function NearbyIssuesPanel({
                 setFilter('all');
               }}
             >
+              <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
               All Categories
             </Button>
             
@@ -153,9 +155,9 @@ export default function NearbyIssuesPanel({
               <Button
                 key={category.id}
                 variant={categoryFilter === category.id ? 'default' : 'outline'}
-                className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm ${
+                className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
                   categoryFilter === category.id ? 
-                  `bg-[${category.color}] text-white` : 
+                  `text-white` : 
                   'bg-neutral-200 text-neutral-800'
                 }`}
                 onClick={() => {
@@ -164,6 +166,28 @@ export default function NearbyIssuesPanel({
                 }}
                 style={categoryFilter === category.id ? {backgroundColor: category.color} : {}}
               >
+                {/* Show a representative icon for the category */}
+                {category.id === 'roads-traffic' && 
+                  <Icon name="pothole" className="mr-1.5 h-3.5 w-3.5" />
+                }
+                {category.id === 'street-lighting' && 
+                  <Icon name="lightbulb" className="mr-1.5 h-3.5 w-3.5" />
+                }
+                {category.id === 'water' && 
+                  <Icon name="droplets" className="mr-1.5 h-3.5 w-3.5" />
+                }
+                {category.id === 'electricity' && 
+                  <Icon name="zap" className="mr-1.5 h-3.5 w-3.5" />
+                }
+                {category.id === 'waste' && 
+                  <Icon name="trash" className="mr-1.5 h-3.5 w-3.5" />
+                }
+                {category.id === 'public-spaces' && 
+                  <Icon name="building" className="mr-1.5 h-3.5 w-3.5" />
+                }
+                {category.id === 'environmental' && 
+                  <Icon name="palmtree" className="mr-1.5 h-3.5 w-3.5" />
+                }
                 {category.name}
               </Button>
             ))}
@@ -211,9 +235,13 @@ export default function NearbyIssuesPanel({
                   
                   <div className="flex-1">
                     <div className="flex items-center mb-1">
-                      <span className={`inline-block px-2 py-1 ${getBadgeColor(issue.type)} text-white text-xs rounded-full mr-2`}>
+                      <div
+                        className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
+                        style={{ backgroundColor: getColorValue(issue.type) }}
+                      >
+                        <Icon name={issue.type} className="mr-1.5 h-3.5 w-3.5" />
                         {formatIssueType(issue.type)}
-                      </span>
+                      </div>
                       <span className="text-xs text-neutral-500">
                         {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
                       </span>
