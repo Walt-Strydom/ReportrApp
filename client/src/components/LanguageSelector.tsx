@@ -8,6 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 
 export function LanguageSelector() {
@@ -22,13 +24,20 @@ export function LanguageSelector() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
+        <Button 
+          variant="ghost" 
+          className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white border-white/20"
+        >
           <GlobeIcon className="h-4 w-4" />
           <span>{t(`language.${i18n.language}`)}</span>
           <ChevronDown className="h-3 w-3" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="font-medium">
+          {t('language.select')}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
         {supportedLngs.map((language) => (
           <DropdownMenuItem
             key={language.code}

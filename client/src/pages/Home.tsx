@@ -164,28 +164,31 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-36">
       {/* Header */}
-      <header className="bg-primary text-white p-6">
+      <header className="bg-gradient-to-r from-orange-600 to-orange-500 text-white p-6 shadow-md">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex justify-between items-center mb-3">
             <div className="flex items-center">
               <img 
                 src="/assets/lokisa-logo.png" 
                 alt="Lokisa Logo" 
-                className="h-10 w-auto"
+                className="h-12 w-auto drop-shadow-md"
               />
+              <div className="ml-3">
+                <h1 className="text-2xl font-bold tracking-tight">Lokisa</h1>
+                <p className="text-sm font-medium opacity-90">{t('app.tagline')}</p>
+              </div>
             </div>
             <LanguageSelector />
           </div>
-          <p className="text-sm mb-4">{t('app.tagline')}</p>
           
           {/* Welcome message with location */}
-          <div className="mt-4">
+          <div className="mt-4 bg-white/10 rounded-lg p-2 backdrop-blur-sm">
             {address ? (
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-1" />
-                <p className="text-sm">{t('home.location.current', { address })}</p>
+                <p className="text-sm font-medium">{t('home.location.current', { address })}</p>
               </div>
             ) : geolocation.loading ? (
               <p className="text-sm">{t('home.location.loading')}</p>
@@ -200,15 +203,15 @@ export default function Home() {
       <main className="container mx-auto px-4 py-6">
         {/* Hero Section with CTA */}
         <section className="mb-8">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
             <div className="p-6">
-              <h2 className="text-xl font-bold mb-2">{t('home.cta.title')}</h2>
+              <h2 className="text-xl font-bold mb-2 text-gray-800">{t('home.cta.title')}</h2>
               <p className="text-gray-600 mb-4">
                 {t('home.cta.description')}
               </p>
               <Button 
                 onClick={handleReportButtonClick} 
-                className="w-full py-6 text-lg font-semibold"
+                className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all"
               >
                 <AlertTriangle className="mr-2 h-5 w-5" />
                 {t('home.cta.button')}
