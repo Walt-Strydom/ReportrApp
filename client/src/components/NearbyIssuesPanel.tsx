@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { XIcon, SearchIcon, ArrowUpIcon, RotateCw } from 'lucide-react';
+import { useState } from 'react';
+import { XIcon, SearchIcon, ArrowUpIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Issue } from '@/types';
@@ -20,20 +20,12 @@ export default function NearbyIssuesPanel({
   issues, 
   isOpen, 
   onClose, 
-  onIssueClick,
-  onRefresh 
+  onIssueClick
 }: NearbyIssuesPanelProps) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
-  
-  // Touch-based pull-to-refresh implementation
-  const touchStartY = useRef<number | null>(null);
-  const touchMoveY = useRef<number | null>(null);
-  const pullThreshold = 70; // Pixels user needs to pull down to trigger refresh
 
   // Filter issues based on current filter, category, and search query
   const filteredIssues = issues.filter(issue => {
@@ -96,145 +88,6 @@ export default function NearbyIssuesPanel({
     }
   };
 
-  // Reset pull-to-refresh state after animation completes
-  useEffect(() => {
-    if (!isRefreshing && pullDistance > 0) {
-      // Add a slight delay to reset the pull distance after refresh animation
-      const timer = setTimeout(() => {
-        setPullDistance(0);
-      }, 300);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isRefreshing, pullDistance]);
-  
-  // Handle pull-to-refresh
-  const handleRefresh = async () => {
-    if (onRefresh) {
-      setIsRefreshing(true);
-      try {
-        await onRefresh();
-      } finally {
-        setIsRefreshing(false);
-      }
-    }
-  };
-  
-  // Touch handlers for custom pull-to-refresh
-  const touchStartHandler = (e: React.TouchEvent) => {
-    if (isRefreshing) return; // Don't allow new pulls while refreshing
-    
-    // Get the scroll position of the content area
-    const scrollTop = e.currentTarget.parentElement?.querySelector('.overflow-y-auto')?.scrollTop;
-    
-    // Only enable pull-to-refresh when at the top of the content
-    if (scrollTop && scrollTop > 0) return;
-    
-    // Record the starting Y position when user touches the screen
-    touchStartY.current = e.touches[0].clientY;
-    touchMoveY.current = null;
-    setPullDistance(0);
-  };
-  
-  const touchMoveHandler = (e: React.TouchEvent) => {
-    if (touchStartY.current === null || isRefreshing) return;
-    
-    // Record the current position as user moves finger
-    touchMoveY.current = e.touches[0].clientY;
-    
-    // Calculate how far user has pulled down
-    const distance = touchMoveY.current - touchStartY.current;
-    
-    // Only allow positive (downward) pull
-    if (distance <= 0) {
-      setPullDistance(0);
-      return;
-    }
-    
-    // Apply resistance to make pull feel more natural 
-    // (the further you pull, the harder it gets)
-    const resistedPull = Math.min(Math.pow(distance, 0.8), 100);
-    setPullDistance(resistedPull);
-    
-    // Prevent default scrolling behavior when pulling down
-    if (distance > 10) {
-      e.preventDefault();
-    }
-  };
-  
-  const touchEndHandler = (e: React.TouchEvent) => {
-    if (isRefreshing || touchStartY.current === null || touchMoveY.current === null) {
-      return;
-    }
-    
-    // Calculate pull distance
-    const distance = touchMoveY.current - touchStartY.current;
-    
-    // If user pulled down far enough, trigger refresh
-    if (distance >= pullThreshold) {
-      handleRefresh();
-    } else {
-      // Reset pull distance immediately if we're not refreshing
-      setPullDistance(0);
-    }
-    
-    // Reset tracking variables
-    touchStartY.current = null;
-    touchMoveY.current = null;
-  };
-
-  // Create a custom pull-to-refresh indicator
-  const pullToRefreshIndicator = () => {
-    // Calculate opacity based on pull distance (max opacity at threshold)
-    const opacity = Math.min(pullDistance / pullThreshold, 1);
-    
-    // Calculate rotation for the icon based on pull distance
-    const rotation = Math.min(pullDistance / pullThreshold * 180, 180);
-    
-    // Show different content based on whether we're refreshing or pulling
-    if (isRefreshing) {
-      return (
-        <div className="flex items-center justify-center p-3 text-primary">
-          <RotateCw className="animate-spin h-5 w-5 mr-2" />
-          <span>{t('issues.refreshing', 'Refreshing...')}</span>
-        </div>
-      );
-    }
-    
-    return (
-      <div 
-        className="flex flex-col items-center justify-center p-3 text-neutral-500 transition-opacity"
-        style={{ 
-          opacity: opacity,
-          transform: pullDistance > 0 ? `translateY(${pullDistance}px)` : 'none',
-        }}
-      >
-        <div className="flex items-center mb-1">
-          <RotateCw 
-            className="h-5 w-5 mr-2 transition-transform" 
-            style={{ 
-              transform: `rotate(${rotation}deg)`,
-              color: pullDistance >= pullThreshold ? '#f97316' : '#6b7280',
-            }}
-          />
-          <span>
-            {pullDistance >= pullThreshold 
-              ? t('issues.releaseToRefresh', 'Release to refresh') 
-              : t('issues.pullToRefresh', 'Pull down to refresh')}
-          </span>
-        </div>
-        {pullDistance > 0 && pullDistance < pullThreshold && (
-          <div className="w-full bg-gray-200 h-1 rounded-full mt-1 overflow-hidden">
-            <div 
-              className="bg-primary h-full rounded-full" 
-              style={{ width: `${(pullDistance / pullThreshold) * 100}%` }}
-            />
-          </div>
-        )}
-      </div>
-    );
-  };
-
   if (!isOpen) {
     return null;
   }
@@ -250,25 +103,18 @@ export default function NearbyIssuesPanel({
         <div className="flex justify-between items-center px-6 py-4 bg-white shadow-sm">
           <h2 className="font-bold text-xl">{t('nearby.title', 'Nearby')}</h2>
           <button 
-            className="text-neutral-800 p-2" 
-            onClick={onClose}
+            className="text-neutral-800 p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors" 
+            onClick={() => {
+              // Log the close action and call the onClose handler
+              console.log('Nearby panel close button clicked');
+              onClose();
+            }}
             aria-label="Close"
+            style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <XIcon className="h-6 w-6" />
           </button>
         </div>
-        
-        {/* Pull-to-refresh indicator */}
-        {(pullDistance > 0 || isRefreshing) && (
-          <div 
-            className="absolute top-16 left-0 right-0 z-10 flex justify-center"
-            style={{
-              transform: pullDistance > 0 && !isRefreshing ? `translateY(${pullDistance}px)` : 'none'
-            }}
-          >
-            {pullToRefreshIndicator()}
-          </div>
-        )}
         
         {/* Scrollable content area */}
         <div 
@@ -431,16 +277,6 @@ export default function NearbyIssuesPanel({
           {/* Extra padding at bottom */}
           <div className="h-24"></div>
         </div>
-        
-        {/* If refresh is enabled, add a touch listener for pull-to-refresh */}
-        {onRefresh && (
-          <div 
-            className="absolute top-0 left-0 right-0 h-24 z-20 opacity-0"
-            onTouchStart={(e) => touchStartHandler(e)}
-            onTouchMove={(e) => touchMoveHandler(e)}
-            onTouchEnd={(e) => touchEndHandler(e)}
-          />
-        )}
       </div>
     </div>
   );
