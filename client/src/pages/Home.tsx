@@ -8,6 +8,7 @@ import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
+import MyComplaints from '@/components/MyComplaints';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
+import { isInstalledPWA } from '@/lib/platform';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -326,7 +328,7 @@ export default function Home() {
       {/* Bottom Navigation */}
       <BottomNavigation 
         onReportButtonClick={handleReportButtonClick}
-        onMapButtonClick={() => setLocation('/create')}
+        onMapButtonClick={() => setLocation('/create?showMap=true')}
         onNearbyButtonClick={() => setNearbyIssuesPanelActive(true)}
       />
       

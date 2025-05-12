@@ -15,9 +15,14 @@ import { useTranslation } from 'react-i18next';
 
 export default function CreatePage() {
   const { t } = useTranslation();
+  const [location] = useLocation();
+  
+  // Parse URL query parameters
+  const params = new URLSearchParams(location.split('?')[1]);
+  const showMap = params.get('showMap') === 'true';
   
   // State variables
-  const [reportPanelActive, setReportPanelActive] = useState(true);
+  const [reportPanelActive, setReportPanelActive] = useState(!showMap);
   const [successOverlayActive, setSuccessOverlayActive] = useState(false);
   const [locationModalActive, setLocationModalActive] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
@@ -140,6 +145,14 @@ export default function CreatePage() {
           >
             <ChevronLeft className="mr-1 h-4 w-4" />
             {t('nav.home')}
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={() => setReportPanelActive(!reportPanelActive)}
+            className="bg-white font-medium"
+          >
+            {reportPanelActive ? t('nav.map') : t('nav.report')}
           </Button>
         </div>
         

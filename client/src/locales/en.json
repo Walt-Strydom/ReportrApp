@@ -163,6 +163,13 @@
     "queuedReports": "Your report has been saved and will be sent when you're back online",
     "queuedSupport": "Your support has been saved and will be sent when you're back online"
   },
+  "myComplaints": {
+    "title": "My Complaints",
+    "empty": {
+      "title": "No complaints submitted yet",
+      "description": "Issues you report will appear here for easy tracking"
+    }
+  },
   "install": {
     "title": "Install Lokisa App",
     "description": "Add to your home screen for easier access",
@@ -179,6 +186,7 @@
   },
   "language": {
     "selector": "Change Language",
+    "select": "Select Language",
     "en": "English",
     "af": "Afrikaans",
     "zu": "isiZulu",
