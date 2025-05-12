@@ -180,11 +180,11 @@ export default function Home() {
             <div className="flex items-center">
               <img 
                 src="/assets/lokisa-logo.png" 
-                alt="Lokisa Logo" 
+                alt="Municipality Logo" 
                 className="h-12 w-auto drop-shadow-md"
               />
               <div className="ml-3">
-                <h1 className="text-2xl font-bold tracking-tight">Lokisa</h1>
+                <h1 className="text-2xl font-bold tracking-tight">{t('app.name')}</h1>
                 <p className="text-sm font-medium opacity-90">{t('app.tagline')}</p>
               </div>
             </div>

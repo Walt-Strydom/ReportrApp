@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "Lokisa",
-    "tagline": "Pretoria Infrastructure Reporting"
+    "name": "Municipality",
+    "tagline": "Infrastructure Reporting"
   },
   "nav": {
     "home": "Home",
@@ -12,7 +12,7 @@
   "home": {
     "cta": {
       "title": "See an infrastructure problem?",
-      "description": "Report potholes, broken street lights, water leaks and more to help improve Pretoria.",
+      "description": "Report potholes, broken street lights, water leaks and more to help improve your community.",
       "button": "Lodge a Complaint"
     },
     "topIssues": {
@@ -113,9 +113,9 @@
   "errors": {
     "location": {
       "denied": "Location Access Denied",
-      "deniedDesc": "Please enable location access in your browser settings to use all features of Lokisa.",
+      "deniedDesc": "Please enable location access in your browser settings to use all features of this app.",
       "granted": "Location Access Granted",
-      "grantedDesc": "Lokisa can now accurately identify the location of reported issues.",
+      "grantedDesc": "The app can now accurately identify the location of reported issues.",
       "error": "Location Error",
       "errorDesc": "Unable to get your location. Please try again later.",
       "tryAgain": "Try again"
@@ -171,7 +171,7 @@
     }
   },
   "install": {
-    "title": "Install Lokisa App",
+    "title": "Install Municipality App",
     "description": "Add to your home screen for easier access",
     "button": "Install",
     "got_it": "Got it",

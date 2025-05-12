@@ -31,7 +31,7 @@ const FooterLinks = () => {
           Terms of Service
         </a>
         <span>|</span>
-        <span className="text-gray-400 py-1">© 2025 Lokisa</span>
+        <span className="text-gray-400 py-1">© 2025 Municipality</span>
       </div>
     </div>
   );
