@@ -117,7 +117,6 @@ export default function NearbyIssuesPanel({
     return Promise.resolve();
   };
 
-  // Custom refresh indicator
   const refreshIndicator = (
     <div className="flex items-center justify-center p-3 text-neutral-500">
       <RotateCw className="animate-spin h-5 w-5 mr-2" />
@@ -125,7 +124,7 @@ export default function NearbyIssuesPanel({
     </div>
   );
 
-  const panelContent = (
+  const renderContent = () => (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="font-bold text-xl">Nearby</h2>
@@ -280,22 +279,26 @@ export default function NearbyIssuesPanel({
     </div>
   );
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <div 
-      className={`fixed inset-0 bg-white z-20 transform transition-transform duration-300 overflow-y-auto pb-20 ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}
-    >
+    <div className="fixed inset-0 bg-white z-20 transition-transform duration-300">
       {onRefresh ? (
-        <PullToRefresh
-          onRefresh={handleRefresh}
-          pullingcontent={<div className="flex items-center justify-center p-3 text-neutral-500">Pull to refresh</div>}
-          refreshingcontent={refreshIndicator}
-        >
-          {panelContent}
-        </PullToRefresh>
+        <div className="h-full overflow-y-auto pb-20" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <PullToRefresh
+            onRefresh={handleRefresh}
+            pullingContent={<div className="text-center p-2 text-gray-500">Pull down to refresh</div>}
+            refreshingContent={refreshIndicator}
+          >
+            {renderContent()}
+          </PullToRefresh>
+        </div>
       ) : (
-        panelContent
+        <div className="h-full overflow-y-auto pb-20">
+          {renderContent()}
+        </div>
       )}
     </div>
   );
