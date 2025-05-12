@@ -103,7 +103,7 @@ export default function Home() {
   } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
     enabled: true, // Always fetch issues regardless of location status
-    refetchInterval: 120000, // Automatically refresh every 2 minutes (120,000 ms)
+    refetchInterval: 30000, // Automatically refresh every 30 seconds (30,000 ms)
   });
   
   // Function to refresh issues data

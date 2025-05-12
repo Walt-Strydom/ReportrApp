@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { XIcon, SearchIcon, ArrowUpIcon } from 'lucide-react';
+import { XIcon, SearchIcon, ArrowUpIcon, RefreshCwIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Issue } from '@/types';
@@ -7,6 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById, issueCategories } from '@/data/issueTypes';
 import Icon from '@/components/Icon';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/hooks/use-toast';
 
 interface NearbyIssuesPanelProps {
   issues: Issue[];
@@ -20,12 +21,16 @@ export default function NearbyIssuesPanel({
   issues, 
   isOpen, 
   onClose, 
-  onIssueClick
+  onIssueClick,
+  onRefresh
 }: NearbyIssuesPanelProps) {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
 
   // Filter issues based on current filter, category, and search query
   const filteredIssues = issues.filter(issue => {
@@ -87,6 +92,33 @@ export default function NearbyIssuesPanel({
         return type.charAt(0).toUpperCase() + type.slice(1).replace(/-/g, ' ');
     }
   };
+  
+  // Handle manual refresh
+  const handleRefresh = async () => {
+    if (onRefresh && !isRefreshing) {
+      setIsRefreshing(true);
+      try {
+        await onRefresh();
+        // Update last refresh time
+        setLastRefreshTime(new Date());
+        toast({
+          title: "Refreshed!",
+          description: "Issues have been updated with the latest data.",
+          duration: 2000,
+        });
+      } catch (error) {
+        toast({
+          title: "Refresh failed",
+          description: "Could not refresh issues. Please try again.",
+          variant: "destructive",
+          duration: 2000,
+        });
+        console.error("Error refreshing issues:", error);
+      } finally {
+        setIsRefreshing(false);
+      }
+    }
+  };
 
   if (!isOpen) {
     return null;
@@ -100,20 +132,44 @@ export default function NearbyIssuesPanel({
     >
       <div className="h-full w-full flex flex-col">
         {/* Fixed header at the top */}
-        <div className="flex justify-between items-center px-6 py-4 bg-white shadow-sm">
-          <h2 className="font-bold text-xl">{t('nearby.title', 'Nearby')}</h2>
-          <button 
-            className="text-neutral-800 p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors" 
-            onClick={() => {
-              // Log the close action and call the onClose handler
-              console.log('Nearby panel close button clicked');
-              onClose();
-            }}
-            aria-label="Close"
-            style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <XIcon className="h-6 w-6" />
-          </button>
+        <div className="px-6 py-4 bg-white shadow-sm">
+          <div className="flex justify-between items-center">
+            <h2 className="font-bold text-xl">{t('nearby.title', 'Nearby')}</h2>
+            <div className="flex items-center space-x-2">
+              <button 
+                className="text-neutral-800 p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors" 
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                aria-label="Refresh"
+                style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <RefreshCwIcon className={`h-5 w-5 ${isRefreshing ? 'animate-spin text-primary' : ''}`} />
+              </button>
+              <button 
+                className="text-neutral-800 p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors" 
+                onClick={() => {
+                  // Log the close action and call the onClose handler
+                  console.log('Nearby panel close button clicked');
+                  onClose();
+                }}
+                aria-label="Close"
+                style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <XIcon className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
+          
+          {/* Last refresh indicator */}
+          <div className="flex items-center text-xs text-neutral-500 mt-1">
+            <RefreshCwIcon className="h-3 w-3 mr-1" />
+            <span>
+              {isRefreshing 
+                ? 'Refreshing...' 
+                : `Last refreshed: ${formatDistanceToNow(lastRefreshTime, { addSuffix: true })}`
+              }
+            </span>
+          </div>
         </div>
         
         {/* Scrollable content area */}
