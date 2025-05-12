@@ -319,45 +319,60 @@ export default function ReportPanel({
       <div className={`p-6 pb-24 ${step !== 1.5 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
-            <button className="mr-2" onClick={goBackFromSubcategory}>
-              <ArrowLeftIcon className="h-6 w-6" />
+            <button className="mr-2 p-2 rounded-full hover:bg-neutral-100 transition-colors" onClick={goBackFromSubcategory}>
+              <ArrowLeftIcon className="h-5 w-5 text-neutral-600" />
             </button>
             <h2 className="font-bold text-xl">{t('report.form.subcategory.label')}</h2>
           </div>
-          <button className="text-neutral-800" onClick={handleClose}>
-            <XIcon className="h-6 w-6" />
+          <button className="p-2 rounded-full hover:bg-neutral-100 transition-colors" onClick={handleClose}>
+            <XIcon className="h-5 w-5 text-neutral-600" />
           </button>
         </div>
         
         {selectedCategory && (
           <>
-            <div className="mb-4 p-2 bg-neutral-100 rounded-lg">
-              <p className="text-sm text-neutral-600">Category:</p>
-              <p className="font-medium">{issueCategories.find(c => c.id === selectedCategory)?.name}</p>
+            <div className="mb-4 p-3 bg-neutral-50 rounded-lg border border-neutral-100 flex items-center">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white mr-3">
+                <img 
+                  src={`/icons/${issueCategories.find(c => c.id === selectedCategory)?.icon}.svg`} 
+                  alt="Category"
+                  className="w-4 h-4" 
+                  onError={(e) => {
+                    e.currentTarget.src = '/logo-orange.png';
+                    e.currentTarget.className = 'w-4 h-4';
+                  }}
+                />
+              </div>
+              <div>
+                <p className="text-xs text-neutral-500">Category</p>
+                <p className="font-medium text-sm">{issueCategories.find(c => c.id === selectedCategory)?.name}</p>
+              </div>
             </div>
             
-            <p className="text-neutral-800 mb-4">{t('report.form.subcategory.placeholder')}:</p>
+            <p className="text-neutral-600 text-sm font-medium mb-3">{t('report.form.subcategory.placeholder')}</p>
             
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-3">
               {issueCategories
                 .find(c => c.id === selectedCategory)
                 ?.subcategories.map((subcat) => (
                   <div 
                     key={subcat.id}
-                    className={`p-4 border rounded-xl cursor-pointer transition-all flex items-center ${
-                      selectedIssueType === subcat.id ? 'border-primary bg-primary/5' : 'border-neutral-200'
+                    className={`p-3 rounded-xl cursor-pointer transition-all duration-200 flex items-center ${
+                      selectedIssueType === subcat.id 
+                        ? 'bg-primary/10 shadow-sm' 
+                        : 'bg-neutral-50 hover:bg-neutral-100'
                     }`}
                     onClick={() => handleIssueTypeSelect(subcat.id)}
                   >
-                    <IssueTypeCard 
-                      type={subcat.icon}
-                      name=""
-                      selected={false}
-                      onClick={() => {}}
-                      color={issueCategories.find(c => c.id === selectedCategory)?.color}
-                    />
-                    <span className="flex-1">{subcat.name}</span>
-                    <ChevronRightIcon className="h-5 w-5 text-neutral-400" />
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 ${
+                      selectedIssueType === subcat.id 
+                        ? 'bg-primary/20' 
+                        : 'bg-white'
+                    }`}>
+                      <div className="w-5 h-5" style={{ backgroundColor: issueCategories.find(c => c.id === selectedCategory)?.color || '#E56B2D', borderRadius: '50%' }}></div>
+                    </div>
+                    <span className="flex-1 font-medium text-sm">{subcat.name}</span>
+                    <ChevronRightIcon className={`h-5 w-5 ${selectedIssueType === subcat.id ? 'text-primary' : 'text-neutral-400'}`} />
                   </div>
                 ))
               }
@@ -369,7 +384,9 @@ export default function ReportPanel({
           <Button
             onClick={goToStep2}
             className={`w-full py-3 rounded-lg font-medium ${
-              selectedIssueType ? 'bg-primary text-white' : 'bg-neutral-300 text-neutral-500'
+              selectedIssueType 
+                ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-md' 
+                : 'bg-neutral-200 text-neutral-400'
             }`}
             disabled={!selectedIssueType}
           >
@@ -382,24 +399,31 @@ export default function ReportPanel({
       <div className={`p-6 pb-24 ${step !== 2 && 'hidden'}`}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">{t('report.form.photo.title')}</h2>
-          <button className="text-neutral-800" onClick={() => setStep(1)}>
-            <ArrowLeftIcon className="h-6 w-6" />
+          <button className="p-2 rounded-full hover:bg-neutral-100 transition-colors" onClick={() => setStep(1)}>
+            <ArrowLeftIcon className="h-5 w-5 text-neutral-600" />
           </button>
         </div>
         
-        <div className="bg-neutral-200 rounded-xl h-80 flex items-center justify-center mb-6">
+        <div className="bg-neutral-100 rounded-xl h-80 flex items-center justify-center mb-6 overflow-hidden shadow-inner">
           {!photo ? (
-            <div className="text-center p-6">
-              <CameraIcon className="h-10 w-10 text-neutral-500 mx-auto mb-4" />
-              <p className="text-neutral-600">{t('report.form.photo.description')}</p>
+            <div className="text-center p-6 max-w-xs">
+              <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto mb-4">
+                <CameraIcon className="h-7 w-7 text-primary/70" />
+              </div>
+              <p className="text-neutral-600 font-medium">{t('report.form.photo.description')}</p>
               <p className="text-xs text-neutral-500 mt-2">{t('report.form.photo.help')}</p>
             </div>
           ) : (
-            <img 
-              src={photo} 
-              className="w-full h-full object-cover rounded-xl" 
-              alt="Issue photo preview" 
-            />
+            <div className="w-full h-full relative">
+              <img 
+                src={photo} 
+                className="w-full h-full object-cover rounded-xl" 
+                alt="Issue photo preview" 
+              />
+              <div className="absolute bottom-3 right-3 bg-black/30 text-white px-2 py-1 rounded-md text-xs">
+                {t('report.form.photo.selected')}
+              </div>
+            </div>
           )}
         </div>
         
