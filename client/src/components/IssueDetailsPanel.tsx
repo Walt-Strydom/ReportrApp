@@ -185,7 +185,7 @@ export default function IssueDetailsPanel({
           ) : (
             <>
               <ArrowUpIcon className="mr-2 h-5 w-5" />
-              <span>Support This Issue</span>
+              <span>Support</span>
             </>
           )}
         </Button>
