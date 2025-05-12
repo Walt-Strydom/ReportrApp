@@ -38,11 +38,18 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
     return `${issue.type.charAt(0).toUpperCase() + issue.type.slice(1).replace(/-/g, ' ')} - ${issue.address}`;
   };
   
+  // Track initialization to prevent repeated mounting
+  const mapInitializedRef = useRef(false);
+  
   // Initialize map
   useEffect(() => {
-    if (!mapRef.current || mapLoaded) return;
+    // Only initialize once and when we have a DOM node
+    if (!mapRef.current || mapInitializedRef.current) return;
     
     const defaultCenter = { lat: -25.7461, lng: 28.1881 }; // Pretoria, South Africa
+    
+    // Mark as initialized to prevent re-execution
+    mapInitializedRef.current = true;
     
     // Only load Google Maps if it's not already loaded
     if (!window.google) {
@@ -166,11 +173,12 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
     
     // Cleanup function
     return () => {
-      setMapLoaded(false);
+      mapInitializedRef.current = false;
       setGoogleMap(null);
       setHeatmapLayer(null);
+      setMapLoaded(false);
     };
-  }, [center, heatmapActive, mapLoaded, onMapInitialized]);
+  }, [center, heatmapActive, onMapInitialized]);
   
   // Update user location marker when center changes
   useEffect(() => {
