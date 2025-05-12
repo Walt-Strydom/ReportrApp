@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Issue } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { X as XIcon, ArrowUp as ArrowUpIcon, MapPin as MapPinIcon, Calendar as CalendarIcon, Clock3 as Clock3Icon, MessageSquare as MessageSquareIcon, Heart, HeartOff, Loader2, RotateCw } from 'lucide-react';
+import { X as XIcon, ArrowUp as ArrowUpIcon, MapPin as MapPinIcon, Calendar as CalendarIcon, Clock3 as Clock3Icon, MessageSquare as MessageSquareIcon, Heart, HeartOff, Loader2, RotateCw, Flame } from 'lucide-react';
 import PullToRefresh from 'react-pull-to-refresh';
-import Map from '@/components/Map';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
 import { Button } from '@/components/ui/button';
@@ -13,11 +12,210 @@ import { queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/Icon';
 
+// Add window.google type for TypeScript
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
 interface MapViewProps {
   isOpen: boolean;
   onClose: () => void;
   onIssueClick: (issueId: number) => void;
   onRefresh?: () => Promise<any>;
+}
+
+interface SimpleMapProps {
+  center: { lat: number; lng: number } | null;
+  issues: Issue[];
+  heatmapActive: boolean;
+  onMarkerClick: (issueId: number) => void;
+}
+
+// Simple Map component with direct DOM manipulation
+function SimpleMap({ center, issues, heatmapActive, onMarkerClick }: SimpleMapProps) {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstance = useRef<any>(null);
+  const markers = useRef<any[]>([]);
+  const heatmap = useRef<any>(null);
+  
+  // Default to Pretoria central coordinates if user location not available
+  const defaultCenter = { lat: -25.7461, lng: 28.1881 };
+  
+  // Initialize the map
+  useEffect(() => {
+    if (!mapRef.current) return;
+    
+    // Load Google Maps API
+    const loadGoogleMaps = () => {
+      // Check if already loaded
+      if (window.google && window.google.maps) {
+        initMap();
+        return;
+      }
+      
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
+      script.async = true;
+      script.defer = true;
+      script.onload = initMap;
+      document.head.appendChild(script);
+    };
+    
+    // Initialize map after API loads
+    const initMap = () => {
+      // Create new map instance
+      mapInstance.current = new window.google.maps.Map(mapRef.current!, {
+        center: center || defaultCenter,
+        zoom: 15,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        streetViewControl: false,
+        zoomControl: true,
+        styles: [
+          {
+            featureType: 'poi',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          },
+          {
+            featureType: 'transit',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          }
+        ]
+      });
+      
+      // Add markers
+      addMarkers();
+      
+      // Add heatmap if needed
+      if (heatmapActive) {
+        createHeatmap();
+      }
+    };
+    
+    loadGoogleMaps();
+    
+    // Cleanup
+    return () => {
+      if (markers.current) {
+        markers.current.forEach(marker => marker.setMap(null));
+      }
+      
+      if (heatmap.current) {
+        heatmap.current.setMap(null);
+      }
+    };
+  }, []);
+  
+  // Update markers when issues change
+  useEffect(() => {
+    if (!mapInstance.current || !window.google) return;
+    
+    // Clear existing markers
+    markers.current.forEach(marker => marker.setMap(null));
+    markers.current = [];
+    
+    // Add markers for each issue
+    issues.forEach(issue => {
+      let iconUrl;
+      
+      // Set marker icon based on issue type
+      switch (issue.type) {
+        case 'pothole':
+          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+          break;
+        case 'streetlight':
+          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+          break;
+        case 'trafficlight':
+          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+          break;
+        default:
+          iconUrl = 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
+      }
+      
+      // Create marker
+      const marker = new window.google.maps.Marker({
+        position: { lat: issue.latitude, lng: issue.longitude },
+        map: mapInstance.current,
+        icon: iconUrl,
+        title: issue.type
+      });
+      
+      // Add click handler
+      marker.addListener('click', () => onMarkerClick(issue.id));
+      
+      markers.current.push(marker);
+    });
+    
+    // Update heatmap if active
+    if (heatmap.current && heatmapActive) {
+      const heatmapData = issues.map(issue => ({
+        location: new window.google.maps.LatLng(issue.latitude, issue.longitude),
+        weight: issue.upvotes + 1
+      }));
+      
+      heatmap.current.setData(heatmapData);
+    }
+  }, [issues, onMarkerClick]);
+  
+  // Update center when it changes
+  useEffect(() => {
+    if (!mapInstance.current || !center) return;
+    mapInstance.current.setCenter(center);
+  }, [center]);
+  
+  // Toggle heatmap visibility
+  useEffect(() => {
+    if (!heatmap.current || !mapInstance.current) return;
+    heatmap.current.setMap(heatmapActive ? mapInstance.current : null);
+  }, [heatmapActive]);
+  
+  // Create heatmap helper
+  const createHeatmap = () => {
+    if (!mapInstance.current || !window.google || !window.google.maps.visualization) return;
+    
+    const heatmapData = issues.map(issue => ({
+      location: new window.google.maps.LatLng(issue.latitude, issue.longitude),
+      weight: issue.upvotes + 1
+    }));
+    
+    heatmap.current = new window.google.maps.visualization.HeatmapLayer({
+      data: heatmapData,
+      map: heatmapActive ? mapInstance.current : null,
+      radius: 50,
+      opacity: 0.7
+    });
+  };
+  
+  // Add markers helper
+  const addMarkers = () => {
+    if (!mapInstance.current || !window.google) return;
+    
+    issues.forEach(issue => {
+      const marker = new window.google.maps.Marker({
+        position: { lat: issue.latitude, lng: issue.longitude },
+        map: mapInstance.current,
+        title: issue.type,
+        icon: (() => {
+          switch (issue.type) {
+            case 'pothole': return 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+            case 'streetlight': return 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+            case 'trafficlight': return 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+            default: return 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
+          }
+        })()
+      });
+      
+      marker.addListener('click', () => onMarkerClick(issue.id));
+      markers.current.push(marker);
+    });
+  };
+  
+  return <div ref={mapRef} className="w-full h-full rounded-lg" style={{ minHeight: '350px' }} />;
 }
 
 export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = async () => {} }: MapViewProps) {
@@ -402,12 +600,16 @@ export default function MapView({ isOpen, onClose, onIssueClick, onRefresh = asy
             </div>
           }
         >
-          <Map 
-            center={mapCenter} 
-            issues={issues} 
-            heatmapActive={heatmapActive} 
-            onMarkerClick={handleMarkerClick} 
-          />
+          <div className="w-full h-full relative" style={{ minHeight: '350px' }}>
+            <div id="map-container" className="w-full h-full">
+              <SimpleMap 
+                center={mapCenter} 
+                issues={issues} 
+                heatmapActive={heatmapActive} 
+                onMarkerClick={handleMarkerClick} 
+              />
+            </div>
+          </div>
         </PullToRefresh>
       </div>
     </div>
