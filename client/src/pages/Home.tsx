@@ -12,7 +12,15 @@ import MapView from '@/components/MapView';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, MapPin, ThumbsUp, Megaphone, X as XIcon } from 'lucide-react';
+import { 
+  AlertTriangle, 
+  MapPin, 
+  ThumbsUp, 
+  Megaphone, 
+  X, 
+  ArrowRight, 
+  ChevronRight 
+} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
 import { useTranslation } from 'react-i18next';
@@ -196,110 +204,157 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-36">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-orange-600 to-orange-500 text-white p-6 shadow-md">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-3">
-            <div className="flex items-center">
+      {/* Modern Minimalist Header */}
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
               <img 
-                src="/logo-white.png" 
+                src="/logo-orange.png" 
                 alt="Municipality Logo" 
-                className="h-12 w-auto drop-shadow-md"
+                className="h-9 w-auto"
               />
-              <div className="ml-3">
-                <h1 className="text-2xl font-bold tracking-tight">{t('app.name')}</h1>
-                <p className="text-sm font-medium opacity-90">{t('app.tagline')}</p>
+              <div>
+                <h1 className="text-xl font-medium text-gray-900 leading-none">{t('app.name')}</h1>
+                <p className="text-xs text-gray-500">{t('app.tagline')}</p>
               </div>
             </div>
             <LanguageSelector />
           </div>
-          
-          {/* Welcome message with location */}
-          <div className="mt-4 bg-white/10 rounded-lg p-2 backdrop-blur-sm">
-            {address ? (
-              <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-1" />
-                <p className="text-sm font-medium">{t('home.location.current', { address })}</p>
-              </div>
-            ) : geolocation.loading ? (
-              <p className="text-sm">{t('home.location.loading')}</p>
-            ) : (
-              <p className="text-sm">{t('home.location.unavailable')}</p>
-            )}
-          </div>
         </div>
       </header>
+      
+      {/* Location Bar */}
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 px-4 shadow-sm">
+        <div className="container mx-auto">
+          {address ? (
+            <div className="flex items-center justify-center text-sm">
+              <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+              <p className="truncate font-medium">{t('home.location.current', { address })}</p>
+            </div>
+          ) : geolocation.loading ? (
+            <p className="text-center text-sm">{t('home.location.loading')}</p>
+          ) : (
+            <p className="text-center text-sm">{t('home.location.unavailable')}</p>
+          )}
+        </div>
+      </div>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
-        {/* Hero Section with CTA */}
-        <section className="mb-8">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-            <div className="p-6">
-              <h2 className="text-xl font-bold mb-2 text-gray-800">{t('home.cta.title')}</h2>
-              <p className="text-gray-600 mb-4">
-                {t('home.cta.description')}
-              </p>
-              <Button 
-                onClick={handleReportButtonClick} 
-                className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all"
-              >
-                <AlertTriangle className="mr-2 h-5 w-5" />
-                {t('home.cta.button')}
-              </Button>
+        {/* How-to Guide */}
+        <section className="mb-6">
+          <div className="bg-white rounded-xl overflow-hidden border border-orange-100">
+            <div className="pt-3 pb-2 px-4 bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-b border-orange-100">
+              <h2 className="text-base font-medium text-gray-800">{t('guide.title', 'How to use this app')}</h2>
+            </div>
+            <div className="p-4">
+              <div className="flex items-start space-x-4 mb-3">
+                <div className="bg-orange-100 rounded-full p-2 text-orange-600 mt-1 flex-shrink-0">
+                  <AlertTriangle className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.report.title', 'Report an issue')}</h3>
+                  <p className="text-xs text-gray-600">{t('guide.report.description', 'Tap the Report button and fill in details about the problem you found. Add a photo if possible for better visibility.')}</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4 mb-3">
+                <div className="bg-orange-100 rounded-full p-2 text-orange-600 mt-1 flex-shrink-0">
+                  <ThumbsUp className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.support.title', 'Support existing issues')}</h3>
+                  <p className="text-xs text-gray-600">{t('guide.support.description', 'Tap on any issue to view details. Click the Support button to increase priority. More supporters mean faster resolution.')}</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="bg-orange-100 rounded-full p-2 text-orange-600 mt-1 flex-shrink-0">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.map.title', 'View the map')}</h3>
+                  <p className="text-xs text-gray-600">{t('guide.map.description', 'Use the map to see all reported issues in your area. Tap on markers to view specific issues.')}</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-
+        {/* Hero Section with CTA */}
+        <section className="mb-6">
+          <div onClick={handleReportButtonClick} className="relative bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl shadow-sm overflow-hidden cursor-pointer group">
+            <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="relative p-5 flex items-center">
+              <div className="bg-white/20 rounded-full p-3 mr-4">
+                <AlertTriangle className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex-1 text-white">
+                <h2 className="text-lg font-medium mb-1">{t('home.cta.title')}</h2>
+                <p className="text-sm text-white/80">
+                  {t('home.cta.description')}
+                </p>
+              </div>
+              <div className="ml-2 bg-white/20 rounded-full p-2">
+                <ArrowRight className="h-5 w-5 text-white" />
+              </div>
+            </div>
+          </div>
+        </section>
         
         {/* Top Issues Section */}
-        <section className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">{t('home.topIssues.title')}</h2>
-            <Button 
-              variant="outline" 
+        <section className="mb-16">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-base font-medium text-gray-800">{t('home.topIssues.title')}</h2>
+            <button 
+              className="text-sm text-primary font-medium flex items-center"
               onClick={() => setNearbyIssuesPanelActive(true)}
-              size="sm"
             >
               {t('home.topIssues.viewAll')}
-            </Button>
+              <ChevronRight className="h-4 w-4 ml-0.5" />
+            </button>
           </div>
 
           {isLoading ? (
-            <div className="text-center py-8">
-              <p>{t('home.topIssues.loading')}</p>
+            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+              <p className="text-center text-sm text-gray-500 mt-2">{t('home.topIssues.loading')}</p>
             </div>
           ) : error ? (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg">
-              <p>{t('home.topIssues.error')}</p>
+            <div className="bg-red-50 text-red-600 p-4 rounded-xl border border-red-100">
+              <p className="text-sm font-medium">{t('home.topIssues.error')}</p>
             </div>
           ) : topIssues.length === 0 ? (
-            <div className="bg-gray-100 p-6 rounded-lg text-center">
-              <Megaphone className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium mb-2">{t('home.topIssues.empty.title')}</h3>
-              <p className="text-gray-500 mb-4">{t('home.topIssues.empty.description')}</p>
-              <Button onClick={handleReportButtonClick}>
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+              <div className="bg-gray-50 rounded-full p-3 inline-flex mx-auto mb-4">
+                <Megaphone className="h-6 w-6 text-gray-400" />
+              </div>
+              <h3 className="text-base font-medium mb-2">{t('home.topIssues.empty.title')}</h3>
+              <p className="text-sm text-gray-500 mb-4">{t('home.topIssues.empty.description')}</p>
+              <Button 
+                onClick={handleReportButtonClick}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+              >
                 {t('home.topIssues.empty.button')}
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {topIssues.map(issue => (
                 <div
                   key={issue.id}
-                  className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+                  className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:border-orange-200 transition-colors"
                   onClick={() => handleIssueClick(issue.id)}
                 >
-                  <div className="flex items-start">
+                  <div className="flex gap-3">
                     {issue.photoUrl ? (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-gray-200">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                         <img 
                           src={issue.photoUrl} 
                           alt={`${issue.type} issue`} 
                           className="w-full h-full object-cover" 
                           onError={(e) => {
-                            // If image fails to load, replace with logo
                             e.currentTarget.src = '/logo-orange.png';
                             e.currentTarget.style.padding = '5px';
                             e.currentTarget.style.objectFit = 'contain';
@@ -307,56 +362,54 @@ export default function Home() {
                         />
                       </div>
                     ) : (
-                      <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
-                        style={{backgroundColor: `${getBadgeColor(issue.type)}25`}}>
+                      <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0" 
+                        style={{backgroundColor: `${getBadgeColor(issue.type)}15`}}>
                         <img 
                           src="/logo-orange.png" 
                           alt="Municipality Logo" 
-                          className="h-10 w-auto" 
-                          style={{opacity: 0.8}}
+                          className="h-8 w-auto" 
+                          style={{opacity: 0.7}}
                         />
                       </div>
                     )}
                     
-                    <div className="flex-1">
-                      <div className="flex items-center mb-1">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
                         <span 
-                          className="inline-block px-2 py-1 text-white text-xs rounded-full mr-2" 
-                          style={{backgroundColor: getBadgeColor(issue.type)}}
+                          className="inline-block px-2 py-0.5 text-xs font-medium rounded-full" 
+                          style={{backgroundColor: getBadgeColor(issue.type), color: 'white'}}
                         >
                           {formatIssueType(issue.type)}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-400">
                           {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
                         </span>
                       </div>
-                      <h3 className="font-medium mb-1 line-clamp-1">{issue.address}</h3>
-                      <p className="text-sm text-gray-600 mb-2 line-clamp-1">
+                      <h3 className="font-medium text-sm text-gray-800 mb-1 truncate">{issue.address}</h3>
+                      <p className="text-xs text-gray-500 line-clamp-1 mb-1">
                         {issue.notes || 'No additional details provided.'}
                       </p>
                       
-                      <div className="flex items-center">
+                      <div className="flex items-center justify-between mt-1">
                         <div className="flex items-center">
-                          <ThumbsUp className="text-primary mr-1 h-4 w-4" />
-                          <span className="font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
+                          <ThumbsUp className="text-primary mr-1 h-3.5 w-3.5" />
+                          <span className="text-xs font-medium">{issue.upvotes} {issue.upvotes === 1 ? 'supporter' : 'supporters'}</span>
                         </div>
+                        <button className="text-xs text-primary font-medium">
+                          {t('home.topIssues.supportButton')} →
+                        </button>
                       </div>
                     </div>
-
-                    <Button variant="ghost" size="sm" className="self-end">
-                      {t('home.topIssues.supportButton')}
-                    </Button>
                   </div>
                 </div>
               ))}
 
-              <Button 
-                variant="outline" 
-                className="w-full mt-4" 
+              <button 
+                className="w-full py-2.5 text-sm text-center text-primary font-medium border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors"
                 onClick={() => setNearbyIssuesPanelActive(true)}
               >
                 {t('issues.nearby.viewAll')}
-              </Button>
+              </button>
             </div>
           )}
         </section>
@@ -419,24 +472,13 @@ export default function Home() {
       />
       
       {/* Display error if geolocation fails */}
-      {geolocation.error && !geolocation.loading && (
-        <div className="fixed bottom-20 left-4 right-4 bg-destructive text-white p-3 rounded-lg z-50">
-          <p>Location error: {geolocation.error}</p>
-          <button 
-            className="underline mt-1" 
-            onClick={() => {
-              if (geolocation.permissionStatus === 'denied') {
-                toast({
-                  title: "Location Permission Required",
-                  description: "Please enable location services in your browser settings.",
-                });
-              } else {
-                handleRequestLocationPermission();
-              }
-            }}
-          >
-            Try again
-          </button>
+      {geolocation.error && !locationModalActive && (
+        <div className="fixed bottom-24 inset-x-0 px-4 z-40">
+          <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg shadow-md">
+            <p className="text-sm">
+              <strong>Location Error:</strong> {geolocation.error}. Some features may be limited.
+            </p>
+          </div>
         </div>
       )}
     </div>
