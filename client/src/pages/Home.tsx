@@ -213,7 +213,7 @@ export default function Home() {
             <div className="flex-1 flex justify-start">
               <img 
                 src="/logo-orange.png" 
-                alt="Municipality Logo" 
+                alt="CitiReport Logo" 
                 className="h-10 w-auto"
               />
             </div>
