@@ -25,12 +25,12 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
   const handleAndroidInstall = () => {
     // For Android, we need to show the native install prompt
     if (!deferredPrompt) {
-      // If we don't have the deferred prompt, we need to show the instructions
-      showIOSInstallInstructions(); // Reuse the iOS instructions dialog
+      // If Android installation prompt not available, show an alert
+      alert("To install on Android, please use Chrome browser");
       return;
     }
     
-    // Show the install prompt
+    // Show the install prompt immediately
     deferredPrompt.prompt();
     
     // Wait for the user to respond to the prompt
