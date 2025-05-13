@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { Issue } from '@/types';
+import { getIssueTypeById } from '@/data/issueTypes';
+import { getIssueMarkerIcon, markerIconCache } from '@/lib/markerIcons';
 
 interface MapProps {
   center: { lat: number; lng: number } | null;
@@ -35,7 +37,9 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
   
   // Format issue title for marker tooltip
   const formatIssueTitle = (issue: Issue) => {
-    return `${issue.type.charAt(0).toUpperCase() + issue.type.slice(1).replace(/-/g, ' ')} - ${issue.address}`;
+    const issueType = getIssueTypeById(issue.type);
+    const typeName = issueType ? issueType.name : issue.type.charAt(0).toUpperCase() + issue.type.slice(1).replace(/-/g, ' ');
+    return `${typeName} - ${issue.address}`;
   };
   
   // Track initialization to prevent repeated mounting
@@ -231,41 +235,25 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
     // Clear existing markers
     mapMarkers.forEach(marker => marker.setMap(null));
     const newMarkers = [];
-    
-    // Cache icon objects for better performance
-    const iconCache = {
-      pothole: {
-        url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-        scaledSize: new window.google.maps.Size(32, 32)
-      },
-      streetlight: {
-        url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-        scaledSize: new window.google.maps.Size(32, 32)
-      },
-      trafficlight: {
-        url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-        scaledSize: new window.google.maps.Size(32, 32)
-      },
-      default: {
-        url: 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png',
-        scaledSize: new window.google.maps.Size(32, 32)
-      }
-    };
+
+    // Initialize icon cache if not already done
+    Object.keys(markerIconCache).length === 0 && console.log("Initializing marker icon cache");
     
     // Add markers for all issues
     for (const issue of issues) {
-      // Get icon from cache or use default
-      const icon = 
-        iconCache[issue.type as keyof typeof iconCache] || 
-        iconCache.default;
+      // Get icon from cache or create and cache it
+      if (!markerIconCache[issue.type]) {
+        markerIconCache[issue.type] = getIssueMarkerIcon(issue.type);
+      }
       
-      // Create marker with optimized settings
+      // Create marker with the cached icon
       const marker = new window.google.maps.Marker({
         position: { lat: issue.latitude, lng: issue.longitude },
         map: googleMap,
-        icon: icon,
+        icon: markerIconCache[issue.type],
         title: formatIssueTitle(issue),
-        optimized: true
+        optimized: true,
+        animation: window.google.maps.Animation.DROP
       });
       
       // Add click handler
