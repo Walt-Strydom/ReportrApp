@@ -83,9 +83,9 @@ export function createSvgMarkerIcon(iconName: string, color: string): string {
   
   // Create SVG string with the icon path and color
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36">
-      <circle cx="12" cy="12" r="10" fill="${iconColor}" opacity="0.9" />
-      <path d="${iconPath}" fill="white" stroke="white" stroke-width="0.5" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30">
+      <circle cx="12" cy="12" r="10" fill="${iconColor}" opacity="0.85" />
+      <path d="${iconPath}" fill="white" stroke="white" stroke-width="0.4" transform="scale(0.75) translate(4, 4)" />
     </svg>
   `;
   
@@ -106,9 +106,9 @@ export function getIssueMarkerIcon(issueType: string): any {
   
   return {
     url: svgUrl,
-    scaledSize: new window.google.maps.Size(36, 36),
-    anchor: new window.google.maps.Point(18, 18), // Center the icon
-    labelOrigin: new window.google.maps.Point(18, 40) // Position label below the icon
+    scaledSize: new window.google.maps.Size(30, 30),
+    anchor: new window.google.maps.Point(15, 15), // Center the icon
+    labelOrigin: new window.google.maps.Point(15, 35) // Position label below the icon
   };
 }
 

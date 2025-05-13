@@ -253,7 +253,8 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
         icon: markerIconCache[issue.type],
         title: formatIssueTitle(issue),
         optimized: true,
-        animation: window.google.maps.Animation.DROP
+        // Apply DROP animation only for the first few markers to avoid overwhelming the map
+        animation: issues.length < 20 ? window.google.maps.Animation.DROP : null
       });
       
       // Add click handler
