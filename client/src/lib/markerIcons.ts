@@ -86,7 +86,7 @@ export function createSvgMarkerIcon(iconName: string, color: string): string {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 42" width="32" height="42">
       <path d="M16 0C7.164 0 0 7.164 0 16c0 8.837 16 26 16 26s16-17.163 16-26C32 7.164 24.836 0 16 0z" 
             fill="${iconColor}" opacity="0.9" />
-      <path d="${iconPath}" fill="white" stroke="white" stroke-width="0.3" transform="scale(0.6) translate(10, 10)" />
+      <path d="${iconPath}" fill="white" stroke="white" stroke-width="0.3" transform="scale(0.75) translate(7, 7)" />
     </svg>
   `;
   
@@ -107,9 +107,9 @@ export function getIssueMarkerIcon(issueType: string): any {
   
   return {
     url: svgUrl,
-    scaledSize: new window.google.maps.Size(24, 32), // Pin shape is taller than it is wide
-    anchor: new window.google.maps.Point(12, 32), // Bottom center of the pin
-    labelOrigin: new window.google.maps.Point(12, 42) // Position label below the pin
+    scaledSize: new window.google.maps.Size(28, 38), // Pin shape is taller than it is wide
+    anchor: new window.google.maps.Point(14, 38), // Bottom center of the pin
+    labelOrigin: new window.google.maps.Point(14, 48) // Position label below the pin
   };
 }
 
