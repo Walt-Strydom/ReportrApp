@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   DownloadIcon, 
@@ -6,7 +6,9 @@ import {
   XIcon, 
   InfoIcon, 
   ArrowDownIcon, 
-  PhoneIcon
+  PhoneIcon,
+  ShareIcon,
+  PlusIcon
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { isIOS, isAndroid, isInstalledPWA, isRunningInCapacitor } from '@/lib/platform';
@@ -16,6 +18,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export function InstallPrompt() {
   const { t } = useTranslation();
@@ -23,6 +33,10 @@ export function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [promptType, setPromptType] = useState<'android' | 'ios' | 'standard'>('standard');
   const [showMinimalButton, setShowMinimalButton] = useState(false);
+  const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+  
+  // Use refs to store images of iOS install instructions
+  const iosInstructionsRef = useRef<HTMLImageElement | null>(null);
   
   useEffect(() => {
     // Don't show prompts in these conditions
@@ -32,9 +46,11 @@ export function InstallPrompt() {
 
     // iOS-specific prompt
     if (isIOS()) {
+      // Set the prompt type to iOS
+      setPromptType('ios');
+      
       // Only show iOS prompt if not already shown in this session
       if (!localStorage.getItem('iosPromptShown')) {
-        setPromptType('ios');
         setShowInstallPrompt(true);
       } else {
         // Show minimalist button for iOS
@@ -79,10 +95,18 @@ export function InstallPrompt() {
   }, [showInstallPrompt, showMinimalButton]);
 
   const handleInstallClick = () => {
-    // For iOS, we just need to hide the prompt and mark as shown
+    // For iOS, open detailed install instructions
     if (promptType === 'ios') {
+      // Mark as shown so the full prompt doesn't appear again
       localStorage.setItem('iosPromptShown', 'true');
+      
+      // Hide the initial prompt
       setShowInstallPrompt(false);
+      
+      // Show the detailed iOS instructions dialog
+      setShowIOSInstructions(true);
+      
+      // Keep showing the minimal button for future access to instructions
       setShowMinimalButton(true);
       return;
     }
@@ -116,36 +140,104 @@ export function InstallPrompt() {
     setShowMinimalButton(true);
   };
 
+  // iOS installation instructions dialog
+  const IosInstructionsDialog = () => (
+    <Dialog open={showIOSInstructions} onOpenChange={(open) => setShowIOSInstructions(open)}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center">
+            <PhoneIcon className="mr-2 h-5 w-5 text-primary" />
+            Install Municipality App on iOS
+          </DialogTitle>
+          <DialogDescription>
+            Follow these steps to add Municipality to your Home Screen for faster access and offline support.
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="space-y-4 my-2 text-sm">
+          <div className="flex items-start space-x-2 p-2 rounded-md bg-gray-50">
+            <div className="flex-shrink-0 bg-primary text-white rounded-full p-1.5">
+              <span className="text-xs font-bold">1</span>
+            </div>
+            <div>
+              <p className="font-medium">Tap the Share button in Safari</p>
+              <p className="text-xs text-gray-500 mt-1">Find the Share icon <ShareIcon className="inline h-3 w-3" /> at the bottom of your screen (iPhone) or top of your screen (iPad)</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-2 p-2 rounded-md bg-gray-50">
+            <div className="flex-shrink-0 bg-primary text-white rounded-full p-1.5">
+              <span className="text-xs font-bold">2</span>
+            </div>
+            <div>
+              <p className="font-medium">Scroll down and tap "Add to Home Screen"</p>
+              <p className="text-xs text-gray-500 mt-1">Look for the option with a <PlusIcon className="inline h-3 w-3" /> icon</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-2 p-2 rounded-md bg-gray-50">
+            <div className="flex-shrink-0 bg-primary text-white rounded-full p-1.5">
+              <span className="text-xs font-bold">3</span>
+            </div>
+            <div>
+              <p className="font-medium">Tap "Add" in the top right corner</p>
+              <p className="text-xs text-gray-500 mt-1">The Municipality app will be added to your Home Screen</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-4">
+          <Button 
+            className="w-full" 
+            onClick={() => setShowIOSInstructions(false)}
+          >
+            Got it
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   // Render the minimal floating action button
   if (showMinimalButton && !showInstallPrompt) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button 
-              className="fixed right-4 top-20 z-50 bg-white text-primary hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110"
-              onClick={handleInstallClick}
-              aria-label="Install App"
-            >
-              {promptType === 'ios' ? (
-                <PhoneIcon className="h-5 w-5" />
-              ) : promptType === 'android' ? (
-                <SmartphoneIcon className="h-5 w-5" />
-              ) : (
-                <DownloadIcon className="h-5 w-5" />
-              )}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="left">
-            <p>{t('install.minimal_tooltip', 'Install app for easier access')}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <>
+        {/* iOS instructions dialog */}
+        <IosInstructionsDialog />
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                className="fixed right-4 top-20 z-50 bg-white text-primary hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110"
+                onClick={handleInstallClick}
+                aria-label="Install App"
+              >
+                {promptType === 'ios' ? (
+                  <PhoneIcon className="h-5 w-5" />
+                ) : promptType === 'android' ? (
+                  <SmartphoneIcon className="h-5 w-5" />
+                ) : (
+                  <DownloadIcon className="h-5 w-5" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              <p>{t('install.minimal_tooltip', 'Install app for easier access')}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </>
     );
   }
 
   // Don't render anything if no prompts are active
-  if (!showInstallPrompt) return null;
+  if (!showInstallPrompt && !showIOSInstructions) return null;
+  
+  // Render iOS instructions dialog if open
+  if (showIOSInstructions) {
+    return <IosInstructionsDialog />;
+  }
 
   // Render the full prompt banner
   return (
@@ -182,7 +274,7 @@ export function InstallPrompt() {
             
             <p className="text-sm text-gray-600 mb-3">
               {promptType === 'ios' 
-                ? t('install.ios.description', 'Tap Share then "Add to Home Screen" for easier access') 
+                ? t('install.ios.description', 'Install this app on your iPhone/iPad for faster access and offline support') 
                 : t('install.description', 'Add to your home screen for offline access and faster performance')}
             </p>
             
@@ -201,8 +293,8 @@ export function InstallPrompt() {
                 size="sm"
                 onClick={handleInstallClick}
               >
-                {promptType === 'ios' ? t('install.got_it', 'Got it') : t('install.button', 'Install App')}
-                <ArrowDownIcon className="ml-1 h-3 w-3" />
+                {promptType === 'ios' ? t('install.ios.button', 'Show me how') : t('install.button', 'Install App')}
+                {promptType === 'ios' ? <InfoIcon className="ml-1 h-3 w-3" /> : <ArrowDownIcon className="ml-1 h-3 w-3" />}
               </Button>
             </div>
           </div>
