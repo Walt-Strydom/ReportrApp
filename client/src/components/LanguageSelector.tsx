@@ -26,7 +26,7 @@ export function LanguageSelector() {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
-          className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white border-white/20"
+          className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-black border-white/20"
         >
           <GlobeIcon className="h-4 w-4" />
           <span>{t(`language.${i18n.language}`)}</span>

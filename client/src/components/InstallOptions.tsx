@@ -65,21 +65,31 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
   }, []);
   
   if (minimal) {
-    // Minimal version shows just the iOS button
+    // Minimal version shows both iOS and Android buttons as icons
     return (
       <div className={`flex gap-2 ${className}`}>
         <button 
           className="bg-white text-blue-500 hover:bg-gray-100 p-2 rounded-full shadow-sm border border-gray-100 transition-all hover:scale-110"
           onClick={handleIOSInstall}
           aria-label="Install on iOS"
+          title="Install on iOS"
         >
           <PhoneIcon className="h-5 w-5" />
+        </button>
+        
+        <button 
+          className="bg-white text-green-500 hover:bg-gray-100 p-2 rounded-full shadow-sm border border-gray-100 transition-all hover:scale-110"
+          onClick={handleAndroidInstall}
+          aria-label="Install on Android"
+          title="Install on Android"
+        >
+          <SmartphoneIcon className="h-5 w-5" />
         </button>
       </div>
     );
   }
   
-  // Full version shows the iOS button with text
+  // Full version shows both iOS and Android buttons with text
   return (
     <div className={`flex flex-wrap gap-2 ${className}`}>
       <Button 
@@ -90,6 +100,16 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
       >
         <PhoneIcon className="mr-2 h-4 w-4" />
         Install on iOS
+      </Button>
+      
+      <Button 
+        variant="outline"
+        className="border-green-500 text-green-500 hover:bg-green-50"
+        onClick={handleAndroidInstall}
+        size="sm"
+      >
+        <SmartphoneIcon className="mr-2 h-4 w-4" />
+        Install on Android
       </Button>
     </div>
   );

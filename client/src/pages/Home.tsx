@@ -302,8 +302,8 @@ export default function Home() {
                     <Download className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.install.title', 'Install Lokisa on your iPhone')}</h3>
-                    <p className="text-xs text-gray-600 mb-2">{t('guide.install.description', 'Get the best experience by installing Lokisa on your iOS device. Tap below to see the simple steps for adding to your Home Screen.')}</p>
+                    <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.install.title', 'Install Lokisa on your device')}</h3>
+                    <p className="text-xs text-gray-600 mb-2">{t('guide.install.description', 'Get the best experience by installing Lokisa on your device. Tap the buttons below to install on iOS or Android.')}</p>
                     <div className="mt-2">
                       <InstallOptions />
                     </div>
