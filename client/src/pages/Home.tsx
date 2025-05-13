@@ -213,17 +213,11 @@ export default function Home() {
             <div className="flex-1 flex justify-start">
               <img 
                 src="/logo-orange.png" 
-                alt="CitiReport Logo" 
+                alt="Lokisa Logo" 
                 className="h-10 w-auto"
               />
             </div>
-            <div className="flex-1 flex justify-end items-center space-x-3">
-              {/* Only show install buttons if not already installed as PWA */}
-              {!isInstalledPWA() && (
-                <div className="border-r border-gray-200 pr-3">
-                  <InstallOptions minimal={true} />
-                </div>
-              )}
+            <div className="flex-1 flex justify-end items-center">
               <LanguageSelector />
             </div>
           </div>
