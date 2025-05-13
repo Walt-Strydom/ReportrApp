@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { 
-  SmartphoneIcon, 
-  PhoneIcon,
-  InfoIcon
-} from 'lucide-react';
+import { InfoIcon } from 'lucide-react';
+import { FaApple, FaAndroid } from 'react-icons/fa';
 import { isIOS, isAndroid, isInstalledPWA } from '@/lib/platform';
 import { showIOSInstallInstructions } from './InstallPrompt';
 
@@ -74,7 +71,7 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
           aria-label="Install on iOS"
           title="Install on iOS"
         >
-          <PhoneIcon className="h-5 w-5" />
+          <FaApple className="h-5 w-5" />
         </button>
         
         <button 
@@ -83,7 +80,7 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
           aria-label="Install on Android"
           title="Install on Android"
         >
-          <SmartphoneIcon className="h-5 w-5" />
+          <FaAndroid className="h-5 w-5" />
         </button>
       </div>
     );
@@ -98,7 +95,7 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
         onClick={handleIOSInstall}
         size="sm"
       >
-        <PhoneIcon className="mr-2 h-4 w-4" />
+        <FaApple className="mr-2 h-4 w-4" />
         Install on iOS
       </Button>
       
@@ -108,7 +105,7 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
         onClick={handleAndroidInstall}
         size="sm"
       >
-        <SmartphoneIcon className="mr-2 h-4 w-4" />
+        <FaAndroid className="mr-2 h-4 w-4" />
         Install on Android
       </Button>
     </div>

@@ -200,7 +200,7 @@ export function InstallPrompt() {
             </div>
             <div>
               <p className="font-medium">Tap "Add" in the top right corner</p>
-              <p className="text-xs text-gray-500 mt-1">The Municipality app will be added to your Home Screen</p>
+              <p className="text-xs text-gray-500 mt-1">The Lokisa app will be added to your Home Screen</p>
             </div>
           </div>
         </div>
@@ -217,75 +217,12 @@ export function InstallPrompt() {
     </Dialog>
   );
 
-  // Render the minimal floating action buttons
+  // No more floating install buttons
   if (showMinimalButton && !showInstallPrompt) {
     return (
       <>
         {/* iOS instructions dialog */}
         <IosInstructionsDialog />
-        
-        {/* Show separate buttons for iOS and Android */}
-        <div className="fixed right-4 top-20 z-50 flex flex-col gap-2">
-          {/* iOS Button */}
-          {isIOS() && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button 
-                    className="bg-white text-blue-500 hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110 flex items-center justify-center"
-                    onClick={handleInstallClick}
-                    aria-label="Install on iOS"
-                  >
-                    <PhoneIcon className="h-5 w-5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <p>Install on iOS device</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          
-          {/* Android Button */}
-          {isAndroid() && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button 
-                    className="bg-white text-green-500 hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110 flex items-center justify-center"
-                    onClick={handleInstallClick}
-                    aria-label="Install on Android"
-                  >
-                    <SmartphoneIcon className="h-5 w-5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <p>Install on Android device</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          
-          {/* Generic Button (for other platforms) */}
-          {!isIOS() && !isAndroid() && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button 
-                    className="bg-white text-primary hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110 flex items-center justify-center"
-                    onClick={handleInstallClick}
-                    aria-label="Install App"
-                  >
-                    <DownloadIcon className="h-5 w-5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <p>{t('install.minimal_tooltip', 'Install app for easier access')}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
       </>
     );
   }
