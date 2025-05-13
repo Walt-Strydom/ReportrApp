@@ -148,15 +148,15 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0; font-size: 24px;">⚠️ Issue Support - Additional Confirmation</h1>
+              <h1 style="margin: 0; font-size: 24px;">⚠️ URGENT: Additional Support Received</h1>
             </div>
             <div class="content">
-              <p><strong>Another citizen has supported</strong> an existing infrastructure issue in Pretoria. Details are as follows:</p>
+              <p><strong>This issue now has ${issue.upvotes} ${issue.upvotes === 1 ? 'supporter' : 'supporters'}</strong> from different citizens in Pretoria. Details are as follows:</p>
               
               <div class="highlight">
-                <p class="detail-row"><span class="label">Original Report ID:</span> ${issue.reportId}</p>
+                <p class="detail-row"><span class="label">Report ID:</span> ${issue.reportId}</p>
                 <p class="detail-row"><span class="label">Issue Type:</span> ${issueType}</p>
-                <p class="detail-row"><span class="label">Current Supporters:</span> ${issue.upvotes}</p>
+                <p class="detail-row" style="color: #ef4444; font-weight: bold; font-size: 16px;"><span class="label">TOTAL SUPPORTERS:</span> ${issue.upvotes}</p>
               </div>
               
               <h3>Location Details</h3>
@@ -168,7 +168,10 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
               <p class="detail-row"><span class="label">First Reported:</span> ${reportDate}</p>
               <p class="detail-row"><span class="label">Status:</span> ${issue.status.toUpperCase()}</p>
               
-              <p class="warning">Multiple reports suggest this issue requires immediate attention. Please prioritize accordingly.</p>
+              <p style="background-color: #fef2f2; border: 1px solid #ef4444; padding: 10px; font-weight: bold; color: #b91c1c; text-align: center; margin-top: 20px;">
+                THIS ISSUE HAS BEEN REPORTED BY MULTIPLE CITIZENS AND REQUIRES IMMEDIATE ATTENTION.<br>
+                Please prioritize this report (ID: ${issue.reportId}) for resolution.
+              </p>
             </div>
             <div class="footer">
               <p>This is an automated message from the Lokisa Infrastructure Reporting System. Please do not reply to this email.</p>
@@ -178,11 +181,12 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
       </html>
     `;
     
-    // Send the email
+    // Send the email with exactly the same subject line as the initial report
+    // This ensures municipal staff can easily match issues without scanning through different formats
     const data = await resend.emails.send({
       from: 'Lokisa Infrastructure Reports <reports@resend.dev>',
       to: defaultRecipients,
-      subject: `SUPPORTED [${issue.reportId}]: ${issueType} at ${issue.address} (${issue.upvotes} ${issue.upvotes === 1 ? 'supporter' : 'supporters'})`,
+      subject: `New Report [${issue.reportId}]: ${issueType} at ${issue.address}`,
       html: emailContent,
     });
     
