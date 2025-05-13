@@ -6,11 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Add health check endpoints
-app.get('/', (_req, res) => {
-  res.status(200).send('OK');
-});
-
+// Add health check endpoint
 app.get('/_health', (_req, res) => {
   res.status(200).send('OK');
 });
