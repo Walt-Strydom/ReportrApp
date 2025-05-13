@@ -9,6 +9,7 @@ import NearbyIssuesPanel from '@/components/NearbyIssuesPanel';
 import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
 import MapView from '@/components/MapView';
+import InstallOptions from '@/components/InstallOptions';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,8 @@ import {
   Megaphone, 
   X, 
   ArrowRight, 
-  ChevronRight 
+  ChevronRight,
+  Download
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';

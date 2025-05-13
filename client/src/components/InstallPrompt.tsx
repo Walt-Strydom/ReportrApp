@@ -27,6 +27,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+// Global state to coordinate installation prompts
+const globalInstallState = {
+  showIOSInstructions: false,
+  setShowIOSInstructions: (show: boolean) => {}
+};
+
+// Function to directly show iOS installation instructions
+export function showIOSInstallInstructions() {
+  globalInstallState.setShowIOSInstructions(true);
+}
+
 export function InstallPrompt() {
   const { t } = useTranslation();
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
@@ -34,6 +45,14 @@ export function InstallPrompt() {
   const [promptType, setPromptType] = useState<'android' | 'ios' | 'standard'>('standard');
   const [showMinimalButton, setShowMinimalButton] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+  
+  // Register the state setter with the global object
+  useEffect(() => {
+    globalInstallState.setShowIOSInstructions = setShowIOSInstructions;
+    return () => {
+      globalInstallState.setShowIOSInstructions = () => {};
+    };
+  }, []);
   
   // Use refs to store images of iOS install instructions
   const iosInstructionsRef = useRef<HTMLImageElement | null>(null);
@@ -198,35 +217,75 @@ export function InstallPrompt() {
     </Dialog>
   );
 
-  // Render the minimal floating action button
+  // Render the minimal floating action buttons
   if (showMinimalButton && !showInstallPrompt) {
     return (
       <>
         {/* iOS instructions dialog */}
         <IosInstructionsDialog />
         
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button 
-                className="fixed right-4 top-20 z-50 bg-white text-primary hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110"
-                onClick={handleInstallClick}
-                aria-label="Install App"
-              >
-                {promptType === 'ios' ? (
-                  <PhoneIcon className="h-5 w-5" />
-                ) : promptType === 'android' ? (
-                  <SmartphoneIcon className="h-5 w-5" />
-                ) : (
-                  <DownloadIcon className="h-5 w-5" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="left">
-              <p>{t('install.minimal_tooltip', 'Install app for easier access')}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {/* Show separate buttons for iOS and Android */}
+        <div className="fixed right-4 top-20 z-50 flex flex-col gap-2">
+          {/* iOS Button */}
+          {isIOS() && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    className="bg-white text-blue-500 hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110 flex items-center justify-center"
+                    onClick={handleInstallClick}
+                    aria-label="Install on iOS"
+                  >
+                    <PhoneIcon className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  <p>Install on iOS device</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          
+          {/* Android Button */}
+          {isAndroid() && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    className="bg-white text-green-500 hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110 flex items-center justify-center"
+                    onClick={handleInstallClick}
+                    aria-label="Install on Android"
+                  >
+                    <SmartphoneIcon className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  <p>Install on Android device</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          
+          {/* Generic Button (for other platforms) */}
+          {!isIOS() && !isAndroid() && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button 
+                    className="bg-white text-primary hover:bg-gray-100 p-3 rounded-full shadow-lg border border-gray-100 transition-all hover:scale-110 flex items-center justify-center"
+                    onClick={handleInstallClick}
+                    aria-label="Install App"
+                  >
+                    <DownloadIcon className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  <p>{t('install.minimal_tooltip', 'Install app for easier access')}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
       </>
     );
   }
@@ -246,9 +305,9 @@ export function InstallPrompt() {
         <div className="flex items-start">
           <div className="mr-3 mt-1 text-primary">
             {promptType === 'ios' ? (
-              <PhoneIcon className="h-5 w-5" />
+              <PhoneIcon className="h-5 w-5 text-blue-500" />
             ) : promptType === 'android' ? (
-              <SmartphoneIcon className="h-5 w-5" />
+              <SmartphoneIcon className="h-5 w-5 text-green-500" />
             ) : (
               <DownloadIcon className="h-5 w-5" />
             )}
@@ -278,7 +337,8 @@ export function InstallPrompt() {
                 : t('install.description', 'Add to your home screen for offline access and faster performance')}
             </p>
             
-            <div className="flex justify-end gap-2">
+            {/* Platform-specific buttons */}
+            <div className="flex flex-wrap justify-end gap-2">
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -288,14 +348,41 @@ export function InstallPrompt() {
                 {t('install.dismiss', 'Not now')}
               </Button>
               
-              <Button 
-                className="bg-primary hover:bg-primary/90 text-white text-sm"
-                size="sm"
-                onClick={handleInstallClick}
-              >
-                {promptType === 'ios' ? t('install.ios.button', 'Show me how') : t('install.button', 'Install App')}
-                {promptType === 'ios' ? <InfoIcon className="ml-1 h-3 w-3" /> : <ArrowDownIcon className="ml-1 h-3 w-3" />}
-              </Button>
+              {/* iOS Button */}
+              {isIOS() && (
+                <Button 
+                  className="bg-blue-500 hover:bg-blue-600 text-white text-sm"
+                  size="sm"
+                  onClick={handleInstallClick}
+                >
+                  <PhoneIcon className="mr-1 h-3 w-3" />
+                  {t('install.ios.button', 'Show iOS Steps')}
+                </Button>
+              )}
+              
+              {/* Android Button */}
+              {isAndroid() && (
+                <Button 
+                  className="bg-green-500 hover:bg-green-600 text-white text-sm"
+                  size="sm"
+                  onClick={handleInstallClick}
+                >
+                  <SmartphoneIcon className="mr-1 h-3 w-3" />
+                  {t('install.android.button', 'Install on Android')}
+                </Button>
+              )}
+              
+              {/* Generic Button */}
+              {!isIOS() && !isAndroid() && (
+                <Button 
+                  className="bg-primary hover:bg-primary/90 text-white text-sm"
+                  size="sm"
+                  onClick={handleInstallClick}
+                >
+                  {t('install.button', 'Install App')}
+                  <ArrowDownIcon className="ml-1 h-3 w-3" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
