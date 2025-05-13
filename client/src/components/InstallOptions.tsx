@@ -49,7 +49,7 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
   };
   
   // Capture the beforeinstallprompt event for Android
-  useState(() => {
+  useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
       // Prevent Chrome from automatically showing the prompt
       e.preventDefault();
@@ -62,7 +62,7 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
-  });
+  }, []);
   
   if (minimal) {
     // Minimal version shows just the buttons with an icon

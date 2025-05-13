@@ -217,7 +217,13 @@ export default function Home() {
                 className="h-10 w-auto"
               />
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-end items-center space-x-3">
+              {/* Only show install buttons if not already installed as PWA */}
+              {!isInstalledPWA() && (
+                <div className="border-r border-gray-200 pr-3">
+                  <InstallOptions minimal={true} />
+                </div>
+              )}
               <LanguageSelector />
             </div>
           </div>
@@ -279,7 +285,7 @@ export default function Home() {
                   <p className="text-xs text-gray-600">{t('guide.support.description', 'Tap on any issue to view details. Click the Support button to increase priority. More supporters mean faster resolution.')}</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4 mb-3">
                 <div className="bg-orange-100 rounded-full p-2 text-orange-600 mt-1 flex-shrink-0">
                   <MapPin className="h-4 w-4" />
                 </div>
@@ -288,6 +294,22 @@ export default function Home() {
                   <p className="text-xs text-gray-600">{t('guide.map.description', 'Use the map to see all reported issues in your area. Tap on markers to view specific issues.')}</p>
                 </div>
               </div>
+
+              {/* Show install section only if not already installed as PWA */}
+              {!isInstalledPWA() && (
+                <div className="flex items-start space-x-4">
+                  <div className="bg-orange-100 rounded-full p-2 text-orange-600 mt-1 flex-shrink-0">
+                    <Download className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.install.title', 'Install the app')}</h3>
+                    <p className="text-xs text-gray-600 mb-2">{t('guide.install.description', 'Get the best experience by installing this app on your device. Works offline and provides faster access.')}</p>
+                    <div className="mt-2">
+                      <InstallOptions />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>
