@@ -1,12 +1,16 @@
 import { Resend } from 'resend';
 import type { Issue } from '@shared/schema';
 import { getIssueTypeById } from '../client/src/data/issueTypes';
+import { differenceInDays } from 'date-fns';
 
 // Initialize Resend with the API key
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Default recipient email addresses
 const defaultRecipients = ['waltstrydom@gmail.com'];
+
+// Track issues that have already received reminder emails to avoid duplicates
+const reminderSentTracker = new Map<number, Date>();
 
 /**
  * Format date for email display
@@ -193,6 +197,97 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
     return { success: true, data };
   } catch (error) {
     console.error('Error sending support email:', error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send a reminder email for an unresolved issue after 45 days
+ */
+export async function sendReminderEmail(issue: Issue): Promise<{ success: boolean; data?: any; error?: any }> {
+  try {
+    // Check if we've already sent a reminder for this issue recently
+    const lastReminder = reminderSentTracker.get(issue.id);
+    if (lastReminder && differenceInDays(new Date(), lastReminder) < 14) {
+      // Don't send another reminder if one was sent less than 14 days ago
+      return { success: false, error: 'Reminder already sent recently' };
+    }
+    
+    // Format issue details for email
+    const issueType = getIssueTypeName(issue.type);
+    const reportDate = formatDate(issue.createdAt);
+    const daysOpen = differenceInDays(new Date(), new Date(issue.createdAt));
+    
+    // Create email content
+    const emailContent = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #f59e0b; color: white; padding: 15px; border-radius: 5px 5px 0 0; }
+            .content { padding: 20px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px; }
+            .footer { margin-top: 20px; font-size: 12px; color: #666; text-align: center; }
+            .detail-row { margin-bottom: 10px; }
+            .label { font-weight: bold; }
+            .map-link { color: #2563eb; text-decoration: none; }
+            .warning { color: #f59e0b; font-weight: bold; }
+            .highlight { background-color: #fff7ed; border-left: 3px solid #f59e0b; padding: 10px; margin: 15px 0; }
+            .timer { font-size: 28px; font-weight: bold; color: #f59e0b; text-align: center; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 style="margin: 0; font-size: 24px;">⏰ Reminder: Unresolved Issue</h1>
+            </div>
+            <div class="content">
+              <p>This is a reminder about an infrastructure issue that has remained <strong>unresolved for ${daysOpen} days</strong>.</p>
+              
+              <div class="timer">45+ DAYS ELAPSED</div>
+              
+              <div class="highlight">
+                <p class="detail-row"><span class="label">Report ID:</span> ${issue.reportId}</p>
+                <p class="detail-row"><span class="label">Issue Type:</span> ${issueType}</p>
+                <p class="detail-row"><span class="label">Supporters:</span> ${issue.upvotes}</p>
+                <p class="detail-row"><span class="label">Status:</span> ${issue.status.toUpperCase()}</p>
+              </div>
+              
+              <h3>Location Details</h3>
+              <p class="detail-row"><span class="label">Address:</span> ${issue.address}</p>
+              <p class="detail-row"><span class="label">GPS Coordinates:</span> ${issue.latitude.toFixed(6)}, ${issue.longitude.toFixed(6)}</p>
+              <p class="detail-row"><span class="label">Google Maps:</span> <a href="https://www.google.com/maps?q=${issue.latitude},${issue.longitude}" class="map-link" target="_blank">View on Google Maps</a></p>
+              
+              <h3>Issue History</h3>
+              <p class="detail-row"><span class="label">First Reported:</span> ${reportDate} (${daysOpen} days ago)</p>
+              
+              <p style="background-color: #fff7ed; border: 1px solid #f59e0b; padding: 10px; font-weight: bold; color: #b45309; text-align: center; margin-top: 20px;">
+                THIS ISSUE HAS BEEN OPEN FOR OVER 45 DAYS AND REQUIRES ATTENTION.<br>
+                Please update status or provide resolution for report ID: ${issue.reportId}.
+              </p>
+            </div>
+            <div class="footer">
+              <p>This is an automated reminder from the Lokisa Infrastructure Reporting System. Please do not reply to this email.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+    
+    // Send the email with a reminder-specific subject line
+    const data = await resend.emails.send({
+      from: 'Lokisa Infrastructure Reports <reports@resend.dev>',
+      to: defaultRecipients,
+      subject: `REMINDER [${issue.reportId}]: ${issueType} at ${issue.address} - Open for ${daysOpen} days`,
+      html: emailContent,
+    });
+    
+    // Track that we've sent a reminder for this issue
+    reminderSentTracker.set(issue.id, new Date());
+    
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error sending reminder email:', error);
     return { success: false, error };
   }
 }

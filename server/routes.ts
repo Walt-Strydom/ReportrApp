@@ -1,5 +1,6 @@
-import type { Express, Request, Response } from "express";
-import { createServer, type Server } from "http";
+import { Express, Request, Response } from "express";
+import express from "express";
+import { createServer, Server } from "http";
 import { storage } from "./storage";
 import { issueFormSchema, supportFormSchema } from "@shared/schema";
 import { z } from "zod";
@@ -8,7 +9,8 @@ import { ZodError } from "zod-validation-error";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { sendNewIssueEmail, sendSupportEmail } from "./emailService";
+import { differenceInDays } from 'date-fns';
+import { sendNewIssueEmail, sendSupportEmail, sendReminderEmail } from "./emailService";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -27,10 +29,56 @@ const upload = multer({
   })
 });
 
+// Function to check for unresolved issues older than 45 days and send reminders
+async function checkAndSendReminders() {
+  try {
+    // Get all issues
+    const issues = await storage.getIssues();
+    
+    // Filter for unresolved issues older than 45 days
+    const now = new Date();
+    const unresolvedOldIssues = issues.filter(issue => {
+      // Only include issues with status 'pending' or 'in-progress'
+      const isUnresolved = issue.status === 'pending' || issue.status === 'in-progress';
+      const creationDate = new Date(issue.createdAt);
+      const daysOpen = differenceInDays(now, creationDate);
+      
+      // Check if the issue is at least 45 days old
+      return isUnresolved && daysOpen >= 45;
+    });
+    
+    console.log(`Found ${unresolvedOldIssues.length} unresolved issues older than 45 days`);
+    
+    // Send reminder emails for each old unresolved issue
+    for (const issue of unresolvedOldIssues) {
+      const result = await sendReminderEmail(issue);
+      if (result.success) {
+        console.log(`Sent reminder email for issue ID ${issue.id}, report ID ${issue.reportId}`);
+      } else {
+        console.error(`Failed to send reminder email for issue ID ${issue.id}:`, result.error);
+      }
+      
+      // Add small delay between emails to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  } catch (error) {
+    console.error('Error checking for old issues:', error);
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
 
+  // Set up reminder check to run daily
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000; // in milliseconds
+  
+  // Run initial check after 1 minute (to allow server to fully start)
+  setTimeout(checkAndSendReminders, 60 * 1000);
+  
+  // Then run every 24 hours
+  setInterval(checkAndSendReminders, TWENTY_FOUR_HOURS);
+  
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(import.meta.dirname, '../uploads')));
 
@@ -258,6 +306,3 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   return httpServer;
 }
-
-// This is required for multer import to work correctly
-import express from 'express';

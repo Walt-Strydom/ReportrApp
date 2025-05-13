@@ -1,13 +1,26 @@
 import { useState } from 'react';
-import { XIcon, SearchIcon, ArrowUpIcon, RefreshCwIcon } from 'lucide-react';
+import { XIcon, SearchIcon, ArrowUpIcon, RefreshCwIcon, CalendarIcon, FilterIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Issue } from '@/types';
-import { formatDistanceToNow } from 'date-fns';
-import { getIssueTypeById, issueCategories } from '@/data/issueTypes';
+import { formatDistanceToNow, subDays, isAfter } from 'date-fns';
+import { getIssueTypeById, issueCategories, getAllIssueTypes } from '@/data/issueTypes';
 import Icon from '@/components/Icon';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
 
 interface NearbyIssuesPanelProps {
   issues: Issue[];
@@ -29,26 +42,41 @@ export default function NearbyIssuesPanel({
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [issueTypeFilter, setIssueTypeFilter] = useState<string | null>(null);
+  const [timeFilter, setTimeFilter] = useState<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
+  const [filterTab, setFilterTab] = useState<string>("category");
+  
+  // Get all issue types for the filter dropdown
+  const allIssueTypes = getAllIssueTypes();
 
-  // Filter issues based on current filter, category, and search query
+  // Filter issues based on current filters
   const filteredIssues = issues.filter(issue => {
     // If categoryFilter is set, check if the issue belongs to that category
     const issueType = getIssueTypeById(issue.type);
     
+    // Category filtering
     const matchesCategory = !categoryFilter || 
       (issueType && issueType.categoryId === categoryFilter) || 
       // Handle legacy types
       (categoryFilter === 'roads-traffic' && (issue.type === 'pothole' || issue.type === 'trafficlight')) ||
       (categoryFilter === 'street-lighting' && issue.type === 'streetlight');
     
-    const matchesFilter = filter === 'all' || issue.type === filter;
+    // Issue type filtering
+    const matchesIssueType = !issueTypeFilter || issue.type === issueTypeFilter;
+    
+    // Time filtering (30, 60, 90 days)
+    const matchesTimeFilter = !timeFilter || 
+      isAfter(new Date(issue.createdAt), subDays(new Date(), timeFilter));
+    
+    // Search query filtering
     const matchesSearch = !searchQuery || 
       issue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (issue.notes || '').toLowerCase().includes(searchQuery.toLowerCase());
     
-    return (categoryFilter ? matchesCategory : matchesFilter) && matchesSearch;
+    // Combined filters
+    return matchesCategory && matchesIssueType && matchesTimeFilter && matchesSearch;
   });
   
   // Get the actual color value (not class name) for backgrounds
@@ -194,65 +222,220 @@ export default function NearbyIssuesPanel({
               </div>
             </div>
             
+            {/* Filter controls */}
             <div className="mb-4">
-              {/* Category filter buttons */}
-              <h3 className="text-sm font-medium text-neutral-500 mb-2">{t('categories.label', 'Categories')}</h3>
-              <div className="flex overflow-x-auto py-2 -mx-2 mb-4">
-                <Button
-                  variant={categoryFilter === null ? 'default' : 'outline'}
-                  className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
-                    categoryFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
-                  }`}
-                  onClick={() => {
-                    setCategoryFilter(null);
-                    setFilter('all');
-                  }}
-                >
-                  <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
-                  {t('categories.all', 'All Categories')}
-                </Button>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-medium text-neutral-500">{t('filters.label', 'Filters')}</h3>
                 
-                {issueCategories.map(category => (
-                  <Button
-                    key={category.id}
-                    variant={categoryFilter === category.id ? 'default' : 'outline'}
-                    className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
-                      categoryFilter === category.id ? 
-                      `text-white` : 
-                      'bg-neutral-200 text-neutral-800'
-                    }`}
-                    onClick={() => {
-                      setCategoryFilter(category.id);
-                      setFilter('all');
+                {/* Time period filter dropdown */}
+                <div className="flex items-center">
+                  <CalendarIcon className="h-4 w-4 text-neutral-500 mr-2" />
+                  <Select
+                    value={timeFilter ? String(timeFilter) : "all"}
+                    onValueChange={(value) => {
+                      if (value === "all") {
+                        setTimeFilter(null);
+                      } else {
+                        setTimeFilter(parseInt(value, 10));
+                      }
                     }}
-                    style={categoryFilter === category.id ? {backgroundColor: category.color} : {}}
                   >
-                    {/* Show a representative icon for the category */}
-                    {category.id === 'roads-traffic' && 
-                      <Icon name="pothole" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.id === 'street-lighting' && 
-                      <Icon name="lightbulb" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.id === 'water' && 
-                      <Icon name="droplets" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.id === 'electricity' && 
-                      <Icon name="zap" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.id === 'waste' && 
-                      <Icon name="trash" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.id === 'public-spaces' && 
-                      <Icon name="building" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.id === 'environmental' && 
-                      <Icon name="palmtree" className="mr-1.5 h-3.5 w-3.5" />
-                    }
-                    {category.name}
-                  </Button>
-                ))}
+                    <SelectTrigger className="h-8 w-[140px] text-xs">
+                      <SelectValue placeholder="Time period" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Time</SelectItem>
+                      <SelectItem value="30">Last 30 Days</SelectItem>
+                      <SelectItem value="60">Last 60 Days</SelectItem>
+                      <SelectItem value="90">Last 90 Days</SelectItem>
+                      <SelectItem value="7">Last 7 Days</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+              
+              {/* Filter tabs */}
+              <Tabs 
+                defaultValue="category" 
+                value={filterTab} 
+                onValueChange={setFilterTab}
+                className="w-full mb-4"
+              >
+                <TabsList className="w-full grid grid-cols-2 mb-4">
+                  <TabsTrigger value="category" 
+                    onClick={() => {
+                      setIssueTypeFilter(null);
+                      setFilterTab("category");
+                    }}
+                  >
+                    Categories
+                  </TabsTrigger>
+                  <TabsTrigger value="issueType"
+                    onClick={() => {
+                      setCategoryFilter(null);
+                      setFilterTab("issueType");
+                    }}
+                  >
+                    Issue Types
+                  </TabsTrigger>
+                </TabsList>
+                
+                {/* Category filter content */}
+                <TabsContent value="category" className="mt-0">
+                  <div className="flex overflow-x-auto py-2 -mx-2">
+                    <Button
+                      variant={categoryFilter === null ? 'default' : 'outline'}
+                      className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
+                        categoryFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
+                      }`}
+                      onClick={() => {
+                        setCategoryFilter(null);
+                        setIssueTypeFilter(null);
+                      }}
+                    >
+                      <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
+                      {t('categories.all', 'All Categories')}
+                    </Button>
+                    
+                    {issueCategories.map(category => (
+                      <Button
+                        key={category.id}
+                        variant={categoryFilter === category.id ? 'default' : 'outline'}
+                        className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
+                          categoryFilter === category.id ? 
+                          `text-white` : 
+                          'bg-neutral-200 text-neutral-800'
+                        }`}
+                        onClick={() => {
+                          setCategoryFilter(category.id);
+                          setIssueTypeFilter(null);
+                        }}
+                        style={categoryFilter === category.id ? {backgroundColor: category.color} : {}}
+                      >
+                        {/* Show a representative icon for the category */}
+                        {category.id === 'roads-traffic' && 
+                          <Icon name="pothole" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.id === 'street-lighting' && 
+                          <Icon name="lightbulb" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.id === 'water' && 
+                          <Icon name="droplets" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.id === 'electricity' && 
+                          <Icon name="zap" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.id === 'waste' && 
+                          <Icon name="trash" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.id === 'public-spaces' && 
+                          <Icon name="building" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.id === 'environmental' && 
+                          <Icon name="palmtree" className="mr-1.5 h-3.5 w-3.5" />
+                        }
+                        {category.name}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+                
+                {/* Issue Types filter content */}
+                <TabsContent value="issueType" className="mt-0">
+                  <div className="flex overflow-x-auto py-2 -mx-2">
+                    <Button
+                      variant={issueTypeFilter === null ? 'default' : 'outline'}
+                      className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
+                        issueTypeFilter === null ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-800'
+                      }`}
+                      onClick={() => {
+                        setIssueTypeFilter(null);
+                      }}
+                    >
+                      <Icon name="grid" className="mr-1.5 h-3.5 w-3.5" />
+                      All Issue Types
+                    </Button>
+                    
+                    {allIssueTypes.map(issueType => (
+                      <Button
+                        key={issueType.id}
+                        variant={issueTypeFilter === issueType.id ? 'default' : 'outline'}
+                        className={`whitespace-nowrap px-4 py-2 rounded-full mr-2 text-sm flex items-center ${
+                          issueTypeFilter === issueType.id ? 
+                          `text-white` : 
+                          'bg-neutral-200 text-neutral-800'
+                        }`}
+                        onClick={() => setIssueTypeFilter(issueType.id)}
+                        style={issueTypeFilter === issueType.id ? {backgroundColor: issueType.color} : {}}
+                      >
+                        <Icon name={issueType.id} className="mr-1.5 h-3.5 w-3.5" />
+                        {issueType.name}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
+              
+              {/* Active filters */}
+              {(timeFilter || categoryFilter || issueTypeFilter) && (
+                <div className="flex flex-wrap items-center mt-2 mb-4">
+                  <span className="text-xs text-neutral-500 mr-2">Active filters:</span>
+                  
+                  {timeFilter && (
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full flex items-center mr-2 mb-1">
+                      <CalendarIcon className="h-3 w-3 mr-1" />
+                      Last {timeFilter} Days
+                      <button 
+                        className="ml-1 hover:text-primary-dark" 
+                        onClick={() => setTimeFilter(null)}
+                      >
+                        <XIcon className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  
+                  {categoryFilter && (
+                    <span 
+                      className="text-white text-xs px-2 py-1 rounded-full flex items-center mr-2 mb-1"
+                      style={{ backgroundColor: issueCategories.find(c => c.id === categoryFilter)?.color }}
+                    >
+                      {issueCategories.find(c => c.id === categoryFilter)?.name}
+                      <button 
+                        className="ml-1 text-white/80 hover:text-white" 
+                        onClick={() => setCategoryFilter(null)}
+                      >
+                        <XIcon className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  
+                  {issueTypeFilter && (
+                    <span 
+                      className="text-white text-xs px-2 py-1 rounded-full flex items-center mr-2 mb-1"
+                      style={{ backgroundColor: getIssueTypeById(issueTypeFilter)?.color }}
+                    >
+                      {getIssueTypeById(issueTypeFilter)?.name}
+                      <button 
+                        className="ml-1 text-white/80 hover:text-white" 
+                        onClick={() => setIssueTypeFilter(null)}
+                      >
+                        <XIcon className="h-3 w-3" />
+                      </button>
+                    </span>
+                  )}
+                  
+                  <button 
+                    className="text-xs text-neutral-500 underline hover:text-primary mb-1"
+                    onClick={() => {
+                      setTimeFilter(null);
+                      setCategoryFilter(null);
+                      setIssueTypeFilter(null);
+                    }}
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
             </div>
             
             {filteredIssues.length === 0 ? (
