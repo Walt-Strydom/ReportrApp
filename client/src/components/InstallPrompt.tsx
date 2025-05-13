@@ -166,10 +166,10 @@ export function InstallPrompt() {
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <PhoneIcon className="mr-2 h-5 w-5 text-primary" />
-            Install CitiReport App on iOS
+            Install Lokisa App on iOS
           </DialogTitle>
           <DialogDescription>
-            Follow these steps to add CitiReport to your Home Screen for faster access and offline support.
+            Follow these steps to add Lokisa to your Home Screen for faster access and offline support.
           </DialogDescription>
         </DialogHeader>
         

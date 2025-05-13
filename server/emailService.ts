@@ -98,7 +98,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
               <p class="detail-row"><span class="label">Notes:</span> ${issue.notes || 'No additional notes provided.'}</p>
               ${photoSection}
               
-              <p class="warning">Please address this issue promptly. This report was anonymously submitted through the Lokisa app.</p>
+              <p class="warning">Please address this issue promptly. This report was anonymously submitted through the CitiReport app.</p>
             </div>
             <div class="footer">
               <p>This is an automated message from the Lokisa Infrastructure Reporting System. Please do not reply to this email.</p>

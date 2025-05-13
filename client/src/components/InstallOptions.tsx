@@ -65,70 +65,32 @@ export function InstallOptions({ minimal = false, className = '' }: InstallOptio
   }, []);
   
   if (minimal) {
-    // Minimal version shows just the buttons with an icon
+    // Minimal version shows just the iOS button
     return (
       <div className={`flex gap-2 ${className}`}>
-        {isIOS() && (
-          <button 
-            className="bg-white text-blue-500 hover:bg-gray-100 p-2 rounded-full shadow-sm border border-gray-100 transition-all hover:scale-110"
-            onClick={handleIOSInstall}
-            aria-label="Install on iOS"
-          >
-            <PhoneIcon className="h-5 w-5" />
-          </button>
-        )}
-        
-        {isAndroid() && (
-          <button 
-            className="bg-white text-green-500 hover:bg-gray-100 p-2 rounded-full shadow-sm border border-gray-100 transition-all hover:scale-110"
-            onClick={handleAndroidInstall}
-            aria-label="Install on Android"
-          >
-            <SmartphoneIcon className="h-5 w-5" />
-          </button>
-        )}
+        <button 
+          className="bg-white text-blue-500 hover:bg-gray-100 p-2 rounded-full shadow-sm border border-gray-100 transition-all hover:scale-110"
+          onClick={handleIOSInstall}
+          aria-label="Install on iOS"
+        >
+          <PhoneIcon className="h-5 w-5" />
+        </button>
       </div>
     );
   }
   
-  // Full version shows buttons with text
+  // Full version shows the iOS button with text
   return (
     <div className={`flex flex-wrap gap-2 ${className}`}>
-      {isIOS() && (
-        <Button 
-          variant="outline"
-          className="border-blue-500 text-blue-500 hover:bg-blue-50"
-          onClick={handleIOSInstall}
-          size="sm"
-        >
-          <PhoneIcon className="mr-2 h-4 w-4" />
-          Install on iOS
-        </Button>
-      )}
-      
-      {isAndroid() && (
-        <Button 
-          variant="outline"
-          className="border-green-500 text-green-500 hover:bg-green-50"
-          onClick={handleAndroidInstall}
-          size="sm"
-        >
-          <SmartphoneIcon className="mr-2 h-4 w-4" />
-          Install on Android
-        </Button>
-      )}
-      
-      {!isIOS() && !isAndroid() && (
-        <Button 
-          variant="outline"
-          className="border-primary text-primary hover:bg-primary/10"
-          onClick={handleIOSInstall} // Fallback to showing iOS instructions
-          size="sm"
-        >
-          <InfoIcon className="mr-2 h-4 w-4" />
-          How to Install
-        </Button>
-      )}
+      <Button 
+        variant="outline"
+        className="border-blue-500 text-blue-500 hover:bg-blue-50"
+        onClick={handleIOSInstall}
+        size="sm"
+      >
+        <PhoneIcon className="mr-2 h-4 w-4" />
+        Install on iOS
+      </Button>
     </div>
   );
 }
