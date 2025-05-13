@@ -81,11 +81,12 @@ export function createSvgMarkerIcon(iconName: string, color: string): string {
   // Get the path or use default
   const iconPath = iconPaths[iconToUse] || iconPaths.circle;
   
-  // Create SVG string with the icon path and color
+  // Create SVG string with the icon path and color for a pin-shaped marker
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <circle cx="12" cy="12" r="10" fill="${iconColor}" opacity="0.85" />
-      <path d="${iconPath}" fill="white" stroke="white" stroke-width="0.3" transform="scale(0.7) translate(4.2, 4.2)" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 42" width="32" height="42">
+      <path d="M16 0C7.164 0 0 7.164 0 16c0 8.837 16 26 16 26s16-17.163 16-26C32 7.164 24.836 0 16 0z" 
+            fill="${iconColor}" opacity="0.9" />
+      <path d="${iconPath}" fill="white" stroke="white" stroke-width="0.3" transform="scale(0.6) translate(10, 10)" />
     </svg>
   `;
   
@@ -106,9 +107,9 @@ export function getIssueMarkerIcon(issueType: string): any {
   
   return {
     url: svgUrl,
-    scaledSize: new window.google.maps.Size(24, 24),
-    anchor: new window.google.maps.Point(12, 12), // Center the icon
-    labelOrigin: new window.google.maps.Point(12, 32) // Position label below the icon
+    scaledSize: new window.google.maps.Size(24, 32), // Pin shape is taller than it is wide
+    anchor: new window.google.maps.Point(12, 32), // Bottom center of the pin
+    labelOrigin: new window.google.maps.Point(12, 42) // Position label below the pin
   };
 }
 
