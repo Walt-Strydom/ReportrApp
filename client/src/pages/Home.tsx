@@ -213,7 +213,7 @@ export default function Home() {
             <div className="flex-1 flex justify-start">
               <img 
                 src="/logo-orange.png" 
-                alt="Lokisa Logo" 
+                alt="Reportr Logo" 
                 className="h-10 w-auto"
               />
             </div>
@@ -296,8 +296,8 @@ export default function Home() {
                     <Download className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.install.title', 'Install Lokisa on your device')}</h3>
-                    <p className="text-xs text-gray-600 mb-2">{t('guide.install.description', 'Get the best experience by installing Lokisa on your device. Tap the buttons below to install on iOS or Android.')}</p>
+                    <h3 className="text-sm font-medium text-gray-800 mb-1">{t('guide.install.title', 'Install Reportr on your device')}</h3>
+                    <p className="text-xs text-gray-600 mb-2">{t('guide.install.description', 'Get the best experience by installing Reportr on your device. Tap the buttons below to install on iOS or Android.')}</p>
                     <div className="mt-2">
                       <InstallOptions />
                     </div>

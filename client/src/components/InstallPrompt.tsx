@@ -166,10 +166,10 @@ export function InstallPrompt() {
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <PhoneIcon className="mr-2 h-5 w-5 text-primary" />
-            Install Lokisa App on iOS
+            Install Reportr App on iOS
           </DialogTitle>
           <DialogDescription>
-            Follow these steps to add Lokisa to your Home Screen for faster access and offline support.
+            Follow these steps to add Reportr to your Home Screen for faster access and offline support.
           </DialogDescription>
         </DialogHeader>
         
@@ -200,7 +200,7 @@ export function InstallPrompt() {
             </div>
             <div>
               <p className="font-medium">Tap "Add" in the top right corner</p>
-              <p className="text-xs text-gray-500 mt-1">The Lokisa app will be added to your Home Screen</p>
+              <p className="text-xs text-gray-500 mt-1">The Reportr app will be added to your Home Screen</p>
             </div>
           </div>
         </div>

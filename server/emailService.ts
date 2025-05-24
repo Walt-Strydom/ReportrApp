@@ -101,7 +101,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
               <p class="warning">Please address this issue promptly. This report was anonymously submitted through the CitiReport app.</p>
             </div>
             <div class="footer">
-              <p>This is an automated message from the Lokisa Infrastructure Reporting System. Please do not reply to this email.</p>
+              <p>This is an automated message from the port Infrastructure Reporting System. Please do not reply to this email.</p>
             </div>
           </div>
         </body>
@@ -110,7 +110,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
     
     // Send the email
     const data = await resend.emails.send({
-      from: 'Lokisa Infrastructure Reports <reports@resend.dev>',
+      from: 'Reportr Infrastructure Reports <reports@resend.dev>',
       to: defaultRecipients,
       subject: `New Report [${issue.reportId}]: ${issueType} at ${issue.address}`,
       html: emailContent,
@@ -178,7 +178,7 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
               </p>
             </div>
             <div class="footer">
-              <p>This is an automated message from the Lokisa Infrastructure Reporting System. Please do not reply to this email.</p>
+              <p>This is an automated message from the Reportr Infrastructure Reporting System. Please do not reply to this email.</p>
             </div>
           </div>
         </body>
@@ -188,7 +188,7 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
     // Send the email with exactly the same subject line as the initial report
     // This ensures municipal staff can easily match issues without scanning through different formats
     const data = await resend.emails.send({
-      from: 'Lokisa Infrastructure Reports <reports@resend.dev>',
+      from: 'Reportr Infrastructure Reports <reports@resend.dev>',
       to: defaultRecipients,
       subject: `New Report [${issue.reportId}]: ${issueType} at ${issue.address}`,
       html: emailContent,
@@ -267,7 +267,7 @@ export async function sendReminderEmail(issue: Issue): Promise<{ success: boolea
               </p>
             </div>
             <div class="footer">
-              <p>This is an automated reminder from the Lokisa Infrastructure Reporting System. Please do not reply to this email.</p>
+              <p>This is an automated reminder from the Reportr Infrastructure Reporting System. Please do not reply to this email.</p>
             </div>
           </div>
         </body>
@@ -276,7 +276,7 @@ export async function sendReminderEmail(issue: Issue): Promise<{ success: boolea
     
     // Send the email with a reminder-specific subject line
     const data = await resend.emails.send({
-      from: 'Lokisa Infrastructure Reports <reports@resend.dev>',
+      from: 'Reportr Infrastructure Reports <reports@resend.dev>',
       to: defaultRecipients,
       subject: `REMINDER [${issue.reportId}]: ${issueType} at ${issue.address} - Open for ${daysOpen} days`,
       html: emailContent,
