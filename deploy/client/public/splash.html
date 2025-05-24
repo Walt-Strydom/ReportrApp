@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Municipality</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #FF8C00;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+    
+    .splash-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    
+    .logo {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 30px;
+      animation: pulse 2s infinite;
+    }
+    
+    .app-name {
+      color: white;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    
+    .tagline {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 16px;
+      text-align: center;
+      max-width: 280px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-container">
+    <img src="/assets/municipality-logo.png" alt="Municipality Logo" class="logo">
+    <div class="app-name">MUNICIPALITY</div>
+    <div class="tagline">Report and track infrastructure issues in your community</div>
+  </div>
+</body>
+</html>
