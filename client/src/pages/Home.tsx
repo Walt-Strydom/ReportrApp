@@ -308,6 +308,20 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Static Banner Ad Section */}
+        <section className="mb-6">
+          <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+            <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+            </div>
+            <div className="p-4 flex justify-center items-center">
+              <div className="bg-gray-100 rounded w-full h-20 flex items-center justify-center">
+                <p className="text-sm text-gray-500">Ad Banner Space</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Hero Section with CTA */}
         <section className="mb-6">
           <div onClick={handleReportButtonClick} className="relative bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl shadow-sm overflow-hidden cursor-pointer group">
@@ -330,7 +344,7 @@ export default function Home() {
         </section>
         
         {/* Top Issues Section */}
-        <section className="mb-16">
+        <section className="mb-6">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-base font-medium text-gray-800">{t('home.topIssues.title')}</h2>
             <button 
@@ -440,6 +454,21 @@ export default function Home() {
               </button>
             </div>
           )}
+        </section>
+
+        {/* Rotating Banner Ad Section */}
+        <section className="mb-6">
+          <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+            <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="text-xs font-medium text-gray-500">Sponsored Content</h2>
+              <span className="text-xs text-gray-400">Rotating</span>
+            </div>
+            <div className="p-4 flex justify-center items-center">
+              <div className="bg-gray-100 rounded w-full h-32 flex items-center justify-center">
+                <p className="text-sm text-gray-500">Rotating Ad Banner Space</p>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
       

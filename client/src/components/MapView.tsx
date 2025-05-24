@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Issue } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
+import { XIcon, ArrowUpIcon, MapPinIcon, CalendarIcon, Clock3Icon, MessageSquareIcon, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-react';
 import Map from '@/components/Map';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
@@ -361,7 +361,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
                 </>
               ) : (
                 <>
-                  <Heart className="mr-2 h-5 w-5" />
+                  <ThumbsUp className="mr-2 h-5 w-5" />
                   Support This Issue
                 </>
               )}
@@ -379,7 +379,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
                 </>
               ) : (
                 <>
-                  <HeartOff className="mr-2 h-5 w-5" />
+                  <ThumbsDown className="mr-2 h-5 w-5" />
                   Revoke Support
                 </>
               )}
