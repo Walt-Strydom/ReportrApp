@@ -1,6 +1,6 @@
-# Lokisa
+# Reportr
 
-Lokisa is a civic engagement progressive web application that enables citizens to anonymously report and track public infrastructure issues in Pretoria, South Africa, with advanced geospatial tracking and comprehensive mobile support.
+Reportr is a civic engagement progressive web application that enables citizens to anonymously report and track public infrastructure issues in Pretoria, South Africa, with advanced geospatial tracking and comprehensive mobile support.
 
 ## Features
 

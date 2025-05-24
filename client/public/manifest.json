@@ -1,6 +1,6 @@
 {
-  "name": "Lokisa",
-  "short_name": "Lokisa",
+  "name": "Reportr",
+  "short_name": "Reportr",
   "description": "Report and track public infrastructure issues in Pretoria",
   "start_url": "/",
   "display": "standalone",
@@ -8,7 +8,7 @@
   "theme_color": "#FF8C00",
   "icons": [
     {
-      "src": "/assets/lokisa-logo.png",
+      "src": "/assets/reportr-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
