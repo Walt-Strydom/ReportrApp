@@ -10,6 +10,7 @@ import SuccessOverlay from '@/components/SuccessOverlay';
 import LocationPermissionModal from '@/components/LocationPermissionModal';
 import MapView from '@/components/MapView';
 import InstallOptions from '@/components/InstallOptions';
+import AdBanner from '@/components/AdBanner';
 import { Issue } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';

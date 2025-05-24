@@ -120,6 +120,20 @@ export default function CreatePage() {
 
   return (
     <div className="relative h-screen overflow-hidden">
+      {/* Ad Banner */}
+      <div className="absolute top-16 left-4 right-4 z-10">
+        <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+          <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
+            <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+          </div>
+          <div className="p-2 flex justify-center items-center">
+            <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+              <p className="text-sm text-gray-500">Ad Banner Space</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Map View */}
       <div className="map-container relative h-full">
         <Map 
