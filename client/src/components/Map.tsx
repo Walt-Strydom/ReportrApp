@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { Issue } from '@/types';
 import { getIssueTypeById } from '@/data/issueTypes';
 import { getIssueMarkerIcon, markerIconCache } from '@/lib/markerIcons';
+import { MapPin } from 'lucide-react';
 
 interface MapProps {
   center: { lat: number; lng: number } | null;
@@ -82,8 +83,9 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
             streetViewControl: false,
             zoomControl: true,
             zoomControlOptions: {
-              position: window.google.maps.ControlPosition.RIGHT_TOP,
+              position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
             },
+            myLocationButton: true,
             gestureHandling: 'greedy', // Enable one-finger panning and two-finger zooming
             styles: MAP_STYLES,
             optimized: true,
@@ -147,8 +149,9 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
           streetViewControl: false,
           zoomControl: true,
           zoomControlOptions: {
-            position: window.google.maps.ControlPosition.RIGHT_TOP,
+            position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
           },
+          myLocationButton: true,
           gestureHandling: 'greedy',
           styles: MAP_STYLES,
         });
@@ -285,6 +288,35 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
     heatmapLayer.setMap(heatmapActive ? googleMap : null);
   }, [heatmapActive, googleMap, heatmapLayer]);
 
+  // Add custom location button to re-center map on user's location
+  const handleMyLocationClick = () => {
+    if (!googleMap || !center) return;
+    
+    // Pan to user's location
+    googleMap.panTo(center);
+    googleMap.setZoom(15);
+    
+    // Prompt for location if not available (especially important for iOS)
+    if (!center.lat || !center.lng) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            googleMap.panTo(pos);
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+            alert("Please enable location services in your device settings to use this feature.");
+          },
+          { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+        );
+      }
+    }
+  };
+
   return (
     <div className="relative w-full h-full">
       {mapError && (
@@ -297,6 +329,16 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
         className="w-full h-full"
         aria-label="Google Map showing infrastructure issues"
       />
+      
+      {/* Custom my location button */}
+      <button 
+        className="absolute bottom-5 right-5 z-10 bg-white rounded-full p-3 shadow-md hover:bg-gray-100 transition-colors"
+        onClick={handleMyLocationClick}
+        aria-label="Center map on my location"
+        title="My Location"
+      >
+        <MapPin className="h-5 w-5 text-blue-500" />
+      </button>
     </div>
   );
 }

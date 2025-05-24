@@ -69,13 +69,19 @@ export function useGeolocation() {
     }
 
     return new Promise<GeolocationPosition>((resolve, reject) => {
-      // iOS Safari has different behavior - lower timeout, less strict high accuracy
+      // iOS Safari has different behavior
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
       
+      // Special handling for iOS - always show an alert to guide users
+      if (isIOS) {
+        alert("For location services to work properly on iOS, please ensure you have:\n\n1. Enabled location services in Settings\n2. Added this app to your home screen for best results");
+      }
+      
+      // Use more permissive settings for iOS
       const options = {
-        enableHighAccuracy: !isIOS, // Disable high accuracy on iOS to improve reliability
-        maximumAge: isIOS ? 60000 : 0, // Increase cache time on iOS
-        timeout: isIOS ? 30000 : 10000 // Longer timeout on iOS to avoid premature errors
+        enableHighAccuracy: true, // Enable high accuracy for all devices
+        maximumAge: 0, // Don't use cached positions
+        timeout: 30000 // 30 second timeout for all devices
       };
 
       console.log('Requesting location with options:', options);
@@ -135,9 +141,9 @@ export function useGeolocation() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     
     const options = {
-      enableHighAccuracy: !isIOS, // Disable high accuracy on iOS to improve reliability
-      maximumAge: isIOS ? 60000 : 30000, // Increase cache time on iOS
-      timeout: isIOS ? 30000 : 27000 // Longer timeout on iOS
+      enableHighAccuracy: true, // Enable high accuracy for all devices
+      maximumAge: 10000, // 10 seconds cache time for all devices
+      timeout: 30000 // 30 second timeout for all devices
     };
 
     console.log('Setting up watchPosition with options:', options);
