@@ -242,6 +242,9 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
       {selectedIssue && (
         <div className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-xl shadow-lg p-4 max-h-[50vh] overflow-y-auto">
           <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-4"></div>
+          <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
+            Tap to support
+          </div>
           
           <div className="flex items-start mb-4">
             {selectedIssue.photoUrl ? (
@@ -348,35 +351,35 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
           {!hasSupported ? (
             <Button
               onClick={handleSupportClick}
-              className="w-full py-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
+              className="w-full py-3 rounded-lg font-medium bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-md"
               disabled={isSupporting}
             >
               {isSupporting ? (
                 <>
-                  <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                  <div className="mr-2 h-5 w-5 animate-spin border-2 border-white border-t-transparent rounded-full" />
                   Supporting...
                 </>
               ) : (
                 <>
-                  <ArrowUpIcon className="mr-2 h-4 w-4" />
-                  Support
+                  <Heart className="mr-2 h-5 w-5" />
+                  Support This Issue
                 </>
               )}
             </Button>
           ) : (
             <Button
               onClick={handleRevokeSupport}
-              className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800"
+              className="w-full py-3 rounded-lg font-medium bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white shadow-md"
               disabled={isRevoking}
             >
               {isRevoking ? (
                 <>
-                  <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                  <div className="mr-2 h-5 w-5 animate-spin border-2 border-white border-t-transparent rounded-full" />
                   Revoking...
                 </>
               ) : (
                 <>
-                  <ArrowUpIcon className="mr-2 h-4 w-4 transform rotate-180" />
+                  <HeartOff className="mr-2 h-5 w-5" />
                   Revoke Support
                 </>
               )}
