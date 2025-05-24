@@ -474,7 +474,13 @@ export default function Home() {
       
       {/* Bottom Navigation */}
       <BottomNavigation 
-        onReportButtonClick={handleReportButtonClick}
+        onReportButtonClick={() => {
+          // Close map view if it's open
+          if (mapViewActive) {
+            setMapViewActive(false);
+          }
+          handleReportButtonClick();
+        }}
         onMapButtonClick={() => {
           // If location permission is not granted, show permission modal
           if (geolocation.permissionStatus !== 'granted') {
@@ -483,7 +489,13 @@ export default function Home() {
           }
           setMapViewActive(true);
         }}
-        onNearbyButtonClick={() => setNearbyIssuesPanelActive(true)}
+        onNearbyButtonClick={() => {
+          // Close map view if it's open
+          if (mapViewActive) {
+            setMapViewActive(false);
+          }
+          setNearbyIssuesPanelActive(true);
+        }}
       />
       
       {/* Issue Details Panel */}

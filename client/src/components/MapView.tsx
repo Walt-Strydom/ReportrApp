@@ -40,6 +40,13 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
     }
   }, [isOpen, geolocation.latitude, geolocation.longitude, mapCenter]);
   
+  // Reset selected issue when map is closed
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedIssue(null);
+    }
+  }, [isOpen]);
+  
   // Fetch issues data
   const { data: issues = [] } = useQuery<Issue[]>({
     queryKey: ['/api/issues'],
