@@ -2,25 +2,29 @@
 FROM node:20-slim
 
 # Set working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and package-lock.json/yarn.lock
+# Install PostgreSQL client
+RUN apt-get update && apt-get install -y postgresql-client
+
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
 
-# Build the application
+# Create build for production
 RUN npm run build
 
-# Expose port 5000 (matching your server configuration)
+# Expose port 5000 (matching server configuration)
 EXPOSE 5000
 
-# Set NODE_ENV environment variable
+# Set environment variables
 ENV NODE_ENV=production
+ENV PORT=5000
 
 # Command to run the application
-CMD ["node", "dist/index.js"]
+CMD ["npm", "run", "start"]
