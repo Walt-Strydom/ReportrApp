@@ -256,8 +256,8 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
         icon: markerIconCache[issue.type],
         title: formatIssueTitle(issue),
         optimized: true,
-        // Apply DROP animation only for the first few markers to avoid overwhelming the map
-        animation: issues.length < 20 ? window.google.maps.Animation.DROP : null
+        // Remove animation to prevent flashing pins
+        animation: null
       });
       
       // Add click handler
@@ -330,9 +330,9 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
         aria-label="Google Map showing infrastructure issues"
       />
       
-      {/* Custom my location button */}
+      {/* Custom my location button - moved up to avoid bottom navigation */}
       <button 
-        className="absolute bottom-5 right-5 z-10 bg-white rounded-full p-3 shadow-md hover:bg-gray-100 transition-colors"
+        className="absolute bottom-24 right-5 z-10 bg-white rounded-full p-3 shadow-md hover:bg-gray-100 transition-colors"
         onClick={handleMyLocationClick}
         aria-label="Center map on my location"
         title="My Location"
