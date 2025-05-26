@@ -309,13 +309,13 @@ export default function ReportPanel({
               
               {/* Ad banner after every 4 categories */}
               {(index + 1) % 4 === 0 && index < issueCategories.length - 1 && (
-                <div className="col-span-2 my-4">
-                  <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                <div className="col-span-2 my-6">
+                  <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm h-32">
                     <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
                       <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
                     </div>
-                    <div className="p-3 flex justify-center items-center">
-                      <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+                    <div className="flex-1 flex justify-center items-center" style={{height: 'calc(100% - 32px)'}}>
+                      <div className="bg-gray-100 rounded w-full h-full mx-3 my-2 flex items-center justify-center">
                         <p className="text-sm text-gray-500">Ad Banner Space</p>
                       </div>
                     </div>
