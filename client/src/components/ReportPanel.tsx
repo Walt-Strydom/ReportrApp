@@ -266,15 +266,23 @@ export default function ReportPanel({
 
   return (
     <div 
-      className={`fixed top-0 left-0 right-0 h-screen bg-white z-20 rounded-t-3xl shadow-lg overflow-y-auto pb-20 transform transition-transform duration-300 ${
+      className={`fixed top-0 left-0 right-0 bg-white z-20 rounded-t-3xl shadow-lg overflow-y-auto transform transition-transform duration-300 ${
         isOpen ? 'translate-y-0' : 'translate-y-full'
       }`}
+      style={{
+        height: '100dvh',
+        paddingBottom: 'max(80px, env(safe-area-inset-bottom))'
+      }}
     >
       {/* Step 1: Category Selection */}
-      <div className={`p-6 pb-24 ${step !== 1 && 'hidden'}`}>
-        <div className="flex justify-between items-center mb-6">
+      <div className={`pb-24 ${step !== 1 && 'hidden'}`} style={{paddingTop: 'max(24px, env(safe-area-inset-top))', paddingLeft: '24px', paddingRight: '24px'}}>
+        <div className="flex justify-between items-center mb-6" style={{marginTop: '24px'}}>
           <h2 className="font-bold text-xl">{t('report.title')}</h2>
-          <button className="text-neutral-800" onClick={handleClose}>
+          <button 
+            className="text-neutral-800 rounded-full touch-manipulation" 
+            onClick={handleClose}
+            style={{padding: '12px', minWidth: '44px', minHeight: '44px'}}
+          >
             <XIcon className="h-6 w-6" />
           </button>
         </div>

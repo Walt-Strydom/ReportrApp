@@ -198,12 +198,18 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
       className={`fixed inset-0 bg-white z-20 transform transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
+      style={{height: '100dvh'}}
     >
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-4">
-        <div className="flex items-center justify-between">
+      {/* Mobile-optimized header with safe area */}
+      <div 
+        className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent"
+        style={{paddingTop: 'max(16px, env(safe-area-inset-top))', paddingBottom: '16px', paddingLeft: '16px', paddingRight: '16px'}}
+      >
+        <div className="flex items-center justify-between" style={{marginTop: '24px'}}>
           <h2 className="font-bold text-xl text-white">Map</h2>
           <button 
-            className="bg-white/20 backdrop-blur-sm text-white p-2 rounded-full" 
+            className="bg-white/20 backdrop-blur-sm text-white rounded-full touch-manipulation" 
+            style={{padding: '12px', minWidth: '44px', minHeight: '44px'}}
             onClick={() => {
               setSelectedIssue(null);
               onClose();
@@ -245,9 +251,18 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         </div>
       </div>
       
-      {/* Issue Details Panel */}
+      {/* Issue Details Panel - Mobile optimized */}
       {selectedIssue && (
-        <div className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-xl shadow-lg p-4 max-h-[50vh] overflow-y-auto">
+        <div 
+          className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-xl shadow-lg overflow-y-auto"
+          style={{
+            paddingTop: '16px',
+            paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
+            paddingLeft: '16px',
+            paddingRight: '16px',
+            maxHeight: '60vh'
+          }}
+        >
           <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-4"></div>
           
           <div className="flex items-start mb-4">
