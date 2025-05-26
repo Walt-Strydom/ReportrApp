@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.municipality.app',
-  appName: 'Municipality',
+  appId: 'com.reportr.app',
+  appName: 'Reportr',
   webDir: 'client/dist',
   server: {
     androidScheme: 'https',
