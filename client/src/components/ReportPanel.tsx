@@ -283,27 +283,29 @@ export default function ReportPanel({
         
         <div className="grid grid-cols-2 gap-3">
           {issueCategories.map((category, index) => (
-            <div key={category.id}>
-              <div 
-                className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
-                  selectedCategory === category.id 
-                    ? 'bg-primary/10 shadow-sm' 
-                    : 'bg-neutral-50 hover:bg-neutral-100'
-                }`}
-                onClick={() => handleCategorySelect(category.id)}
-              >
-                <div className="flex flex-col items-center">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-full mb-2 ${
+            <>
+              <div key={category.id}>
+                <div 
+                  className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
                     selectedCategory === category.id 
-                      ? 'bg-primary/20' 
-                      : 'bg-white'
-                  }`}>
-                    <Icon 
-                      name={category.icon}
-                      className="w-6 h-6 text-neutral-700" 
-                    />
+                      ? 'bg-primary/10 shadow-sm' 
+                      : 'bg-neutral-50 hover:bg-neutral-100'
+                  }`}
+                  onClick={() => handleCategorySelect(category.id)}
+                >
+                  <div className="flex flex-col items-center">
+                    <div className={`flex items-center justify-center w-12 h-12 rounded-full mb-2 ${
+                      selectedCategory === category.id 
+                        ? 'bg-primary/20' 
+                        : 'bg-white'
+                    }`}>
+                      <Icon 
+                        name={category.icon}
+                        className="w-6 h-6 text-neutral-700" 
+                      />
+                    </div>
+                    <span className="font-medium text-center text-sm">{category.name}</span>
                   </div>
-                  <span className="font-medium text-center text-sm">{category.name}</span>
                 </div>
               </div>
               
@@ -322,7 +324,7 @@ export default function ReportPanel({
                   </div>
                 </div>
               )}
-            </div>
+            </>
           ))}
         </div>
         
