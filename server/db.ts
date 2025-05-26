@@ -5,7 +5,7 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
-const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres.tnzyloggrqsmovjnytyb:Xn7Lxen.3LCzYQJ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres";
+const databaseUrl = "postgresql://postgres.tnzyloggrqsmovjnytyb:Xn7Lxen.3LCzYQJ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres";
 
 if (!databaseUrl) {
   throw new Error(
