@@ -267,7 +267,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
               </div>
               
               <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-2">
-                {selectedIssue.title}
+                {getIssueTypeById(selectedIssue.type)?.name || 'Infrastructure Issue'}
               </h3>
               
               <p className="text-sm text-gray-600 mb-2 line-clamp-1">
@@ -279,16 +279,16 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
                 <span className="font-medium">{selectedIssue.upvotes} supporters</span>
                 <span className="mx-2">•</span>
                 <span>
-                  {formatDistanceToNow(new Date(selectedIssue.createdAt), { addSuffix: true })}
+                  {selectedIssue.createdAt ? formatDistanceToNow(new Date(selectedIssue.createdAt), { addSuffix: true }) : 'Recently'}
                 </span>
               </div>
             </div>
           </div>
           
-          {selectedIssue.description && (
+          {selectedIssue.notes && (
             <div className="mb-4">
               <p className="text-sm text-gray-700 leading-relaxed">
-                {selectedIssue.description}
+                {selectedIssue.notes}
               </p>
             </div>
           )}
