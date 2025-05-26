@@ -220,8 +220,8 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         </div>
       </div>
       
-      {/* Map Controls - repositioned for mobile */}
-      <div className="absolute top-20 left-4 z-10 flex flex-col gap-2">
+      {/* Map Controls - repositioned lower to avoid X button */}
+      <div className="absolute top-32 left-4 z-10 flex flex-col gap-2">
         <button 
           className={`px-3 py-2 rounded-lg text-white text-sm font-medium shadow-lg ${
             heatmapActive ? 'bg-orange-500' : 'bg-black/70 backdrop-blur-sm'
@@ -233,8 +233,8 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         </button>
       </div>
       
-      {/* Location Button - separate positioning */}
-      <div className="absolute top-20 right-4 z-10">
+      {/* Location Button - repositioned lower */}
+      <div className="absolute top-32 right-16 z-10">
         {mapCenter && (
           <button 
             className="p-3 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center touch-manipulation"
