@@ -87,7 +87,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
             styles: MAP_STYLES,
             optimized: true,
             clickableIcons: false, // Disable default POI clicking for better performance
-            disableDefaultUI: false,
+            disableDefaultUI: true,
             minZoom: 5,
             maxZoom: 20,
             backgroundColor: '#FFFFFF',
@@ -327,15 +327,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
         aria-label="Google Map showing infrastructure issues"
       />
       
-      {/* Custom my location button - moved up to avoid bottom navigation */}
-      <button 
-        className="absolute bottom-24 right-5 z-10 bg-white rounded-full p-3 shadow-md hover:bg-gray-100 transition-colors"
-        onClick={handleMyLocationClick}
-        aria-label="Center map on my location"
-        title="My Location"
-      >
-        <MapPin className="h-5 w-5 text-blue-500" />
-      </button>
+
     </div>
   );
 }
