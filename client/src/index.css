@@ -14,7 +14,8 @@
   body {
     height: 100vh;
     height: 100dvh;
-    overflow: hidden;
+    /* Allow scrolling on main content */
+    overflow: auto;
     /* Prevent pull-to-refresh on mobile */
     overscroll-behavior: contain;
     /* Improve touch responsiveness */
@@ -27,7 +28,8 @@
   #root {
     height: 100vh;
     height: 100dvh;
-    overflow: hidden;
+    /* Allow scrolling on main content */
+    overflow: auto;
   }
   
   /* iOS safe area support */

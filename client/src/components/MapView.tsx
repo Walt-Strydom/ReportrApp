@@ -220,47 +220,53 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         </div>
       </div>
       
-      <div className="absolute bottom-4 left-4 z-10">
-        <div className="flex flex-col gap-2">
+      {/* Map Controls - repositioned for mobile */}
+      <div className="absolute top-20 left-4 z-10 flex flex-col gap-2">
+        <button 
+          className={`px-3 py-2 rounded-lg text-white text-sm font-medium shadow-lg ${
+            heatmapActive ? 'bg-orange-500' : 'bg-black/70 backdrop-blur-sm'
+          }`}
+          onClick={() => setHeatmapActive(!heatmapActive)}
+          style={{minWidth: '44px', minHeight: '44px'}}
+        >
+          {heatmapActive ? 'Hide Heat' : 'Show Heat'}
+        </button>
+      </div>
+      
+      {/* Location Button - separate positioning */}
+      <div className="absolute top-20 right-4 z-10">
+        {mapCenter && (
           <button 
-            className={`px-4 py-2 rounded-lg text-white text-sm font-medium ${
-              heatmapActive ? 'bg-primary' : 'bg-black/50 backdrop-blur-sm'
-            }`}
-            onClick={() => setHeatmapActive(!heatmapActive)}
+            className="p-3 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center touch-manipulation"
+            onClick={() => {
+              if (mapCenter && googleMap) {
+                googleMap.panTo(mapCenter);
+                googleMap.setZoom(15);
+                toast({
+                  title: "Location Reset",
+                  description: "Map centered on your location",
+                });
+              }
+            }}
+            style={{minWidth: '44px', minHeight: '44px'}}
+            aria-label="My Location"
           >
-            {heatmapActive ? 'Hide Heat' : 'Show Heat'}
+            <MapPinIcon className="h-5 w-5" />
           </button>
-          {mapCenter && (
-            <button 
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium flex items-center justify-center"
-              onClick={() => {
-                if (mapCenter && googleMap) {
-                  googleMap.panTo(mapCenter);
-                  googleMap.setZoom(15);
-                  toast({
-                    title: "Location Reset",
-                    description: "Map centered on your location",
-                  });
-                }
-              }}
-            >
-              <MapPinIcon className="h-4 w-4 mr-1" />
-              My Location
-            </button>
-          )}
-        </div>
+        )}
       </div>
       
       {/* Issue Details Panel - Mobile optimized */}
       {selectedIssue && (
         <div 
-          className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-xl shadow-lg overflow-y-auto"
+          className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-xl shadow-lg"
           style={{
             paddingTop: '16px',
-            paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
+            paddingBottom: 'max(80px, env(safe-area-inset-bottom))',
             paddingLeft: '16px',
             paddingRight: '16px',
-            maxHeight: '60vh'
+            maxHeight: '70vh',
+            overflowY: 'auto'
           }}
         >
           <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-4"></div>
