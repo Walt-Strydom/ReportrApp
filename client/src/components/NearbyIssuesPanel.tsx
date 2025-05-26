@@ -198,6 +198,20 @@ export default function NearbyIssuesPanel({
               }
             </span>
           </div>
+          
+          {/* Ad banner at the top of Nearby page */}
+          <div className="mt-4">
+            <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+              <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
+                <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+              </div>
+              <div className="p-3 flex justify-center items-center">
+                <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+                  <p className="text-sm text-gray-500">Ad Banner Space</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         {/* Scrollable content area */}
@@ -444,12 +458,12 @@ export default function NearbyIssuesPanel({
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredIssues.map(issue => (
-                  <div 
-                    key={issue.id}
-                    className="border border-neutral-200 rounded-lg overflow-hidden cursor-pointer"
-                    onClick={() => onIssueClick(issue.id)}
-                  >
+                {filteredIssues.map((issue, index) => (
+                  <div key={issue.id}>
+                    <div 
+                      className="border border-neutral-200 rounded-lg overflow-hidden cursor-pointer"
+                      onClick={() => onIssueClick(issue.id)}
+                    >
                     <div className="flex items-start p-4">
                       {issue.photoUrl ? (
                         <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">

@@ -282,29 +282,46 @@ export default function ReportPanel({
         <p className="text-neutral-600 text-sm font-medium mb-4">{t('report.form.category.label')}</p>
         
         <div className="grid grid-cols-2 gap-3">
-          {issueCategories.map((category) => (
-            <div 
-              key={category.id}
-              className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
-                selectedCategory === category.id 
-                  ? 'bg-primary/10 shadow-sm' 
-                  : 'bg-neutral-50 hover:bg-neutral-100'
-              }`}
-              onClick={() => handleCategorySelect(category.id)}
-            >
-              <div className="flex flex-col items-center">
-                <div className={`flex items-center justify-center w-12 h-12 rounded-full mb-2 ${
+          {issueCategories.map((category, index) => (
+            <div key={category.id}>
+              <div 
+                className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
                   selectedCategory === category.id 
-                    ? 'bg-primary/20' 
-                    : 'bg-white'
-                }`}>
-                  <Icon 
-                    name={category.icon}
-                    className="w-6 h-6 text-neutral-700" 
-                  />
+                    ? 'bg-primary/10 shadow-sm' 
+                    : 'bg-neutral-50 hover:bg-neutral-100'
+                }`}
+                onClick={() => handleCategorySelect(category.id)}
+              >
+                <div className="flex flex-col items-center">
+                  <div className={`flex items-center justify-center w-12 h-12 rounded-full mb-2 ${
+                    selectedCategory === category.id 
+                      ? 'bg-primary/20' 
+                      : 'bg-white'
+                  }`}>
+                    <Icon 
+                      name={category.icon}
+                      className="w-6 h-6 text-neutral-700" 
+                    />
+                  </div>
+                  <span className="font-medium text-center text-sm">{category.name}</span>
                 </div>
-                <span className="font-medium text-center text-sm">{category.name}</span>
               </div>
+              
+              {/* Ad banner after every 4 categories */}
+              {(index + 1) % 4 === 0 && index < issueCategories.length - 1 && (
+                <div className="col-span-2 my-4">
+                  <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                    <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
+                      <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+                    </div>
+                    <div className="p-3 flex justify-center items-center">
+                      <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+                        <p className="text-sm text-gray-500">Ad Banner Space</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -340,6 +357,20 @@ export default function ReportPanel({
         
         {selectedCategory && (
           <>
+            {/* Ad banner at the top of issue type page */}
+            <div className="mb-4">
+              <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
+                  <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+                </div>
+                <div className="p-3 flex justify-center items-center">
+                  <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+                    <p className="text-sm text-gray-500">Ad Banner Space</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <div className="mb-4 p-3 bg-neutral-50 rounded-lg border border-neutral-100 flex items-center">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white mr-3">
                 <img 
@@ -411,6 +442,20 @@ export default function ReportPanel({
           <button className="p-2 rounded-full hover:bg-neutral-100 transition-colors" onClick={() => setStep(1)}>
             <ArrowLeftIcon className="h-5 w-5 text-neutral-600" />
           </button>
+        </div>
+        
+        {/* Ad banner on Take a Photo page */}
+        <div className="mb-6">
+          <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+            <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
+              <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+            </div>
+            <div className="p-3 flex justify-center items-center">
+              <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+                <p className="text-sm text-gray-500">Ad Banner Space</p>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="bg-neutral-100 rounded-xl h-80 flex items-center justify-center mb-6 overflow-hidden shadow-inner">
