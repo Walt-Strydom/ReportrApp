@@ -220,7 +220,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         </div>
       </div>
       
-      {/* Map Controls - repositioned lower to avoid X button */}
+      {/* Map Controls - positioned together on the left */}
       <div className="absolute top-32 left-4 z-10 flex flex-col gap-2">
         <button 
           className={`px-3 py-2 rounded-lg text-white text-sm font-medium shadow-lg ${
@@ -231,10 +231,8 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         >
           {heatmapActive ? 'Hide Heat' : 'Show Heat'}
         </button>
-      </div>
-      
-      {/* Location Button - repositioned lower */}
-      <div className="absolute top-32 right-16 z-10">
+        
+        {/* Location Button - directly under Show Heat button */}
         {mapCenter && (
           <button 
             className="p-3 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center touch-manipulation"
