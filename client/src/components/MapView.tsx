@@ -76,6 +76,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
 
   const handleMarkerClick = (issue: Issue) => {
     setSelectedIssue(issue);
+    console.log('Selected issue:', issue); // Debug log
   };
 
   const handleSupportClick = async () => {
@@ -307,7 +308,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
               <div>
                 <p className="text-sm font-medium">Reported</p>
                 <p className="text-sm text-neutral-600">
-                  {new Date(selectedIssue.createdAt).toLocaleDateString()}
+                  {selectedIssue.createdAt ? new Date(selectedIssue.createdAt).toLocaleDateString() : 'Recently'}
                 </p>
               </div>
             </div>
@@ -378,9 +379,9 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         <Map 
           center={mapCenter} 
           issues={issues}
-          showHeatmap={heatmapActive}
+          heatmapActive={heatmapActive}
           onMarkerClick={handleMarkerClick}
-          onMapReady={setGoogleMap}
+          onMapInitialized={setGoogleMap}
         />
       </div>
     </div>

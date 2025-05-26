@@ -8,7 +8,7 @@ interface MapProps {
   center: { lat: number; lng: number } | null;
   issues: Issue[];
   heatmapActive: boolean;
-  onMarkerClick: (issueId: number) => void;
+  onMarkerClick: (issue: Issue) => void;
   onMapInitialized?: (map: any) => void;
 }
 
@@ -259,7 +259,7 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
       
       // Add click handler
       marker.addListener('click', () => {
-        onMarkerClick(issue.id);
+        onMarkerClick(issue);
       });
       
       newMarkers.push(marker);
