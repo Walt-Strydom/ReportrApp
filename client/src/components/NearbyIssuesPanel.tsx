@@ -464,63 +464,80 @@ export default function NearbyIssuesPanel({
                       className="border border-neutral-200 rounded-lg overflow-hidden cursor-pointer"
                       onClick={() => onIssueClick(issue.id)}
                     >
-                    <div className="flex items-start p-4">
-                      {issue.photoUrl ? (
-                        <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">
-                          <img 
-                            src={issue.photoUrl} 
-                            alt={`${issue.type} issue`} 
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              // If image fails to load, replace with logo
-                              e.currentTarget.src = '/logo-orange.png';
-                              e.currentTarget.style.padding = '5px';
-                              e.currentTarget.style.objectFit = 'contain';
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
-                          style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
-                          <img 
-                            src="/logo-orange.png" 
-                            alt="Municipality Logo" 
-                            className="h-10 w-auto" 
-                            style={{opacity: 0.8}}
-                          />
-                        </div>
-                      )}
-                      
-                      <div className="flex-1">
-                        <div className="flex items-center mb-1">
-                          <div
-                            className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
-                            style={{ backgroundColor: getColorValue(issue.type) }}
-                          >
-                            <Icon name={issue.type} className="mr-1.5 h-3.5 w-3.5" />
-                            {formatIssueType(issue.type)}
+                      <div className="flex items-start p-4">
+                        {issue.photoUrl ? (
+                          <div className="w-20 h-20 rounded-lg overflow-hidden mr-4 bg-neutral-200">
+                            <img 
+                              src={issue.photoUrl} 
+                              alt={`${issue.type} issue`} 
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // If image fails to load, replace with logo
+                                e.currentTarget.src = '/logo-orange.png';
+                                e.currentTarget.style.padding = '5px';
+                                e.currentTarget.style.objectFit = 'contain';
+                              }}
+                            />
                           </div>
-                          <span className="text-xs text-neutral-500">
-                            {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
-                          </span>
-                        </div>
-                        <h3 className="font-medium mb-1">{issue.address}</h3>
-                        <p className="text-sm text-neutral-600 mb-2 line-clamp-2">
-                          {issue.notes || t('issue.noDetails', 'No additional details provided.')}
-                        </p>
+                        ) : (
+                          <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
+                            style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
+                            <img 
+                              src="/logo-orange.png" 
+                              alt="Municipality Logo" 
+                              className="h-10 w-auto" 
+                              style={{opacity: 0.8}}
+                            />
+                          </div>
+                        )}
                         
-                        <div className="flex items-center">
-                          <div className="flex items-center">
-                            <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
-                            <span className="font-medium">
-                              {issue.upvotes} {issue.upvotes === 1 ? 
-                                t('issue.supporter', 'supporter') : 
-                                t('issue.supporters', 'supporters')}
+                        <div className="flex-1">
+                          <div className="flex items-center mb-1">
+                            <div
+                              className="flex items-center px-3 py-1.5 rounded-full mr-3 text-white text-xs font-medium"
+                              style={{ backgroundColor: getColorValue(issue.type) }}
+                            >
+                              <Icon name={issue.type} className="mr-1.5 h-3.5 w-3.5" />
+                              {formatIssueType(issue.type)}
+                            </div>
+                            <span className="text-xs text-neutral-500">
+                              {formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true })}
                             </span>
+                          </div>
+                          <h3 className="font-medium mb-1">{issue.address}</h3>
+                          <p className="text-sm text-neutral-600 mb-2 line-clamp-2">
+                            {issue.notes || t('issue.noDetails', 'No additional details provided.')}
+                          </p>
+                          
+                          <div className="flex items-center">
+                            <div className="flex items-center">
+                              <ArrowUpIcon className="text-primary mr-1 h-4 w-4" />
+                              <span className="font-medium">
+                                {issue.upvotes} {issue.upvotes === 1 ? 
+                                  t('issue.supporter', 'supporter') : 
+                                  t('issue.supporters', 'supporters')}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Ad banner after every 3 issues */}
+                    {(index + 1) % 3 === 0 && index < filteredIssues.length - 1 && (
+                      <div className="my-4">
+                        <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                          <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
+                            <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
+                          </div>
+                          <div className="p-3 flex justify-center items-center">
+                            <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
+                              <p className="text-sm text-gray-500">Ad Banner Space</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
