@@ -5,9 +5,7 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
-const databaseUrl = "postgresql://postgres.tnzyloggrqsmovjnytyb:Xn7Lxen.3LCzYQJ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres";
-
-if (!databaseUrl) {
+if (!process.env.DATABASE_URL) {
   throw new Error(
     "DATABASE_URL must be set. Did you forget to provision a database?",
   );
