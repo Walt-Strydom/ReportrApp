@@ -489,7 +489,7 @@ export default function NearbyIssuesPanel({
                               className="w-full h-full object-cover"
                               onError={(e) => {
                                 // If image fails to load, replace with logo
-                                e.currentTarget.src = '/logo-orange.png';
+                                e.currentTarget.src = '/logo-new.png';
                                 e.currentTarget.style.padding = '5px';
                                 e.currentTarget.style.objectFit = 'contain';
                               }}
@@ -499,7 +499,7 @@ export default function NearbyIssuesPanel({
                           <div className="w-20 h-20 rounded-lg flex items-center justify-center mr-4" 
                             style={{backgroundColor: `${getColorValue(issue.type)}25`}}>
                             <img 
-                              src="/logo-orange.png" 
+                              src="/logo-new.png" 
                               alt="Municipality Logo" 
                               className="h-10 w-auto" 
                               style={{opacity: 0.8}}
