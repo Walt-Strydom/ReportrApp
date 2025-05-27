@@ -214,7 +214,7 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
         {/* Location Button - directly under Show Heat button */}
         {mapCenter && (
           <button 
-            className="p-3 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center touch-manipulation"
+            className="p-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg flex items-center justify-center touch-manipulation transition-colors"
             onClick={() => {
               if (mapCenter && googleMap) {
                 googleMap.panTo(mapCenter);
