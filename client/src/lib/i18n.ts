@@ -40,16 +40,14 @@ export const supportedLngs = [
 
 // i18n configuration
 i18n
-  // Detect user language
-  .use(LanguageDetector)
   // Pass the i18n instance to react-i18next
   .use(initReactI18next)
   // Initialize i18next
   .init({
     resources,
     fallbackLng: 'en',
-    // Default language
-    lng: localStorage.getItem('language') || 'en',
+    // Force English for all platforms
+    lng: 'en',
     // Debugging in development environment
     debug: import.meta.env.DEV,
     // Common namespace
@@ -63,12 +61,6 @@ i18n
         if (format === 'capitalize') return value.charAt(0).toUpperCase() + value.slice(1);
         return value;
       },
-    },
-    // Detect language changes
-    detection: {
-      order: ['localStorage', 'navigator'],
-      lookupLocalStorage: 'language',
-      caches: ['localStorage'],
     },
   });
 
