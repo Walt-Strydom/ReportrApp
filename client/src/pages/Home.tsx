@@ -210,12 +210,12 @@ export default function Home() {
       {/* Modern Header with Logo Only - iOS Safe Area */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-10" style={{paddingTop: 'env(safe-area-inset-top)'}}>
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-10">
+          <div className="flex justify-between items-center h-12 py-1">
             <div className="flex-1 flex justify-start">
               <img 
                 src="/logo-new.png" 
                 alt="Reportr Logo" 
-                className="h-10 w-auto"
+                className="h-12 w-auto"
               />
             </div>
             <div className="flex-1 flex justify-end items-center">
