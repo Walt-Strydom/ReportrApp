@@ -63,9 +63,16 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
   useEffect(() => {
     if (selectedIssue && deviceId) {
       fetch(`/api/issues/${selectedIssue.id}/support/${deviceId}`)
-        .then(res => res.json())
+        .then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            // 404 means not supported yet
+            return { supported: false };
+          }
+        })
         .then(data => {
-          setHasSupported(data.hasSupported);
+          setHasSupported(data.supported || data.hasSupported || false);
         })
         .catch(err => {
           console.error('Error checking support status:', err);
