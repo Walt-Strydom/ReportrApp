@@ -33,6 +33,8 @@ export const issueCategories: IssueCategory[] = [
     color: '#FF9800',
     icon: 'zap',
     subcategories: [
+      { id: 'downed-lines', name: 'Downed/Exposed Power Lines', icon: 'bolt' },
+      { id: 'damaged-substation', name: 'Damaged Electrical Substation', icon: 'box' },
       { id: 'open-electrical-box', name: 'Open Electrical Box', icon: 'square' },
       { id: 'broken-electrical-box', name: 'Broken Electrical Box', icon: 'squareX' }
     ]
