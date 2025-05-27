@@ -2,13 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mobile-first responsive design */
+/* Mobile-first responsive design with iOS safe area support */
 @layer base {
   html {
     /* Use viewport units that work on mobile */
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
+    /* iOS safe area support */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
   
   body {
@@ -23,6 +25,8 @@
     /* Better font rendering on mobile */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Reset padding for proper safe area handling */
+    padding: 0;
   }
   
   #root {

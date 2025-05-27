@@ -17,22 +17,22 @@ export default function BottomNavigation({
   return (
     <div 
       className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50"
-      style={{paddingBottom: 'max(16px, env(safe-area-inset-bottom))'}}
+      style={{paddingBottom: 'max(8px, env(safe-area-inset-bottom))'}}
     >
       {/* Floating action button for reporting */}
-      <div className="absolute left-1/2 -translate-x-1/2 -top-6">
+      <div className="absolute left-1/2 -translate-x-1/2 -top-5">
         <button
           onClick={onReportButtonClick}
           className="flex items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg transform transition-transform hover:scale-105 active:scale-95 touch-manipulation"
-          style={{width: '56px', height: '56px', minWidth: '44px', minHeight: '44px'}}
+          style={{width: '48px', height: '48px', minWidth: '44px', minHeight: '44px'}}
           aria-label={t('nav.report', 'Report Issue')}
         >
-          <AlertTriangle className="h-6 w-6" />
+          <AlertTriangle className="h-5 w-5" />
         </button>
       </div>
       
       {/* Navigation bar */}
-      <div className="flex items-center px-4" style={{height: '64px'}}>
+      <div className="flex items-center px-4" style={{height: '56px'}}>
         {/* Map button */}
         <button 
           onClick={onMapButtonClick}

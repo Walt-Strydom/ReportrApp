@@ -206,9 +206,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-36">
-      {/* Modern Header with Logo Only */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
+    <div className="min-h-screen bg-gray-50" style={{paddingBottom: 'max(144px, env(safe-area-inset-bottom))'}}>
+      {/* Modern Header with Logo Only - iOS Safe Area */}
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-10" style={{paddingTop: 'max(0px, env(safe-area-inset-top))'}}>
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex-1 flex justify-start">
