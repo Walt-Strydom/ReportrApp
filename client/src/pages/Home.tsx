@@ -225,28 +225,30 @@ export default function Home() {
         </div>
       </header>
       
-      {/* Location Bar - Modern Subtle Design */}
-      <div className="bg-white border-b border-gray-100 py-2 px-4">
-        <div className="container mx-auto">
+      {/* Location Bar - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100 py-2 px-3">
+        <div className="container mx-auto max-w-sm">
           {address ? (
             <div className="flex items-center justify-center">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-200 text-gray-700">
-                <MapPin className="h-3 w-3 mr-1.5 text-orange-500 flex-shrink-0" />
-                <p className="truncate text-xs font-medium">{t('home.location.current', { address })}</p>
+              <div className="inline-flex items-center px-2.5 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-orange-200/50 shadow-sm text-gray-700 max-w-full">
+                <MapPin className="h-3.5 w-3.5 mr-1.5 text-orange-500 flex-shrink-0" />
+                <p className="truncate text-xs font-medium leading-tight max-w-[250px]">
+                  Current location: {address.split(',').slice(0, 2).join(',').trim()}
+                </p>
               </div>
             </div>
           ) : geolocation.loading ? (
             <div className="flex justify-center">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 border border-gray-200">
-                <div className="animate-spin h-3 w-3 mr-1.5 border-b border-gray-500 rounded-full"></div>
-                <p className="text-xs text-gray-600">{t('home.location.loading')}</p>
+              <div className="inline-flex items-center px-2.5 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm">
+                <div className="animate-spin h-3.5 w-3.5 mr-1.5 border-b border-gray-500 rounded-full"></div>
+                <p className="text-xs text-gray-600 font-medium">Getting location...</p>
               </div>
             </div>
           ) : (
             <div className="flex justify-center">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-red-50 border border-red-100">
-                <MapPin className="h-3 w-3 mr-1.5 text-red-400 flex-shrink-0" />
-                <p className="text-xs text-red-500">{t('home.location.unavailable')}</p>
+              <div className="inline-flex items-center px-2.5 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-red-200/50 shadow-sm">
+                <MapPin className="h-3.5 w-3.5 mr-1.5 text-red-400 flex-shrink-0" />
+                <p className="text-xs text-red-500 font-medium">Location unavailable</p>
               </div>
             </div>
           )}
