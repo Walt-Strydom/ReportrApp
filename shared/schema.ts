@@ -30,6 +30,8 @@ export const upvotes = pgTable("upvotes", {
   id: serial("id").primaryKey(),
   issueId: integer("issue_id").notNull(),
   deviceId: text("device_id").notNull(), // Anonymous identifier for the device
+  emailSentTo: text("email_sent_to"), // Email address(es) the support notification was sent to
+  emailDelivered: text("email_delivered").default("No"), // "Yes" or "No" - email delivery status
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

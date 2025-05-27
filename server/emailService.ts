@@ -3,7 +3,7 @@ import type { Issue } from '@shared/schema';
 import { getIssueTypeById } from '../client/src/data/issueTypes';
 import { differenceInDays } from 'date-fns';
 import { db } from './db';
-import { issues } from '@shared/schema';
+import { issues, upvotes } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 
 // Initialize Resend with the API key
