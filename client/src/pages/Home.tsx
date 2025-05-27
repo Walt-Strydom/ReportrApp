@@ -400,7 +400,7 @@ export default function Home() {
                           alt={`${issue.type} issue`} 
                           className="w-full h-full object-cover" 
                           onError={(e) => {
-                            e.currentTarget.src = '/logo-orange.png';
+                            e.currentTarget.src = '/logo-new.png';
                             e.currentTarget.style.padding = '5px';
                             e.currentTarget.style.objectFit = 'contain';
                           }}
@@ -410,7 +410,7 @@ export default function Home() {
                       <div className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0" 
                         style={{backgroundColor: `${getBadgeColor(issue.type)}15`}}>
                         <img 
-                          src="/logo-orange.png" 
+                          src="/logo-new.png" 
                           alt="Municipality Logo" 
                           className="h-8 w-auto" 
                           style={{opacity: 0.7}}
