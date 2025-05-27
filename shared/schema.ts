@@ -20,6 +20,8 @@ export const issues = pgTable("issues", {
   status: text("status").default("reported").notNull(), // reported, in_progress, resolved
   upvotes: integer("upvotes").default(0).notNull(),
   reportId: text("report_id").notNull().unique(), // Unique ID for reference in emails
+  emailSentTo: text("email_sent_to"), // Email address(es) the report was sent to
+  emailDelivered: text("email_delivered").default("No"), // "Yes" or "No" - email delivery status
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

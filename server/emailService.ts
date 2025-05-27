@@ -2,6 +2,9 @@ import { Resend } from 'resend';
 import type { Issue } from '@shared/schema';
 import { getIssueTypeById } from '../client/src/data/issueTypes';
 import { differenceInDays } from 'date-fns';
+import { db } from './db';
+import { issues } from '@shared/schema';
+import { eq } from 'drizzle-orm';
 
 // Initialize Resend with the API key
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -188,9 +191,31 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
       html: emailContent,
     });
     
+    // Update database with email tracking information
+    await db.update(issues)
+      .set({
+        emailSentTo: recipients.join(', '),
+        emailDelivered: 'Yes'
+      })
+      .where(eq(issues.id, issue.id));
+    
     return { success: true, data };
   } catch (error) {
     console.error('Error sending email:', error);
+    
+    // Update database to mark email delivery as failed
+    try {
+      const recipients = getDepartmentEmail(issue.type);
+      await db.update(issues)
+        .set({
+          emailSentTo: recipients.join(', '),
+          emailDelivered: 'No'
+        })
+        .where(eq(issues.id, issue.id));
+    } catch (dbError) {
+      console.error('Error updating database with email failure:', dbError);
+    }
+    
     return { success: false, error };
   }
 }
