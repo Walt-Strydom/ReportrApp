@@ -451,19 +451,21 @@ export default function ReportPanel({
           ))}
         </div>
         
-        <div className="mt-8 mb-6">
-          <Button
-            onClick={goToStep2}
-            className={`w-full py-3 rounded-lg font-medium ${
-              selectedCategory 
-                ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-md' 
-                : 'bg-neutral-200 text-neutral-400'
-            }`}
-            disabled={!selectedCategory}
-          >
-            {t('report.form.next')}
-          </Button>
-        </div>
+            <div className="mt-8 mb-6">
+              <Button
+                onClick={goToStep2}
+                className={`w-full py-3 rounded-lg font-medium ${
+                  selectedCategory 
+                    ? 'bg-gradient-to-r from-primary to-primary-dark text-white shadow-md' 
+                    : 'bg-neutral-200 text-neutral-400'
+                }`}
+                disabled={!selectedCategory}
+              >
+                {t('report.form.next')}
+              </Button>
+            </div>
+          </>
+        )}
       </div>
       
       {/* Step 1.5: Subcategory Selection */}
