@@ -261,6 +261,13 @@ export default function ReportPanel({
         formData.append(key, String(value));
       });
       
+      // Debug: Log the form data being sent
+      console.log('Form data being submitted:', data);
+      console.log('FormData entries:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+      
       // Submit the form
       const response = await fetch('/api/issues', {
         method: 'POST',
