@@ -75,8 +75,8 @@ export function useGeolocation() {
       // Enhanced iOS location handling
       const options = {
         enableHighAccuracy: true, // Enable for precise location reporting
-        maximumAge: isIOS ? 15000 : 3000, // Short cache for accuracy
-        timeout: isIOS ? 12000 : 18000 // Balanced timeout for accuracy
+        maximumAge: isIOS ? 20000 : 10000, // Allow some caching to prevent timeouts
+        timeout: isIOS ? 20000 : 25000 // Longer timeout for high accuracy GPS lock
       };
 
       console.log('Requesting location with options:', options);
@@ -151,8 +151,8 @@ export function useGeolocation() {
     
     const options = {
       enableHighAccuracy: true, // Always enable for precise infrastructure reporting
-      maximumAge: isIOS ? 10000 : 3000, // Short cache for accurate positioning
-      timeout: isIOS ? 15000 : 20000 // Balanced timeout values
+      maximumAge: isIOS ? 30000 : 10000, // Allow some caching to prevent timeouts
+      timeout: isIOS ? 25000 : 30000 // Longer timeout to handle high accuracy requests
     };
 
     console.log('Setting up watchPosition with options:', options);
