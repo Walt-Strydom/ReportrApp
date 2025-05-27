@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { XIcon, ArrowUpIcon, ClockIcon, Heart, HeartOff, Loader2 } from 'lucide-react';
+import { XIcon, ArrowUpIcon, ClockIcon, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -189,9 +189,19 @@ export default function IssueDetailsPanel({
       className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg z-20 max-h-[90vh] overflow-y-auto transform transition-transform duration-300 ${
         isOpen ? 'translate-y-0' : 'translate-y-full'
       }`}
+      style={{paddingBottom: 'max(24px, env(safe-area-inset-bottom))'}}
     >
-      <div className="p-6 pb-12">
-        <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-6"></div>
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto"></div>
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Close details"
+          >
+            <XIcon className="h-5 w-5 text-gray-500" />
+          </button>
+        </div>
         
         <div className="flex items-start mb-6">
           {issue.photoUrl ? (
@@ -262,7 +272,7 @@ export default function IssueDetailsPanel({
               </>
             ) : (
               <>
-                <Heart className="mr-2 h-5 w-5" />
+                <ThumbsUp className="mr-2 h-5 w-5" />
                 <span>Support</span>
               </>
             )}
@@ -280,7 +290,7 @@ export default function IssueDetailsPanel({
               </>
             ) : (
               <>
-                <HeartOff className="mr-2 h-5 w-5" />
+                <ThumbsDown className="mr-2 h-5 w-5" />
                 <span>Revoke Support</span>
               </>
             )}

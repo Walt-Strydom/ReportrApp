@@ -8,6 +8,7 @@ import { getIssueTypeById, issueCategories, getAllIssueTypes } from '@/data/issu
 import Icon from '@/components/Icon';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
+import IssueDetailsPanel from '@/components/IssueDetailsPanel';
 import { 
   Select,
   SelectContent,
@@ -47,6 +48,8 @@ export default function NearbyIssuesPanel({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
   const [filterTab, setFilterTab] = useState<string>("category");
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [issueDetailsPanelActive, setIssueDetailsPanelActive] = useState(false);
   
   // Get all issue types for the filter dropdown
   const allIssueTypes = getAllIssueTypes();
@@ -462,7 +465,12 @@ export default function NearbyIssuesPanel({
                   <div key={issue.id}>
                     <div 
                       className="border border-neutral-200 rounded-lg overflow-hidden cursor-pointer"
-                      onClick={() => onIssueClick(issue.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedIssue(issue);
+                        setIssueDetailsPanelActive(true);
+                      }}
                     >
                       <div className="flex items-start p-4">
                         {issue.photoUrl ? (
