@@ -1,30 +1,34 @@
-# Use Node.js LTS as base image
-FROM node:20-slim
+# Use Node.js 20 LTS as base image
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install PostgreSQL client
-RUN apt-get update && apt-get install -y postgresql-client
-
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --only=production
 
-# Copy the rest of the application code
+# Copy source code
 COPY . .
 
-# Create build for production
+# Build the application
 RUN npm run build
 
-# Expose port 5000 (matching server configuration)
-EXPOSE 5000
+# Create uploads directory for file storage
+RUN mkdir -p uploads
+
+# Expose port 3000
+EXPOSE 3000
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=3000
 
-# Command to run the application
-CMD ["npm", "run", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start the application
+CMD ["npm", "start"]
