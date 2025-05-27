@@ -159,8 +159,8 @@ export default function NearbyIssuesPanel({
       }`}
     >
       <div className="h-full w-full flex flex-col">
-        {/* Fixed header at the top */}
-        <div className="px-6 py-4 bg-white shadow-sm">
+        {/* Fixed header at the top - iOS Safe Area */}
+        <div className="px-6 bg-white shadow-sm" style={{paddingTop: 'max(16px, calc(16px + env(safe-area-inset-top)))', paddingBottom: '16px'}}>
           <div className="flex justify-between items-center">
             <h2 className="font-bold text-xl">{t('nearby.title', 'Nearby')}</h2>
             <div className="flex items-center space-x-2">
