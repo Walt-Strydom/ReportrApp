@@ -324,8 +324,8 @@ export default function ReportPanel({
       }}
     >
       {/* Step 1: Category Selection */}
-      <div className={`pb-24 ${step !== 1 && 'hidden'}`} style={{paddingTop: 'max(24px, env(safe-area-inset-top))', paddingLeft: '24px', paddingRight: '24px'}}>
-        <div className="flex justify-between items-center mb-6" style={{marginTop: '24px'}}>
+      <div className={`pb-24 ${step !== 1 && 'hidden'}`} style={{paddingTop: 'max(60px, env(safe-area-inset-top) + 36px)', paddingLeft: '24px', paddingRight: '24px'}}>
+        <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">{t('report.title')}</h2>
           <button 
             className="text-neutral-800 rounded-full touch-manipulation" 
@@ -570,7 +570,7 @@ export default function ReportPanel({
       </div>
       
       {/* Step 2: Take Photo */}
-      <div className={`p-6 pb-24 ${step !== 2 && 'hidden'}`}>
+      <div className={`pb-24 ${step !== 2 && 'hidden'}`} style={{paddingTop: 'max(60px, env(safe-area-inset-top) + 36px)', paddingLeft: '24px', paddingRight: '24px'}}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">{t('report.form.photo.title')}</h2>
           <button className="p-2 rounded-full hover:bg-neutral-100 transition-colors" onClick={() => setStep(1)}>
@@ -662,7 +662,7 @@ export default function ReportPanel({
       </div>
       
       {/* Step 3: Location & Details */}
-      <div className={`p-6 pb-24 ${step !== 3 && 'hidden'}`}>
+      <div className={`pb-24 ${step !== 3 && 'hidden'}`} style={{paddingTop: 'max(60px, env(safe-area-inset-top) + 36px)', paddingLeft: '24px', paddingRight: '24px'}}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="font-bold text-xl">Details</h2>
           <button className="text-neutral-800" onClick={() => setStep(2)}>
