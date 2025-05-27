@@ -9,6 +9,75 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Default recipient email addresses
 const defaultRecipients = ['waltstrydom@gmail.com'];
 
+/**
+ * Get department email address based on issue type
+ */
+function getDepartmentEmail(issueType: string): string[] {
+  const departmentEmails = ['waltstrydom@gmail.com']; // Always include Walt's email
+  
+  // Add specific department email based on issue type
+  switch (issueType) {
+    // Potholes
+    case 'pothole':
+      departmentEmails.push('pothole@tshwane.gov.za');
+      break;
+    
+    // Water issues
+    case 'burst-pipe':
+    case 'leaking-meter':
+      departmentEmails.push('waterleaks@tshwane.gov.za');
+      break;
+    
+    // Sewer issues
+    case 'blocked-drain':
+    case 'sewage-spill':
+      departmentEmails.push('SewerBlockages@Tshwane.gov.za');
+      break;
+    
+    // Street lighting
+    case 'street-light':
+    case 'broken-light':
+      departmentEmails.push('streetlights@tshwane.gov.za');
+      break;
+    
+    // Traffic lights
+    case 'traffic-light':
+    case 'malfunctioning-traffic':
+      departmentEmails.push('trafficsignalfaults@tshwane.gov.za');
+      break;
+    
+    // All electricity issues
+    case 'downed-lines':
+    case 'damaged-substation':
+    case 'open-electrical-box':
+    case 'broken-electrical-box':
+    case 'power-outage':
+    case 'fallen-power-line':
+      departmentEmails.push('electricity@tshwane.gov.za');
+      break;
+    
+    // All waste management
+    case 'overflowing-bin':
+    case 'illegal-dumping':
+      departmentEmails.push('wastemanagement@tshwane.gov.za');
+      break;
+    
+    // Environmental concerns
+    case 'fallen-tree':
+    case 'overgrown-grass':
+    case 'damaged-green-space':
+      departmentEmails.push('ehonestop@tshwane.gov.za');
+      break;
+    
+    // Default for any unspecified issue types
+    default:
+      departmentEmails.push('customercare@tshwane.gov.za');
+      break;
+  }
+  
+  return departmentEmails;
+}
+
 // Track issues that have already received reminder emails to avoid duplicates
 const reminderSentTracker = new Map<number, Date>();
 
@@ -108,10 +177,13 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
       </html>
     `;
     
+    // Get department-specific email addresses
+    const recipients = getDepartmentEmail(issue.type);
+    
     // Send the email
     const data = await resend.emails.send({
       from: 'Reportr Infrastructure Reports <reports@resend.dev>',
-      to: defaultRecipients,
+      to: recipients,
       subject: `New Report [${issue.reportId}]: ${issueType} at ${issue.address}`,
       html: emailContent,
     });
@@ -185,11 +257,14 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
       </html>
     `;
     
+    // Get department-specific email addresses
+    const recipients = getDepartmentEmail(issue.type);
+    
     // Send the email with exactly the same subject line as the initial report
     // This ensures municipal staff can easily match issues without scanning through different formats
     const data = await resend.emails.send({
       from: 'Reportr Infrastructure Reports <reports@resend.dev>',
-      to: defaultRecipients,
+      to: recipients,
       subject: `New Report [${issue.reportId}]: ${issueType} at ${issue.address}`,
       html: emailContent,
     });
@@ -274,10 +349,13 @@ export async function sendReminderEmail(issue: Issue): Promise<{ success: boolea
       </html>
     `;
     
+    // Get department-specific email addresses
+    const recipients = getDepartmentEmail(issue.type);
+    
     // Send the email with a reminder-specific subject line
     const data = await resend.emails.send({
       from: 'Reportr Infrastructure Reports <reports@resend.dev>',
-      to: defaultRecipients,
+      to: recipients,
       subject: `REMINDER [${issue.reportId}]: ${issueType} at ${issue.address} - Open for ${daysOpen} days`,
       html: emailContent,
     });
