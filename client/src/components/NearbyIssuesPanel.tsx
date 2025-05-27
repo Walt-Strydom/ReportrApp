@@ -54,6 +54,14 @@ export default function NearbyIssuesPanel({
   // Get all issue types for the filter dropdown
   const allIssueTypes = getAllIssueTypes();
 
+  // Handle successful support action
+  const handleSupportSuccess = () => {
+    toast({
+      title: "Success!",
+      description: "Your action has been completed successfully.",
+    });
+  };
+
   // Filter issues based on current filters
   const filteredIssues = issues.filter(issue => {
     // If categoryFilter is set, check if the issue belongs to that category
@@ -556,6 +564,14 @@ export default function NearbyIssuesPanel({
           <div className="h-24"></div>
         </div>
       </div>
+
+      {/* Issue Details Panel - embedded within nearby panel */}
+      <IssueDetailsPanel 
+        issue={selectedIssue}
+        isOpen={issueDetailsPanelActive}
+        onClose={() => setIssueDetailsPanelActive(false)}
+        onSuccess={handleSupportSuccess}
+      />
     </div>
   );
 }
