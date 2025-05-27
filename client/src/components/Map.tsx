@@ -324,7 +324,17 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
         aria-label="Google Map showing infrastructure issues"
       />
       
-
+      {/* Location button for Safari iOS compatibility */}
+      {center && (
+        <button 
+          className="absolute bottom-24 right-4 z-10 p-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg flex items-center justify-center transition-colors"
+          onClick={handleMyLocationClick}
+          style={{minWidth: '44px', minHeight: '44px'}}
+          aria-label="Center map on my location"
+        >
+          <MapPin className="h-5 w-5" />
+        </button>
+      )}
     </div>
   );
 }

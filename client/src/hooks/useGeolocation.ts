@@ -130,22 +130,9 @@ export function useGeolocation() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
     
-    // For Safari on iOS, be more conservative with location requests
-    if (isIOS && isSafari && location.permissionStatus === 'unknown') {
-      // Don't automatically check permissions on Safari iOS to prevent flashing errors
-      setLocation(prev => ({
-        ...prev,
-        loading: false,
-        error: null
-      }));
-      return;
-    }
-    
     if (location.permissionStatus !== 'granted') {
-      // Check permission status on mount for non-Safari browsers
-      if (!isSafari || !isIOS) {
-        checkPermissionStatus();
-      }
+      // Always check permission status on mount, but handle Safari iOS carefully
+      checkPermissionStatus();
       return;
     }
     
@@ -172,12 +159,17 @@ export function useGeolocation() {
     const geoError = (error: GeolocationPositionError) => {
       console.error('Watch position error:', error.code, error.message);
       
-      // For Safari iOS, don't show timeout errors as they're common and cause flashing
+      // Handle Safari iOS timeout errors more gracefully
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
       const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
       
+      // For Safari iOS timeout errors, show a helpful message instead of generic error
       if (isIOS && isSafari && error.code === error.TIMEOUT) {
-        // Silently handle timeout errors on Safari iOS to prevent flashing
+        setLocation(prev => ({
+          ...prev,
+          error: 'Tap "Allow" when Safari asks for location permission',
+          loading: false
+        }));
         return;
       }
       
