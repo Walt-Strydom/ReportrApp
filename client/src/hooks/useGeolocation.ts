@@ -126,19 +126,33 @@ export function useGeolocation() {
 
   // Start watching position once permission is granted
   useEffect(() => {
-    if (location.permissionStatus !== 'granted') {
-      // Check permission status on mount
-      checkPermissionStatus();
-      return;
-    }
-
     // iOS Safari has different behavior
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+    
+    // For Safari on iOS, be more conservative with location requests
+    if (isIOS && isSafari && location.permissionStatus === 'unknown') {
+      // Don't automatically check permissions on Safari iOS to prevent flashing errors
+      setLocation(prev => ({
+        ...prev,
+        loading: false,
+        error: null
+      }));
+      return;
+    }
+    
+    if (location.permissionStatus !== 'granted') {
+      // Check permission status on mount for non-Safari browsers
+      if (!isSafari || !isIOS) {
+        checkPermissionStatus();
+      }
+      return;
+    }
     
     const options = {
-      enableHighAccuracy: !isIOS, // Disable high accuracy for iOS to improve reliability
-      maximumAge: isIOS ? 60000 : 10000, // Use longer cache on iOS
-      timeout: isIOS ? 15000 : 30000 // Shorter timeout for iOS
+      enableHighAccuracy: false, // Always disable for better Safari compatibility
+      maximumAge: isIOS ? 120000 : 10000, // Longer cache for iOS Safari
+      timeout: isIOS ? 10000 : 30000 // Shorter timeout for iOS Safari
     };
 
     console.log('Setting up watchPosition with options:', options);
@@ -157,6 +171,16 @@ export function useGeolocation() {
 
     const geoError = (error: GeolocationPositionError) => {
       console.error('Watch position error:', error.code, error.message);
+      
+      // For Safari iOS, don't show timeout errors as they're common and cause flashing
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      
+      if (isIOS && isSafari && error.code === error.TIMEOUT) {
+        // Silently handle timeout errors on Safari iOS to prevent flashing
+        return;
+      }
+      
       let errorMessage = error.message;
       
       // More descriptive error messages
