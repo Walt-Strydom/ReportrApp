@@ -542,13 +542,16 @@ export default function NearbyIssuesPanel({
                     {/* Ad banner after every 3 issues */}
                     {(index + 1) % 3 === 0 && index < filteredIssues.length - 1 && (
                       <div className="my-4">
-                        <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                        <div 
+                          className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                          onClick={() => window.location.href = 'mailto:waltstrydom@gmail.com?subject=Advertising Inquiry - Reportr App'}
+                        >
                           <div className="pt-2 pb-1 px-4 bg-gray-50 border-b border-gray-100">
                             <h2 className="text-xs font-medium text-gray-500">Sponsored</h2>
                           </div>
                           <div className="p-3 flex justify-center items-center">
-                            <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center">
-                              <p className="text-sm text-gray-500">Ad Banner Space</p>
+                            <div className="bg-gray-100 rounded w-full h-16 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                              <p className="text-sm text-gray-600 font-medium">Advertise here</p>
                             </div>
                           </div>
                         </div>
