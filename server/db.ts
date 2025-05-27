@@ -5,8 +5,8 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
-// Override with your Supabase database URL to ensure we use your authentic data
-const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:Xn7Lxen.3LCzYQJ@db.tnzyloggrqsmovjnytyb.supabase.co:5432/postgres";
+// Force use of your Supabase database to ensure authentic data
+const databaseUrl = "postgresql://postgres:Xn7Lxen.3LCzYQJ@db.tnzyloggrqsmovjnytyb.supabase.co:5432/postgres";
 
 if (!databaseUrl) {
   throw new Error(
