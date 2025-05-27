@@ -144,11 +144,8 @@ export default function Map({ center, issues, heatmapActive, onMarkerClick, onMa
           mapTypeControl: false,
           fullscreenControl: false,
           streetViewControl: false,
-          zoomControl: true,
-          zoomControlOptions: {
-            position: window.google.maps.ControlPosition.RIGHT_BOTTOM,
-          },
-          myLocationButton: true,
+          zoomControl: false,
+          myLocationButton: false,
           gestureHandling: 'greedy',
           styles: MAP_STYLES,
         });
