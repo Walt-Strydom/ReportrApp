@@ -53,16 +53,6 @@ export const issueCategories: IssueCategory[] = [
     ]
   },
   {
-    id: 'electricity',
-    name: 'Electricity',
-    color: '#FF9800',
-    icon: 'zap',
-    subcategories: [
-      { id: 'downed-lines', name: 'Downed/Exposed Power Lines', icon: 'bolt' },
-      { id: 'damaged-substation', name: 'Damaged Electrical Substation', icon: 'box' }
-    ]
-  },
-  {
     id: 'waste-management',
     name: 'Waste Management',
     color: '#4CAF50',
