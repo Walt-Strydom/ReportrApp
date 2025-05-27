@@ -213,7 +213,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-12">
             <div className="flex-1 flex justify-start">
               <img 
-                src="/logo-orange.png" 
+                src="/logo-new.png" 
                 alt="Reportr Logo" 
                 className="h-10 w-auto"
               />

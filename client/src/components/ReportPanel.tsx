@@ -505,7 +505,7 @@ export default function ReportPanel({
                   alt="Category"
                   className="w-4 h-4" 
                   onError={(e) => {
-                    e.currentTarget.src = '/logo-orange.png';
+                    e.currentTarget.src = '/logo-new.png';
                     e.currentTarget.className = 'w-4 h-4';
                   }}
                 />
