@@ -125,7 +125,7 @@ async function syncPendingSupports() {
 async function openIDB() {
   // This is a simplified version - we'll implement the full DB in a separate file
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('lokisa', 1);
+    const request = indexedDB.open('reportr', 1);
     
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
