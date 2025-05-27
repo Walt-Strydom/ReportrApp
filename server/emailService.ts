@@ -54,7 +54,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
     const issueType = getIssueTypeName(issue.type);
     const reportDate = formatDate(issue.createdAt);
     const photoSection = issue.photoUrl 
-      ? `<p style="margin-bottom: 20px;"><strong>Photo:</strong> <a href="https://lokisa.replit.app${issue.photoUrl}" target="_blank">View photo</a></p>`
+      ? `<p style="margin-bottom: 20px;"><strong>Photo:</strong> <a href="${process.env.BASE_URL || 'https://reportr.app'}${issue.photoUrl}" target="_blank">View photo</a></p>`
       : '<p style="margin-bottom: 20px;"><strong>Photo:</strong> None provided</p>';
     
     // Create email content

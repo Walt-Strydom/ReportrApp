@@ -24,7 +24,9 @@ export const issueCategories: IssueCategory[] = [
       { id: 'non-functional-light', name: 'Non-functional Streetlight', icon: 'lightbulbOff' },
       { id: 'flickering-light', name: 'Flickering/Intermittent Light', icon: 'lightbulb' },
       { id: 'exposed-wiring', name: 'Exposed Wiring/Damaged Pole', icon: 'zap' },
-      { id: 'obstructed-light', name: 'Light Obstructed by Vegetation', icon: 'trees' }
+      { id: 'obstructed-light', name: 'Light Obstructed by Vegetation', icon: 'trees' },
+      { id: 'open-electrical-box', name: 'Open Electrical Box', icon: 'square' },
+      { id: 'broken-electrical-box', name: 'Broken Electrical Box', icon: 'squareX' }
     ]
   },
   {
