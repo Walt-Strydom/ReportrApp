@@ -61,7 +61,7 @@ export function useGeolocation() {
     if (!isGeolocationSupported) {
       setLocation(prev => ({
         ...prev,
-        error: 'Geolocation is not supported by your browser',
+        error: 'Location services not available on this device',
         loading: false,
         permissionStatus: 'denied'
       }));
@@ -69,14 +69,15 @@ export function useGeolocation() {
     }
 
     return new Promise<GeolocationPosition>((resolve, reject) => {
-      // iOS Safari has different behavior
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      // Detect iOS Safari specifically
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS/.test(navigator.userAgent);
       
-      // Enhanced iOS location handling
+      // Safari iOS specific settings for better compatibility
       const options = {
-        enableHighAccuracy: true, // Enable for precise location reporting
-        maximumAge: isIOS ? 20000 : 10000, // Allow some caching to prevent timeouts
-        timeout: isIOS ? 20000 : 25000 // Longer timeout for high accuracy GPS lock
+        enableHighAccuracy: true, // Essential for infrastructure reporting
+        maximumAge: isIOS && isSafari ? 0 : 10000, // Fresh location for Safari iOS
+        timeout: isIOS && isSafari ? 30000 : 25000 // Extended timeout for Safari iOS
       };
 
       console.log('Requesting location with options:', options);
@@ -100,15 +101,28 @@ export function useGeolocation() {
           let permissionStatus: 'denied' | 'prompt' | 'unknown' = 'unknown';
           let errorMessage = error.message;
           
-          // More descriptive error messages
-          if (error.code === error.PERMISSION_DENIED) {
-            permissionStatus = 'denied';
-            errorMessage = 'Location access denied. Please enable location services in your device settings.';
-          } else if (error.code === error.TIMEOUT) {
-            permissionStatus = 'prompt';
-            errorMessage = 'Location request timed out. Please check your connection and try again.';
-          } else if (error.code === error.POSITION_UNAVAILABLE) {
-            errorMessage = 'Unable to determine your location. Please check your device settings.';
+          // Safari iOS specific error handling
+          if (isIOS && isSafari) {
+            if (error.code === error.PERMISSION_DENIED) {
+              permissionStatus = 'denied';
+              errorMessage = 'Please enable location in Safari settings: Settings > Safari > Location Services';
+            } else if (error.code === error.TIMEOUT) {
+              permissionStatus = 'prompt';
+              errorMessage = 'Location unavailable. Please enable precise location in Safari settings.';
+            } else {
+              errorMessage = 'Location services unavailable. Check Safari location settings.';
+            }
+          } else {
+            // Standard error messages for other browsers
+            if (error.code === error.PERMISSION_DENIED) {
+              permissionStatus = 'denied';
+              errorMessage = 'Location access denied. Please enable location services.';
+            } else if (error.code === error.TIMEOUT) {
+              permissionStatus = 'prompt';
+              errorMessage = 'Location request timed out. Please try again.';
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+              errorMessage = 'Location unavailable. Please check device settings.';
+            }
           }
           
           setLocation(prev => ({
