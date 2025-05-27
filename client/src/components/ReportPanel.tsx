@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
-import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon, SmartphoneIcon, TrashIcon } from 'lucide-react';
+import { XIcon, ArrowLeftIcon, CameraIcon, MapPinIcon, InfoIcon, ChevronRightIcon, SmartphoneIcon, TrashIcon, SearchIcon, TrendingUpIcon } from 'lucide-react';
 import Icon from './Icon';
 import { queryClient } from '@/lib/queryClient';
 import { Issue } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import IssueTypeCard from './IssueTypeCard';
 import { nanoid } from 'nanoid';
 import { useToast } from '@/hooks/use-toast';
@@ -45,9 +46,27 @@ export default function ReportPanel({
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { takePicture, isCapacitorAvailable } = useCapacitorCamera();
+
+  // Popular issue types for quick access
+  const popularIssueTypes = [
+    { id: 'pothole', name: 'Potholes', icon: 'pothole', category: 'roads' },
+    { id: 'streetlight', name: 'Street Lights', icon: 'streetlight', category: 'lighting' },
+    { id: 'traffic-light', name: 'Traffic Lights', icon: 'traffic-light', category: 'traffic' },
+    { id: 'road-marking', name: 'Faded Road Markings', icon: 'road-marking', category: 'roads' }
+  ];
+
+  // Get all issue types for search functionality
+  const allIssueTypes = getAllIssueTypes();
+
+  // Filter issue types based on search query
+  const filteredIssueTypes = allIssueTypes.filter(issueType =>
+    issueType.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    issueType.id.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const form = useForm<FormData>({
     resolver: zodResolver(issueFormSchema),
@@ -85,6 +104,29 @@ export default function ReportPanel({
   const handleIssueTypeSelect = (type: string) => {
     setSelectedIssueType(type);
     form.setValue('type', type);
+  };
+
+  // Handle popular issue type selection - jumps directly to photo page
+  const handlePopularIssueSelect = (issueType: any) => {
+    setSelectedCategory(issueType.category);
+    setSelectedIssueType(issueType.id);
+    form.setValue('type', issueType.id);
+    setStep(2); // Jump directly to photo page
+  };
+
+  // Handle search result selection - jumps directly to photo page
+  const handleSearchResultSelect = (issueType: any) => {
+    // Find the category for this issue type
+    const category = issueCategories.find(cat => 
+      cat.subcategories.some(sub => sub.id === issueType.id)
+    );
+    
+    if (category) {
+      setSelectedCategory(category.id);
+      setSelectedIssueType(issueType.id);
+      form.setValue('type', issueType.id);
+      setStep(2); // Jump directly to photo page
+    }
   };
 
   const goToStep2 = () => {
@@ -287,9 +329,82 @@ export default function ReportPanel({
           </button>
         </div>
         
-        <p className="text-neutral-600 text-sm font-medium mb-4">{t('report.form.category.label')}</p>
+        {/* Search Feature */}
+        <div className="mb-6">
+          <div className="relative">
+            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search for an issue type..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            />
+          </div>
+          
+          {/* Search Results */}
+          {searchQuery && (
+            <div className="mt-3 max-h-48 overflow-y-auto">
+              {filteredIssueTypes.length > 0 ? (
+                <div className="space-y-2">
+                  {filteredIssueTypes.slice(0, 5).map((issueType) => (
+                    <div
+                      key={issueType.id}
+                      className="p-3 rounded-lg cursor-pointer transition-all duration-200 bg-white border border-gray-100 hover:bg-gray-50 flex items-center"
+                      onClick={() => handleSearchResultSelect(issueType)}
+                    >
+                      <Icon name={issueType.id} className="w-5 h-5 mr-3 text-primary" />
+                      <span className="flex-1 font-medium text-sm">{issueType.name}</span>
+                      <ChevronRightIcon className="h-4 w-4 text-gray-400" />
+                    </div>
+                  ))}
+                  {filteredIssueTypes.length > 5 && (
+                    <p className="text-xs text-gray-500 text-center py-2">
+                      {filteredIssueTypes.length - 5} more results...
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="p-4 text-center text-gray-500 text-sm">
+                  No issue types found matching "{searchQuery}"
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Popular Issues Section */}
+        {!searchQuery && (
+          <div className="mb-6">
+            <div className="flex items-center mb-3">
+              <TrendingUpIcon className="h-4 w-4 mr-2 text-primary" />
+              <h3 className="font-semibold text-sm text-gray-800">Popular Issues</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {popularIssueTypes.map((issueType) => (
+                <div
+                  key={issueType.id}
+                  className="p-3 rounded-xl cursor-pointer transition-all duration-200 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 hover:from-primary/10 hover:to-primary/15"
+                  onClick={() => handlePopularIssueSelect(issueType)}
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full mb-2 bg-white">
+                      <Icon name={issueType.icon} className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="font-medium text-center text-xs text-gray-800">{issueType.name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         
-        <div className="grid grid-cols-2 gap-3">
+        {/* Regular Category Selection */}
+        {!searchQuery && (
+          <>
+            <p className="text-neutral-600 text-sm font-medium mb-4">{t('report.form.category.label')}</p>
+            
+            <div className="grid grid-cols-2 gap-3">
           {issueCategories.map((category, index) => (
             <>
               <div key={category.id}>
