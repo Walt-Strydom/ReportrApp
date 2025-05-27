@@ -219,7 +219,7 @@ export default function Home() {
               />
             </div>
             <div className="flex-1 flex justify-end items-center">
-              <LanguageSelector />
+              {/* Language selector removed - keeping English only */}
             </div>
           </div>
         </div>
