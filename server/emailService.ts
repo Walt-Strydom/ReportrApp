@@ -17,8 +17,11 @@ const defaultRecipients = ['waltstrydom@gmail.com'];
  * Get department email address based on issue type and location
  */
 function getDepartmentEmail(issueType: string, latitude?: number, longitude?: number): string[] {
+  console.log(`getDepartmentEmail called with: ${issueType}, lat: ${latitude}, lng: ${longitude}`);
+  
   // If location is provided, use the new location-based routing
   if (latitude !== undefined && longitude !== undefined) {
+    console.log('Using location-based routing...');
     const municipalityInfo = getMunicipalityInfo(latitude, longitude);
     const recipients = getDepartmentEmailsByLocation(latitude, longitude, issueType);
     
@@ -26,6 +29,8 @@ function getDepartmentEmail(issueType: string, latitude?: number, longitude?: nu
     
     return recipients;
   }
+  
+  console.log('WARNING: Falling back to Tshwane routing - no coordinates provided!');
   
   // Fallback to Tshwane if no location provided (backward compatibility)
   const departmentEmails = ['waltstrydom@gmail.com']; // Always include Walt's email

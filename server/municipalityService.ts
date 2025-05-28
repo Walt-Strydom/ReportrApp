@@ -108,12 +108,12 @@ const municipalities: Municipality[] = [
     boundaries: [
       {
         type: 'polygon',
-        // Approximate boundaries of Johannesburg metropolitan area (excluding Ekurhuleni overlap)
+        // Approximate boundaries of Johannesburg metropolitan area (west of Ekurhuleni)
         coordinates: [
           [-25.9, 27.8], // Northwest
-          [-25.9, 28.0], // Northeast (reduced to avoid Ekurhuleni overlap)
-          [-26.5, 28.0], // Southeast (reduced to avoid Ekurhuleni overlap)
-          [-26.5, 27.8], // Southwest
+          [-25.9, 28.15], // Northeast (just west of Ekurhuleni)
+          [-26.4, 28.15], // Southeast (just west of Ekurhuleni)
+          [-26.4, 27.8], // Southwest
           [-25.9, 27.8]  // Close polygon
         ]
       }
@@ -185,11 +185,11 @@ const municipalities: Municipality[] = [
         type: 'polygon',
         // Approximate boundaries of Ekurhuleni (East Rand)
         coordinates: [
-          [-25.8, 28.0], // Northwest
+          [-25.8, 28.15], // Northwest (east of Johannesburg)
           [-25.8, 28.8], // Northeast
           [-26.5, 28.8], // Southeast
-          [-26.5, 28.0], // Southwest
-          [-25.8, 28.0]  // Close polygon
+          [-26.5, 28.15], // Southwest (east of Johannesburg)
+          [-25.8, 28.15]  // Close polygon
         ]
       }
     ],
