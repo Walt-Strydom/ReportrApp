@@ -22,7 +22,8 @@ import {
   X, 
   ArrowRight, 
   ChevronRight,
-  Download
+  Download,
+  MessageSquare
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { getIssueTypeById } from '@/data/issueTypes';
@@ -559,6 +560,34 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* App Feedback Button - Non-invasive */}
+      <div className="fixed bottom-20 right-4 z-30">
+        <button
+          onClick={() => {
+            const subject = encodeURIComponent('Reportr App Issue Report');
+            const body = encodeURIComponent(`Hi,
+
+I found an issue with the Reportr app:
+
+Issue Description:
+[Please describe the issue you encountered]
+
+Device/Browser:
+${navigator.userAgent}
+
+Current Page: ${window.location.href}
+
+Thank you!`);
+            window.location.href = `mailto:waltstrydom@gmail.com?subject=${subject}&body=${body}`;
+          }}
+          className="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-full shadow-lg transition-colors duration-200 group"
+          aria-label="Report an issue with the app"
+          title="Report an issue with the Reportr app"
+        >
+          <MessageSquare className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }
