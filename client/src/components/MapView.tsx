@@ -247,7 +247,19 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
             overflowY: 'auto'
           }}
         >
-          <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-4"></div>
+          {/* Header with drag handle and close button */}
+          <div className="relative mb-4">
+            <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto"></div>
+            
+            {/* Close button */}
+            <button
+              onClick={() => setSelectedIssue(null)}
+              className="absolute top-0 right-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close issue details"
+            >
+              <XIcon className="h-5 w-5 text-gray-500" />
+            </button>
+          </div>
           
           <div className="flex items-start mb-4">
             {selectedIssue.photoUrl ? (
