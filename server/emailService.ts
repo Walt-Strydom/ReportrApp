@@ -139,6 +139,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
     // Format issue details for email
     const issueType = getIssueTypeName(issue.type);
     const reportDate = formatDate(issue.createdAt);
+    const municipalityInfo = getMunicipalityInfo(issue.latitude, issue.longitude);
     const photoSection = issue.photoUrl 
       ? `<p style="margin-bottom: 20px;"><strong>Photo:</strong> <a href="${process.env.BASE_URL || 'https://reportr.app'}${issue.photoUrl}" target="_blank">View photo</a></p>`
       : '<p style="margin-bottom: 20px;"><strong>Photo:</strong> None provided</p>';
@@ -166,12 +167,13 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
               <h1 style="margin: 0; font-size: 24px;">New Infrastructure Issue Report</h1>
             </div>
             <div class="content">
-              <p>A new infrastructure issue has been reported in Pretoria. Details are as follows:</p>
+              <p>A new infrastructure issue has been reported. Details are as follows:</p>
               
               <div class="highlight">
                 <p class="detail-row"><span class="label">Report ID:</span> ${issue.reportId}</p>
                 <p class="detail-row"><span class="label">Issue Type:</span> ${issueType}</p>
                 <p class="detail-row"><span class="label">Status:</span> ${issue.status.toUpperCase()}</p>
+                <p class="detail-row"><span class="label">Municipality:</span> ${municipalityInfo.name}</p>
               </div>
               
               <h3>Location Details</h3>
@@ -194,8 +196,8 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
       </html>
     `;
     
-    // Get department-specific email addresses
-    const recipients = getDepartmentEmail(issue.type);
+    // Get department-specific email addresses using location-based routing
+    const recipients = getDepartmentEmail(issue.type, issue.latitude, issue.longitude);
     
     // Send the email
     const data = await resend.emails.send({
@@ -219,7 +221,7 @@ export async function sendNewIssueEmail(issue: Issue): Promise<{ success: boolea
     
     // Update database to mark email delivery as failed
     try {
-      const recipients = getDepartmentEmail(issue.type);
+      const recipients = getDepartmentEmail(issue.type, issue.latitude, issue.longitude);
       await db.update(issues)
         .set({
           emailSentTo: recipients.join(', '),
@@ -242,6 +244,7 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
     // Format issue details for email
     const issueType = getIssueTypeName(issue.type);
     const reportDate = formatDate(issue.createdAt);
+    const municipalityInfo = getMunicipalityInfo(issue.latitude, issue.longitude);
     
     // Create email content
     const emailContent = `
@@ -296,8 +299,8 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
       </html>
     `;
     
-    // Get department-specific email addresses
-    const recipients = getDepartmentEmail(issue.type);
+    // Get department-specific email addresses using location-based routing
+    const recipients = getDepartmentEmail(issue.type, issue.latitude, issue.longitude);
     
     // Send the email with exactly the same subject line as the initial report
     // This ensures municipal staff can easily match issues without scanning through different formats
@@ -322,7 +325,7 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
     
     // Update the upvote record to mark email delivery as failed
     try {
-      const recipients = getDepartmentEmail(issue.type);
+      const recipients = getDepartmentEmail(issue.type, issue.latitude, issue.longitude);
       await db.update(upvotes)
         .set({
           emailSentTo: recipients.join(', '),
@@ -410,8 +413,8 @@ export async function sendReminderEmail(issue: Issue): Promise<{ success: boolea
       </html>
     `;
     
-    // Get department-specific email addresses
-    const recipients = getDepartmentEmail(issue.type);
+    // Get department-specific email addresses using location-based routing
+    const recipients = getDepartmentEmail(issue.type, issue.latitude, issue.longitude);
     
     // Send the email with a reminder-specific subject line
     const data = await resend.emails.send({
