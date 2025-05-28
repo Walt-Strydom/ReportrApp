@@ -4,14 +4,11 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install --only=production && npm cache clean --force
-
-# Copy source code
+# Copy source code first
 COPY . .
+
+# Install dependencies 
+RUN npm install --only=production && npm cache clean --force
 
 # Build the application
 RUN npm run build
