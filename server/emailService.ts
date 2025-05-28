@@ -38,12 +38,14 @@ function getDepartmentEmail(issueType: string): string[] {
       break;
     
     // Street lighting
+    case 'streetlight':
     case 'street-light':
     case 'broken-light':
       departmentEmails.push('streetlights@tshwane.gov.za');
       break;
     
     // Traffic lights
+    case 'trafficlight':
     case 'traffic-light':
     case 'malfunctioning-traffic':
       departmentEmails.push('trafficsignalfaults@tshwane.gov.za');
