@@ -476,7 +476,7 @@ export default function ReportPanel({
       </div>
       
       {/* Step 1.5: Subcategory Selection */}
-      <div className={`p-6 pb-24 ${step !== 1.5 && 'hidden'}`}>
+      <div className={`pb-24 ${step !== 1.5 && 'hidden'}`} style={{paddingTop: 'max(60px, env(safe-area-inset-top) + 36px)', paddingLeft: '24px', paddingRight: '24px'}}>
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <button className="mr-2 p-2 rounded-full hover:bg-neutral-100 transition-colors" onClick={goBackFromSubcategory}>

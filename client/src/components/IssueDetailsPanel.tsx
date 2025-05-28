@@ -189,7 +189,7 @@ export default function IssueDetailsPanel({
       className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-lg z-20 max-h-[90vh] overflow-y-auto transform transition-transform duration-300 ${
         isOpen ? 'translate-y-0' : 'translate-y-full'
       }`}
-      style={{paddingBottom: 'max(24px, env(safe-area-inset-bottom))'}}
+      style={{paddingBottom: 'max(24px, env(safe-area-inset-bottom))', paddingTop: 'max(24px, env(safe-area-inset-top))'}}
     >
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
