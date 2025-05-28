@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, timestamp, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, doublePrecision, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -21,7 +21,7 @@ export const issues = pgTable("issues", {
   upvotes: integer("upvotes").default(0).notNull(),
   reportId: text("report_id").notNull().unique(), // Unique ID for reference in emails
   emailSentTo: text("email_sent_to"), // Email address(es) the report was sent to
-  emailDelivered: text("email_delivered").default("No"), // "Yes" or "No" - email delivery status
+  emailDelivered: text("email_delivered").default("false"), // "true"/"false" - email delivery status
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -31,7 +31,7 @@ export const upvotes = pgTable("upvotes", {
   issueId: integer("issue_id").notNull(),
   deviceId: text("device_id").notNull(), // Anonymous identifier for the device
   emailSentTo: text("email_sent_to"), // Email address(es) the support notification was sent to
-  emailDelivered: text("email_delivered").default("No"), // "Yes" or "No" - email delivery status
+  emailDelivered: text("email_delivered").default("false"), // "true"/"false" - email delivery status
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
