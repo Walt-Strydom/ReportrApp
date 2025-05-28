@@ -1,0 +1,40 @@
+{
+  "ServiceName": "reportr-app",
+  "SourceConfiguration": {
+    "CodeRepository": {
+      "RepositoryUrl": "YOUR_GITHUB_REPO_URL",
+      "SourceCodeVersion": {
+        "Type": "BRANCH",
+        "Value": "main"
+      },
+      "CodeConfiguration": {
+        "ConfigurationSource": "REPOSITORY",
+        "CodeConfigurationValues": {
+          "Runtime": "NODEJS_20",
+          "BuildCommand": "npm install && npm run build",
+          "StartCommand": "npm start",
+          "Port": "5000",
+          "RuntimeEnvironmentVariables": {
+            "NODE_ENV": "production",
+            "DATABASE_URL": "YOUR_DATABASE_URL",
+            "RESEND_API_KEY": "YOUR_RESEND_API_KEY",
+            "GOOGLE_MAPS_API_KEY": "YOUR_GOOGLE_MAPS_API_KEY"
+          }
+        }
+      }
+    },
+    "AutoDeploymentsEnabled": true
+  },
+  "InstanceConfiguration": {
+    "Cpu": "0.25 vCPU",
+    "Memory": "0.5 GB"
+  },
+  "HealthCheckConfiguration": {
+    "Protocol": "HTTP",
+    "Path": "/api/health",
+    "Interval": 20,
+    "Timeout": 5,
+    "HealthyThreshold": 1,
+    "UnhealthyThreshold": 5
+  }
+}

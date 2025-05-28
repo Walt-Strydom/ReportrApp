@@ -58,24 +58,11 @@ if [ ! -z "$GITHUB_CONNECTION_ARN" ]; then
     CONNECTION_CONFIG="\"ConnectionArn\": \"$GITHUB_CONNECTION_ARN\","
 fi
 
-# Create service configuration JSON
+# Create service configuration JSON for code repository
 cat > apprunner-service.json << EOF
 {
   "ServiceName": "$SERVICE_NAME",
   "SourceConfiguration": {
-    "ImageRepository": {
-      "ImageIdentifier": "$GITHUB_REPO_URL",
-      "ImageConfiguration": {
-        "Port": "5000",
-        "RuntimeEnvironmentVariables": {
-          "NODE_ENV": "production",
-          "DATABASE_URL": "$DATABASE_URL",
-          "RESEND_API_KEY": "$RESEND_API_KEY",
-          "GOOGLE_MAPS_API_KEY": "$GOOGLE_MAPS_API_KEY"
-        }
-      },
-      "ImageRepositoryType": "ECR_PUBLIC"
-    },
     "CodeRepository": {
       $CONNECTION_CONFIG
       "RepositoryUrl": "$GITHUB_REPO_URL",
