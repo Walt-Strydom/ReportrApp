@@ -1,0 +1,563 @@
+2025/05/28 13:44:13.424818 [INFO] Starting...
+2025/05/28 13:44:13.424862 [INFO] Starting EBPlatform-PlatformEngine
+2025/05/28 13:44:13.424917 [INFO] reading event message file
+2025/05/28 13:44:13.425714 [INFO] Engine received EB command userdata-exec
+
+2025/05/28 13:44:13.432850 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBAutoScalingGroup --region eu-west-2
+2025/05/28 13:44:13.736360 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBBeanstalkMetadata --region eu-west-2
+2025/05/28 13:44:14.118519 [INFO] This is a workflow controlled instance.
+2025/05/28 13:44:14.118665 [INFO] Engine command: (env-launch)
+
+2025/05/28 13:44:14.131957 [INFO] Executing instruction: SyncClock
+2025/05/28 13:44:14.131965 [INFO] Starting SyncClock
+2025/05/28 13:44:14.131974 [INFO] Running command: /usr/bin/chronyc tracking
+2025/05/28 13:44:14.164211 [INFO] Reference ID    : A9FEA97B (169.254.169.123)
+Stratum         : 4
+Ref time (UTC)  : Wed May 28 13:44:11 2025
+System time     : 0.506274760 seconds slow of NTP time
+Last offset     : +0.000053313 seconds
+RMS offset      : 0.000053313 seconds
+Frequency       : 6.122 ppm slow
+Residual freq   : +22.152 ppm
+Skew            : 0.154 ppm
+Root delay      : 0.001134439 seconds
+Root dispersion : 0.000316402 seconds
+Update interval : 2.1 seconds
+Leap status     : Normal
+
+2025/05/28 13:44:14.164236 [INFO] Running command: /usr/bin/chronyc -a makestep
+2025/05/28 13:44:14.671884 [INFO] 200 OK
+
+2025/05/28 13:44:14.671923 [INFO] Skipping Configure OS
+2025/05/28 13:44:14.671929 [INFO] Skipping LockRepo
+2025/05/28 13:44:14.671933 [INFO] Skipping GenerateEBBanner
+2025/05/28 13:44:14.671937 [INFO] Skipping Install Process Manager
+2025/05/28 13:44:14.671942 [INFO] Skipping install syslog
+2025/05/28 13:44:14.671945 [INFO] Skipping install cron
+2025/05/28 13:44:14.671949 [INFO] Skipping install proxy
+2025/05/28 13:44:14.671953 [INFO] Skipping installhealthd
+2025/05/28 13:44:14.671967 [INFO] Skipping Install Log Streaming Manager
+2025/05/28 13:44:14.671971 [INFO] Skipping install X-Ray
+2025/05/28 13:44:14.671976 [INFO] Skipping install Third Party License
+2025/05/28 13:44:14.671981 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:14.671984 [INFO] Executing instruction: installSqsd
+2025/05/28 13:44:14.671987 [INFO] This is a web server environment instance, skip install sqsd daemon ...
+2025/05/28 13:44:14.671991 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:14.671993 [INFO] Executing instruction: bootstraphealthd
+2025/05/28 13:44:14.671996 [INFO] this is an enhanced health env ...
+2025/05/28 13:44:14.672006 [INFO] bootstrap healthd....
+2025/05/28 13:44:14.672014 [INFO] Running command: /usr/bin/id -u healthd || /usr/sbin/useradd --user-group healthd -s /sbin/nologin --create-home
+2025/05/28 13:44:14.963110 [INFO] /usr/bin/id: ‘healthd’: no such user
+
+2025/05/28 13:44:14.963514 [INFO] none proxy, skip creating proxy dir for healthd
+2025/05/28 13:44:14.963525 [INFO] bootstrap healthd....
+2025/05/28 13:44:14.963536 [INFO] Running command: /usr/bin/id -u healthd || /usr/sbin/useradd --user-group healthd -s /sbin/nologin --create-home
+2025/05/28 13:44:14.965685 [INFO] 1001
+
+2025/05/28 13:44:14.965862 [INFO] configure bundle log for healthd...
+2025/05/28 13:44:14.965904 [INFO] Skipping Install yum packages
+2025/05/28 13:44:14.965909 [INFO] Skipping install docker-compose
+2025/05/28 13:44:14.965914 [INFO] Skipping Configure Docker Daemon
+2025/05/28 13:44:14.965918 [INFO] Skipping MarkBaked
+2025/05/28 13:44:14.965922 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:14.965925 [INFO] Executing instruction: TuneSystemSettings
+2025/05/28 13:44:14.965928 [INFO] Starting TuneSystemSettings
+2025/05/28 13:44:14.965933 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:14.971012 [INFO] Executing instruction: GetSetupLogRotate
+2025/05/28 13:44:14.971020 [INFO] Initialize LogRotate files and directories
+2025/05/28 13:44:15.001286 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:15.001297 [INFO] Executing instruction: BootstrapCFNHup
+2025/05/28 13:44:15.001300 [INFO] Bootstrap cfn-hup
+2025/05/28 13:44:15.004181 [INFO] Copying file /opt/elasticbeanstalk/config/private/aws-eb-command-handler.conf to /etc/cfn/hooks.d/aws-eb-command-handler.conf
+2025/05/28 13:44:15.006909 [INFO] Executing instruction: StartCFNHup
+2025/05/28 13:44:15.006919 [INFO] Start cfn-hup
+2025/05/28 13:44:15.006932 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/05/28 13:44:15.021253 [INFO] cfn-hup is not registered with EB yet, registering it now
+2025/05/28 13:44:15.021278 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/05/28 13:44:15.035233 [INFO] Running command: systemctl daemon-reload
+2025/05/28 13:44:15.324227 [INFO] Running command: systemctl reset-failed
+2025/05/28 13:44:15.333559 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/05/28 13:44:15.340985 [INFO] Running command: systemctl enable aws-eb.target
+2025/05/28 13:44:15.627136 [INFO] Running command: systemctl start aws-eb.target
+2025/05/28 13:44:15.636653 [INFO] Running command: systemctl enable cfn-hup.service
+2025/05/28 13:44:15.922936 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/cfn-hup.service → /etc/systemd/system/cfn-hup.service.
+
+2025/05/28 13:44:15.922967 [INFO] Running command: systemctl is-active cfn-hup.service
+2025/05/28 13:44:15.931234 [INFO] cfn-hup process is not running, starting it now
+2025/05/28 13:44:15.931250 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/05/28 13:44:15.940545 [INFO] Running command: systemctl is-active cfn-hup.service
+2025/05/28 13:44:15.947595 [INFO] Running command: systemctl start cfn-hup.service
+2025/05/28 13:44:16.012237 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:16.012250 [INFO] Executing instruction: SetupPublishLogCronjob
+2025/05/28 13:44:16.012253 [INFO] Setup publish logs cron job...
+2025/05/28 13:44:16.012257 [INFO] Copying file /opt/elasticbeanstalk/config/private/logtasks/cron/publishlogs to /etc/cron.d/publishlogs
+2025/05/28 13:44:16.015901 [INFO] Executing instruction: Start Docker
+2025/05/28 13:44:16.015909 [INFO] Starting Docker...
+2025/05/28 13:44:16.015953 [INFO] Copying file /opt/elasticbeanstalk/config/private/docker-log.conf to /etc/systemd/system/docker.service.d/docker-log.conf
+2025/05/28 13:44:16.018679 [INFO] Copying file /opt/elasticbeanstalk/config/private/docker-rsyslog.conf to /etc/rsyslog.d/docker-log.conf
+2025/05/28 13:44:16.021193 [INFO] Running command: systemctl restart rsyslog.service
+2025/05/28 13:44:16.307388 [INFO] Running command: systemctl show -p PartOf docker.service
+2025/05/28 13:44:16.327512 [INFO] Running command: systemctl daemon-reload
+2025/05/28 13:44:16.614277 [INFO] Running command: systemctl reset-failed
+2025/05/28 13:44:16.623893 [INFO] Running command: systemctl show -p PartOf docker.service
+2025/05/28 13:44:16.634597 [INFO] Running command: systemctl is-active docker.service
+2025/05/28 13:44:16.642206 [INFO] Running command: systemctl start docker.service
+2025/05/28 13:44:21.356561 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:21.356574 [INFO] Executing instruction: Setup Docker Options
+2025/05/28 13:44:21.356578 [INFO] Setting up configurations for docker platform
+2025/05/28 13:44:21.369913 [INFO] Running command: systemctl show -p PartOf eb-docker-events.service
+2025/05/28 13:44:21.388661 [INFO] Running command: systemctl daemon-reload
+2025/05/28 13:44:21.679445 [INFO] Running command: systemctl reset-failed
+2025/05/28 13:44:21.689794 [INFO] Running command: systemctl enable eb-docker-events.service
+2025/05/28 13:44:21.970831 [INFO] Created symlink /etc/systemd/system/docker.service.wants/eb-docker-events.service → /etc/systemd/system/eb-docker-events.service.
+
+2025/05/28 13:44:21.970852 [INFO] Running command: systemctl show -p PartOf eb-docker-events.service
+2025/05/28 13:44:21.982982 [INFO] Running command: systemctl is-active eb-docker-events.service
+2025/05/28 13:44:21.991985 [INFO] Running command: systemctl start eb-docker-events.service
+2025/05/28 13:44:22.043964 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:22.043978 [INFO] Executing instruction: MarkBootstrapped
+2025/05/28 13:44:22.043982 [INFO] Starting MarkBootstrapped
+2025/05/28 13:44:22.043986 [INFO] Instance has NOT been bootstrapped
+2025/05/28 13:44:22.044100 [INFO] Marked instance as Bootstrapped
+2025/05/28 13:44:22.044104 [INFO] Executing instruction: Save CFN Stack Info
+2025/05/28 13:44:22.055276 [INFO] Executing cleanup logic
+2025/05/28 13:44:22.055297 [INFO] Platform Engine finished execution on command: env-launch
+
+2025/05/28 13:44:40.219219 [INFO] Starting...
+2025/05/28 13:44:40.219252 [INFO] Starting EBPlatform-PlatformEngine
+2025/05/28 13:44:40.219272 [INFO] reading event message file
+2025/05/28 13:44:40.219498 [INFO] Engine received EB command cfn-hup-exec
+
+2025/05/28 13:44:40.290187 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBAutoScalingGroup --region eu-west-2
+2025/05/28 13:44:40.575196 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBBeanstalkMetadata --region eu-west-2
+2025/05/28 13:44:40.837512 [INFO] checking whether command app-deploy is applicable to this instance...
+2025/05/28 13:44:40.837524 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/05/28 13:44:40.837527 [INFO] Engine command: (app-deploy)
+
+2025/05/28 13:44:40.837531 [INFO] Downloading EB Application...
+2025/05/28 13:44:40.837534 [INFO] Region: eu-west-2
+2025/05/28 13:44:40.837911 [INFO] envID: e-a2x2s4k52q
+2025/05/28 13:44:40.837916 [INFO] envBucket: elasticbeanstalk-eu-west-2-459234975125
+2025/05/28 13:44:40.837919 [INFO] accountID: 459234975125
+2025/05/28 13:44:40.837921 [INFO] Using manifest file name from command request
+2025/05/28 13:44:40.837927 [INFO] Unable to get version manifest file.
+2025/05/28 13:44:40.837930 [INFO] Downloading latest manifest available.
+2025/05/28 13:44:40.837932 [INFO] Download latest app version manifest
+2025/05/28 13:44:40.838044 [INFO] resources/environments/e-a2x2s4k52q/_runtime/versions/manifest
+2025/05/28 13:44:40.888211 [INFO] latestManifest key *: resources/environments/e-a2x2s4k52q/_runtime/versions/manifest_1748439796726
+
+2025/05/28 13:44:40.888592 [INFO] Downloading: bucket: elasticbeanstalk-eu-west-2-459234975125, object: resources/environments/e-a2x2s4k52q/_runtime/versions/manifest_1748439796726, expected bucket owner: 459234975125
+2025/05/28 13:44:40.933464 [INFO] Download successful110bytes downloaded
+2025/05/28 13:44:40.933559 [INFO] Trying to read and parse version manifest...
+2025/05/28 13:44:40.933632 [INFO] Downloading: bucket: elasticbeanstalk-eu-west-2-459234975125, object: resources/environments/e-a2x2s4k52q/_runtime/_versions/Reportr App/Rpr001, expected bucket owner: 459234975125
+2025/05/28 13:44:40.958833 [INFO] Download successful9263bytes downloaded
+2025/05/28 13:44:40.959217 [INFO] Executing instruction: ElectLeader
+2025/05/28 13:44:40.959226 [INFO] Running leader election for instance i-03c833aac6149a9a2...
+2025/05/28 13:44:40.959229 [INFO] Calling the cfn-elect-cmd-leader to elect the command leader.
+2025/05/28 13:44:40.959238 [INFO] Running command: /opt/aws/bin/cfn-elect-cmd-leader --stack arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f --command-name ElasticBeanstalkCommand-AWSEBAutoScalingGroup --invocation-id 74daad6c-2049-48d2-ad49-0da9a5d0ed04 --listener-id i-03c833aac6149a9a2 --region eu-west-2
+2025/05/28 13:44:41.247710 [INFO] Instance is Leader.
+2025/05/28 13:44:41.247764 [INFO] Executing instruction: stopSqsd
+2025/05/28 13:44:41.247768 [INFO] This is a web server environment instance, skip stop sqsd daemon ...
+2025/05/28 13:44:41.247777 [INFO] Executing instruction: PreBuildEbExtension
+2025/05/28 13:44:41.247780 [INFO] Starting executing the config set Infra-EmbeddedPreBuild.
+2025/05/28 13:44:41.247789 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBAutoScalingGroup --region eu-west-2 --configsets Infra-EmbeddedPreBuild
+2025/05/28 13:44:41.542998 [INFO] Finished executing the config set Infra-EmbeddedPreBuild.
+
+2025/05/28 13:44:41.543050 [INFO] Executing instruction: StagedockerApplication
+2025/05/28 13:44:41.543058 [INFO] Running command: docker ps -a -q -f status=running
+2025/05/28 13:44:41.560950 [INFO] Pruning containers ...
+2025/05/28 13:44:41.560996 [INFO] Running command: docker ps -a
+2025/05/28 13:44:41.573550 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/05/28 13:44:41.573596 [INFO] Running command: docker container prune -f
+2025/05/28 13:44:41.585980 [INFO] Total reclaimed space: 0B
+
+2025/05/28 13:44:41.586020 [INFO] Running command: docker ps -a
+2025/05/28 13:44:41.597907 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/05/28 13:44:41.597946 [INFO] Recreating /var/app/staging/
+2025/05/28 13:44:41.598022 [INFO] Recreating /var/log/eb-docker/containers/eb-current-app
+2025/05/28 13:44:41.598145 [INFO] Running command: /bin/file -m /opt/elasticbeanstalk/config/private/beanstalk-magic -b --mime-type /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/05/28 13:44:41.615556 [INFO] application/zip
+
+2025/05/28 13:44:41.615573 [INFO] app source bundle is zip file ...
+2025/05/28 13:44:41.615577 [INFO] extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/
+2025/05/28 13:44:41.615586 [INFO] Running command: /usr/bin/unzip -q -o /opt/elasticbeanstalk/deployment/app_source_bundle -d /var/app/staging/
+2025/05/28 13:44:41.618580 [INFO] finished extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/ successfully
+2025/05/28 13:44:41.618590 [INFO] Executing instruction: RunAppDeployPreBuildHooks
+2025/05/28 13:44:41.618647 [INFO] Executing platform hooks in .platform/hooks/prebuild/
+2025/05/28 13:44:41.618668 [INFO] The dir .platform/hooks/prebuild/ does not exist
+2025/05/28 13:44:41.618671 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/prebuild
+2025/05/28 13:44:41.618676 [INFO] Executing instruction: Generate environment file
+2025/05/28 13:44:41.618730 [INFO] Executing instruction: Docker Specific Build Application
+2025/05/28 13:44:41.618733 [INFO] start build docker app
+2025/05/28 13:44:41.618736 [INFO] detected new app as docker compose app
+2025/05/28 13:44:41.618747 [INFO] Running command: docker compose config
+2025/05/28 13:44:42.441379 [INFO] Running command: docker compose config --services
+2025/05/28 13:44:42.524203 [INFO] postgres
+reportr-app
+
+2025/05/28 13:44:42.524222 [INFO] time="2025-05-28T13:44:42Z" level=warning msg="The \"GOOGLE_MAPS_API_KEY\" variable is not set. Defaulting to a blank string."
+time="2025-05-28T13:44:42Z" level=warning msg="/var/app/staging/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+
+2025/05/28 13:44:42.524347 [INFO] fetching image names from Dockerfile /var/app/staging/Dockerfile
+2025/05/28 13:44:42.524423 [INFO] found images [node:20-alpine node:20-alpine] in Dockerfile /var/app/staging/Dockerfile
+2025/05/28 13:44:42.524434 [INFO] Running command: docker compose pull --ignore-buildable
+2025/05/28 13:44:50.410311 [INFO] time="2025-05-28T13:44:42Z" level=warning msg="The \"GOOGLE_MAPS_API_KEY\" variable is not set. Defaulting to a blank string."
+time="2025-05-28T13:44:42Z" level=warning msg="/var/app/staging/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ reportr-app Skipped - No image to be pulled 
+ postgres Pulling 
+ f18232174bc9 Pulling fs layer 
+ 10e9080a2e24 Pulling fs layer 
+ 8adafa230647 Pulling fs layer 
+ 6e354c51bc01 Pulling fs layer 
+ f71a8df96436 Pulling fs layer 
+ 162e443ce030 Pulling fs layer 
+ 4c3435ecd36c Pulling fs layer 
+ 9842d12f7042 Pulling fs layer 
+ f0c6e23b5b51 Pulling fs layer 
+ 6dc008d32b79 Pulling fs layer 
+ 8814fd72acf5 Pulling fs layer 
+ 6e354c51bc01 Waiting 
+ f71a8df96436 Waiting 
+ 162e443ce030 Waiting 
+ 4c3435ecd36c Waiting 
+ 9842d12f7042 Waiting 
+ f0c6e23b5b51 Waiting 
+ 6dc008d32b79 Waiting 
+ 8814fd72acf5 Waiting 
+ 10e9080a2e24 Downloading [=====================================>             ]     721B/974B
+ 10e9080a2e24 Downloading [==================================================>]     974B/974B
+ 10e9080a2e24 Verifying Checksum 
+ 10e9080a2e24 Download complete 
+ f18232174bc9 Downloading [>                                                  ]  37.42kB/3.642MB
+ 8adafa230647 Downloading [>                                                  ]  11.67kB/1.12MB
+ f18232174bc9 Verifying Checksum 
+ f18232174bc9 Download complete 
+ f18232174bc9 Extracting [>                                                  ]  65.54kB/3.642MB
+ 8adafa230647 Downloading [=============================================>     ]  1.027MB/1.12MB
+ 8adafa230647 Verifying Checksum 
+ 8adafa230647 Download complete 
+ f18232174bc9 Extracting [=================================>                 ]  2.425MB/3.642MB
+ f18232174bc9 Extracting [==================================================>]  3.642MB/3.642MB
+ f18232174bc9 Extracting [==================================================>]  3.642MB/3.642MB
+ f18232174bc9 Pull complete 
+ 10e9080a2e24 Extracting [==================================================>]     974B/974B
+ 10e9080a2e24 Extracting [==================================================>]     974B/974B
+ 10e9080a2e24 Pull complete 
+ 6e354c51bc01 Downloading [==================================================>]     174B/174B
+ 6e354c51bc01 Verifying Checksum 
+ 6e354c51bc01 Download complete 
+ 8adafa230647 Extracting [=>                                                 ]  32.77kB/1.12MB
+ 8adafa230647 Extracting [==================================================>]   1.12MB/1.12MB
+ 8adafa230647 Pull complete 
+ 6e354c51bc01 Extracting [==================================================>]     174B/174B
+ 6e354c51bc01 Extracting [==================================================>]     174B/174B
+ f71a8df96436 Downloading [==================================================>]     116B/116B
+ f71a8df96436 Verifying Checksum 
+ f71a8df96436 Download complete 
+ 6e354c51bc01 Pull complete 
+ f71a8df96436 Extracting [==================================================>]     116B/116B
+ f71a8df96436 Extracting [==================================================>]     116B/116B
+ f71a8df96436 Pull complete 
+ 162e443ce030 Downloading [>                                                  ]  534.7kB/104.9MB
+ 162e443ce030 Downloading [===>                                               ]  7.518MB/104.9MB
+ 4c3435ecd36c Downloading [===>                                               ]     720B/9.559kB
+ 162e443ce030 Downloading [========>                                          ]  17.74MB/104.9MB
+ 4c3435ecd36c Downloading [==================================================>]  9.559kB/9.559kB
+ 4c3435ecd36c Verifying Checksum 
+ 4c3435ecd36c Download complete 
+ 9842d12f7042 Downloading [==================================================>]     128B/128B
+ 9842d12f7042 Verifying Checksum 
+ 9842d12f7042 Download complete 
+ 162e443ce030 Downloading [============>                                      ]  25.75MB/104.9MB
+ 162e443ce030 Downloading [================>                                  ]  34.85MB/104.9MB
+ 162e443ce030 Downloading [====================>                              ]  43.96MB/104.9MB
+ 162e443ce030 Downloading [=========================>                         ]  52.56MB/104.9MB
+ f0c6e23b5b51 Downloading [==================================================>]     171B/171B
+ f0c6e23b5b51 Verifying Checksum 
+ f0c6e23b5b51 Download complete 
+ 6dc008d32b79 Downloading [======>                                            ]     720B/5.47kB
+ 6dc008d32b79 Downloading [==================================================>]   5.47kB/5.47kB
+ 6dc008d32b79 Verifying Checksum 
+ 6dc008d32b79 Download complete 
+ 162e443ce030 Downloading [=============================>                     ]  62.72MB/104.9MB
+ 162e443ce030 Downloading [==================================>                ]  71.84MB/104.9MB
+ 162e443ce030 Downloading [======================================>            ]   81.5MB/104.9MB
+ 8814fd72acf5 Downloading [==================================================>]     183B/183B
+ 8814fd72acf5 Verifying Checksum 
+ 8814fd72acf5 Download complete 
+ 162e443ce030 Downloading [===========================================>       ]  90.61MB/104.9MB
+ 162e443ce030 Downloading [================================================>  ]  101.9MB/104.9MB
+ 162e443ce030 Verifying Checksum 
+ 162e443ce030 Download complete 
+ 162e443ce030 Extracting [>                                                  ]  557.1kB/104.9MB
+ 162e443ce030 Extracting [=>                                                 ]  2.228MB/104.9MB
+ 162e443ce030 Extracting [==>                                                ]  5.571MB/104.9MB
+ 162e443ce030 Extracting [====>                                              ]   9.47MB/104.9MB
+ 162e443ce030 Extracting [======>                                            ]  13.37MB/104.9MB
+ 162e443ce030 Extracting [========>                                          ]  17.27MB/104.9MB
+ 162e443ce030 Extracting [==========>                                        ]  21.17MB/104.9MB
+ 162e443ce030 Extracting [===========>                                       ]  25.07MB/104.9MB
+ 162e443ce030 Extracting [=============>                                     ]  28.41MB/104.9MB
+ 162e443ce030 Extracting [===============>                                   ]  31.75MB/104.9MB
+ 162e443ce030 Extracting [================>                                  ]  35.09MB/104.9MB
+ 162e443ce030 Extracting [==================>                                ]  38.44MB/104.9MB
+ 162e443ce030 Extracting [===================>                               ]  41.78MB/104.9MB
+ 162e443ce030 Extracting [=====================>                             ]  45.12MB/104.9MB
+ 162e443ce030 Extracting [=======================>                           ]  48.46MB/104.9MB
+ 162e443ce030 Extracting [========================>                          ]  50.69MB/104.9MB
+ 162e443ce030 Extracting [=========================>                         ]  52.92MB/104.9MB
+ 162e443ce030 Extracting [==========================>                        ]  55.15MB/104.9MB
+ 162e443ce030 Extracting [===========================>                       ]  57.93MB/104.9MB
+ 162e443ce030 Extracting [=============================>                     ]  61.28MB/104.9MB
+ 162e443ce030 Extracting [==============================>                    ]  64.62MB/104.9MB
+ 162e443ce030 Extracting [================================>                  ]  67.96MB/104.9MB
+ 162e443ce030 Extracting [=================================>                 ]   71.3MB/104.9MB
+ 162e443ce030 Extracting [===================================>               ]  74.65MB/104.9MB
+ 162e443ce030 Extracting [====================================>              ]  75.76MB/104.9MB
+ 162e443ce030 Extracting [====================================>              ]  77.43MB/104.9MB
+ 162e443ce030 Extracting [=====================================>             ]  79.66MB/104.9MB
+ 162e443ce030 Extracting [=======================================>           ]  82.44MB/104.9MB
+ 162e443ce030 Extracting [========================================>          ]  85.23MB/104.9MB
+ 162e443ce030 Extracting [=========================================>         ]  88.01MB/104.9MB
+ 162e443ce030 Extracting [===========================================>       ]   90.8MB/104.9MB
+ 162e443ce030 Extracting [============================================>      ]  92.47MB/104.9MB
+ 162e443ce030 Extracting [=============================================>     ]  96.37MB/104.9MB
+ 162e443ce030 Extracting [===============================================>   ]  100.3MB/104.9MB
+ 162e443ce030 Extracting [=================================================> ]  103.1MB/104.9MB
+ 162e443ce030 Extracting [==================================================>]  104.9MB/104.9MB
+ 162e443ce030 Pull complete 
+ 4c3435ecd36c Extracting [==================================================>]  9.559kB/9.559kB
+ 4c3435ecd36c Extracting [==================================================>]  9.559kB/9.559kB
+ 4c3435ecd36c Pull complete 
+ 9842d12f7042 Extracting [==================================================>]     128B/128B
+ 9842d12f7042 Extracting [==================================================>]     128B/128B
+ 9842d12f7042 Pull complete 
+ f0c6e23b5b51 Extracting [==================================================>]     171B/171B
+ f0c6e23b5b51 Extracting [==================================================>]     171B/171B
+ f0c6e23b5b51 Pull complete 
+ 6dc008d32b79 Extracting [==================================================>]   5.47kB/5.47kB
+ 6dc008d32b79 Extracting [==================================================>]   5.47kB/5.47kB
+ 6dc008d32b79 Pull complete 
+ 8814fd72acf5 Extracting [==================================================>]     183B/183B
+ 8814fd72acf5 Extracting [==================================================>]     183B/183B
+ 8814fd72acf5 Pull complete 
+ postgres Pulled 
+
+2025/05/28 13:44:50.410376 [INFO] successfully execute command: docker compose pull --ignore-buildable
+2025/05/28 13:44:50.410398 [INFO] Running command: docker compose build
+2025/05/28 13:44:57.211681 [INFO] Compose can now delegate builds to bake for better performance.
+ To do so, set COMPOSE_BAKE=true.
+#0 building with "default" instance using docker driver
+
+#1 [reportr-app internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.69kB 0.0s done
+#1 DONE 0.1s
+
+#2 [reportr-app internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 1.1s
+
+#3 [reportr-app internal] load .dockerignore
+#3 transferring context: 703B done
+#3 DONE 0.0s
+
+#4 [reportr-app builder 1/6] FROM docker.io/library/node:20-alpine@sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679
+#4 resolve docker.io/library/node:20-alpine@sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679 0.0s done
+#4 ...
+
+#5 [reportr-app internal] load build context
+#5 transferring context: 13.29kB done
+#5 DONE 0.0s
+
+#4 [reportr-app builder 1/6] FROM docker.io/library/node:20-alpine@sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679
+#4 sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2 1.45MB / 42.95MB 0.2s
+#4 sha256:301aebe3d905aca56c1cf878358dbf736546a412ef64c2192098ff0cf4ec0144 0B / 1.26MB 0.2s
+#4 sha256:699b753813e6a832b1187221e7d65c4f04fab95c6dbf8dc51a77376d361e78b5 0B / 448B 0.2s
+#4 sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679 7.67kB / 7.67kB done
+#4 sha256:89f37df72699f29fd34d94eed3a949775dc34232bafd8fe61fea8cea647d7843 1.72kB / 1.72kB done
+#4 sha256:4b84fe181fa16f584be2ace39a767e22457d6a55a65e51946b35100c24ad59ba 6.21kB / 6.21kB done
+#4 sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2 16.87MB / 42.95MB 0.4s
+#4 sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2 36.28MB / 42.95MB 0.6s
+#4 sha256:301aebe3d905aca56c1cf878358dbf736546a412ef64c2192098ff0cf4ec0144 1.26MB / 1.26MB 0.4s done
+#4 sha256:699b753813e6a832b1187221e7d65c4f04fab95c6dbf8dc51a77376d361e78b5 448B / 448B 0.4s done
+#4 sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2 42.95MB / 42.95MB 0.7s
+#4 extracting sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2
+#4 sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2 42.95MB / 42.95MB 0.7s done
+#4 extracting sha256:05c1247b2bae42e663142a67e8e67e0721f7e5626cae79d0e7c51cf0cb9ddbc2 2.0s done
+#4 extracting sha256:301aebe3d905aca56c1cf878358dbf736546a412ef64c2192098ff0cf4ec0144 0.1s done
+#4 extracting sha256:699b753813e6a832b1187221e7d65c4f04fab95c6dbf8dc51a77376d361e78b5 done
+#4 DONE 3.1s
+
+#6 [reportr-app builder 2/6] WORKDIR /app
+#6 DONE 0.1s
+
+#7 [reportr-app production 2/8] RUN apk add --no-cache dumb-init
+#7 ...
+
+#8 [reportr-app builder 3/6] COPY package*.json ./
+#8 DONE 0.1s
+
+#9 [reportr-app builder 4/6] RUN npm ci --only=production && npm cache clean --force
+#9 0.856 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#9 1.760 npm error code EUSAGE
+#9 1.766 npm error
+#9 1.766 npm error The `npm ci` command can only install with an existing package-lock.json or
+#9 1.766 npm error npm-shrinkwrap.json with lockfileVersion >= 1. Run an install with npm@5 or
+#9 1.766 npm error later to generate a package-lock.json file, then try again.
+#9 1.766 npm error
+#9 1.766 npm error Clean install a project
+#9 1.766 npm error
+#9 1.766 npm error Usage:
+#9 1.766 npm error npm ci
+#9 1.766 npm error
+#9 1.766 npm error Options:
+#9 1.766 npm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+#9 1.766 npm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+#9 1.766 npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+#9 1.766 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+#9 1.766 npm error [--no-bin-links] [--no-fund] [--dry-run]
+#9 1.766 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+#9 1.766 npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+#9 1.766 npm error
+#9 1.766 npm error aliases: clean-install, ic, install-clean, isntall-clean
+#9 1.766 npm error
+#9 1.766 npm error Run "npm help ci" for more info
+#9 1.768 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T13_44_56_057Z-debug-0.log
+#9 ERROR: process "/bin/sh -c npm ci --only=production && npm cache clean --force" did not complete successfully: exit code: 1
+
+#7 [reportr-app production 2/8] RUN apk add --no-cache dumb-init
+#7 0.963 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+#7 1.126 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+#7 1.866 (1/1) Installing dumb-init (1.2.5-r3)
+#7 1.872 Executing busybox-1.37.0-r12.trigger
+#7 1.880 OK: 10 MiB in 18 packages
+#7 DONE 2.1s
+------
+ > [reportr-app builder 4/6] RUN npm ci --only=production && npm cache clean --force:
+1.766 npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+1.766 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+1.766 npm error [--no-bin-links] [--no-fund] [--dry-run]
+1.766 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+1.766 npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+1.766 npm error
+1.766 npm error aliases: clean-install, ic, install-clean, isntall-clean
+1.766 npm error
+1.766 npm error Run "npm help ci" for more info
+1.768 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T13_44_56_057Z-debug-0.log
+------
+
+2025/05/28 13:44:57.211700 [INFO] time="2025-05-28T13:44:50Z" level=warning msg="The \"GOOGLE_MAPS_API_KEY\" variable is not set. Defaulting to a blank string."
+time="2025-05-28T13:44:50Z" level=warning msg="/var/app/staging/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+failed to solve: process "/bin/sh -c npm ci --only=production && npm cache clean --force" did not complete successfully: exit code: 1
+
+2025/05/28 13:44:57.211707 [WARN] failed to execute command: docker compose build, retrying...
+2025/05/28 13:44:57.211720 [INFO] Running command: docker compose build
+2025/05/28 13:44:58.706451 [INFO] Compose can now delegate builds to bake for better performance.
+ To do so, set COMPOSE_BAKE=true.
+#0 building with "default" instance using docker driver
+
+#1 [reportr-app internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.69kB done
+#1 DONE 0.0s
+
+#2 [reportr-app internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.2s
+
+#3 [reportr-app internal] load .dockerignore
+#3 transferring context: 703B done
+#3 DONE 0.0s
+
+#4 [reportr-app builder 1/6] FROM docker.io/library/node:20-alpine@sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679
+#4 DONE 0.0s
+
+#5 [reportr-app production 2/8] RUN apk add --no-cache dumb-init
+#5 CACHED
+
+#6 [reportr-app internal] load build context
+#6 transferring context: 276B done
+#6 DONE 0.0s
+
+#7 [reportr-app builder 2/6] WORKDIR /app
+#7 CACHED
+
+#8 [reportr-app builder 3/6] COPY package*.json ./
+#8 CACHED
+
+#9 [reportr-app production 3/8] WORKDIR /app
+#9 DONE 0.1s
+
+#10 [reportr-app builder 4/6] RUN npm ci --only=production && npm cache clean --force
+#10 ...
+
+#11 [reportr-app production 4/8] RUN addgroup -g 1001 -S nodejs &&     adduser -S reportr -u 1001
+#11 DONE 0.4s
+
+#10 [reportr-app builder 4/6] RUN npm ci --only=production && npm cache clean --force
+#10 0.529 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#10 1.004 npm error code EUSAGE
+#10 1.004 npm error
+#10 1.004 npm error The `npm ci` command can only install with an existing package-lock.json or
+#10 1.004 npm error npm-shrinkwrap.json with lockfileVersion >= 1. Run an install with npm@5 or
+#10 1.004 npm error later to generate a package-lock.json file, then try again.
+#10 1.004 npm error
+#10 1.004 npm error Clean install a project
+#10 1.004 npm error
+#10 1.004 npm error Usage:
+#10 1.004 npm error npm ci
+#10 1.004 npm error
+#10 1.004 npm error Options:
+#10 1.004 npm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+#10 1.004 npm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+#10 1.004 npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+#10 1.004 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+#10 1.004 npm error [--no-bin-links] [--no-fund] [--dry-run]
+#10 1.004 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+#10 1.004 npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+#10 1.004 npm error
+#10 1.004 npm error aliases: clean-install, ic, install-clean, isntall-clean
+#10 1.004 npm error
+#10 1.004 npm error Run "npm help ci" for more info
+#10 1.006 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T13_44_58_075Z-debug-0.log
+#10 ERROR: process "/bin/sh -c npm ci --only=production && npm cache clean --force" did not complete successfully: exit code: 1
+------
+ > [reportr-app builder 4/6] RUN npm ci --only=production && npm cache clean --force:
+1.004 npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+1.004 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+1.004 npm error [--no-bin-links] [--no-fund] [--dry-run]
+1.004 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+1.004 npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+1.004 npm error
+1.004 npm error aliases: clean-install, ic, install-clean, isntall-clean
+1.004 npm error
+1.004 npm error Run "npm help ci" for more info
+1.006 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T13_44_58_075Z-debug-0.log
+------
+
+2025/05/28 13:44:58.706484 [INFO] time="2025-05-28T13:44:57Z" level=warning msg="The \"GOOGLE_MAPS_API_KEY\" variable is not set. Defaulting to a blank string."
+time="2025-05-28T13:44:57Z" level=warning msg="/var/app/staging/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+failed to solve: process "/bin/sh -c npm ci --only=production && npm cache clean --force" did not complete successfully: exit code: 1
+
+2025/05/28 13:44:58.706533 [ERROR] An error occurred during execution of command [app-deploy] - [Docker Specific Build Application]. Stop running the command. Error: failed to build docker images: Command docker compose build failed with error exit status 1. Stderr:time="2025-05-28T13:44:57Z" level=warning msg="The \"GOOGLE_MAPS_API_KEY\" variable is not set. Defaulting to a blank string."
+time="2025-05-28T13:44:57Z" level=warning msg="/var/app/staging/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+failed to solve: process "/bin/sh -c npm ci --only=production && npm cache clean --force" did not complete successfully: exit code: 1
+ 
+
+2025/05/28 13:44:58.706585 [INFO] Executing cleanup logic
+2025/05/28 13:44:58.706699 [INFO] CommandService Response: {"status":"FAILURE","api_version":"1.0","results":[{"status":"FAILURE","msg":"Engine execution has encountered an error.","returncode":1,"events":[{"msg":"Instance deployment failed to build the Docker image. The deployment failed.","timestamp":1748439898706,"severity":"ERROR"},{"msg":"Instance deployment failed. For details, see 'eb-engine.log'.","timestamp":1748439898706,"severity":"ERROR"}]}]}
+
+2025/05/28 13:44:58.707330 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/05/28 13:46:42.863139 [INFO] Starting...
+2025/05/28 13:46:42.863178 [INFO] Starting EBPlatform-PlatformEngine
+2025/05/28 13:46:42.863204 [INFO] reading event message file
+2025/05/28 13:46:42.863434 [INFO] Engine received EB command cfn-hup-exec
+
+2025/05/28 13:46:42.969849 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBAutoScalingGroup --region eu-west-2
+2025/05/28 13:46:43.355060 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-a2x2s4k52q-stack/b5b700a0-3bc9-11f0-9069-0a4db412697f -r AWSEBBeanstalkMetadata --region eu-west-2
+2025/05/28 13:46:43.634381 [INFO] checking whether command bundle-log is applicable to this instance...
+2025/05/28 13:46:43.634394 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/05/28 13:46:43.634397 [INFO] Engine command: (bundle-log)
+
+2025/05/28 13:46:43.634435 [INFO] Executing instruction: GetBundleLogs
+2025/05/28 13:46:43.634438 [INFO] Bundle Logs...
