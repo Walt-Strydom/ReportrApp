@@ -296,9 +296,31 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
       html: emailContent,
     });
     
+    // Update the most recent upvote record for this issue to mark email as delivered
+    await db.update(upvotes)
+      .set({
+        emailSentTo: recipients.join(', '),
+        emailDelivered: 'true'
+      })
+      .where(eq(upvotes.issueId, issue.id));
+    
     return { success: true, data };
   } catch (error) {
     console.error('Error sending support email:', error);
+    
+    // Update the upvote record to mark email delivery as failed
+    try {
+      const recipients = getDepartmentEmail(issue.type);
+      await db.update(upvotes)
+        .set({
+          emailSentTo: recipients.join(', '),
+          emailDelivered: 'false'
+        })
+        .where(eq(upvotes.issueId, issue.id));
+    } catch (dbError) {
+      console.error('Error updating database with email failure:', dbError);
+    }
+    
     return { success: false, error };
   }
 }
