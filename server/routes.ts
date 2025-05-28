@@ -82,6 +82,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(import.meta.dirname, '../uploads')));
 
+  // Health check endpoint for Docker/AWS
+  app.get('/api/health', async (req: Request, res: Response) => {
+    try {
+      // Basic health check - verify database connectivity
+      await storage.getIssues();
+      res.status(200).json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: '1.0.0'
+      });
+    } catch (error) {
+      res.status(503).json({ 
+        status: 'unhealthy', 
+        timestamp: new Date().toISOString(),
+        error: 'Database connectivity issue'
+      });
+    }
+  });
+
   // Get all issues
   app.get('/api/issues', async (req: Request, res: Response) => {
     try {

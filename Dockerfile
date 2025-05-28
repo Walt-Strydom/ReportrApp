@@ -1,5 +1,5 @@
-# Use Node.js 20 LTS as base image
-FROM node:20-alpine
+# Multi-stage build for Reportr application
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm ci --only=production && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -16,19 +16,43 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Create uploads directory for file storage
-RUN mkdir -p uploads
+# Production stage
+FROM node:20-alpine AS production
 
-# Expose port 3000
-EXPOSE 3000
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
+# Create app directory and user
+WORKDIR /app
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S reportr -u 1001
+
+# Copy built application from builder stage
+COPY --from=builder --chown=reportr:nodejs /app/dist ./dist
+COPY --from=builder --chown=reportr:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=reportr:nodejs /app/package*.json ./
+
+# Copy any static assets that might be needed
+COPY --from=builder --chown=reportr:nodejs /app/client/public ./client/public
+
+# Switch to non-root user
+USER reportr
+
+# Expose port
+EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/api/health || exit 1
+  CMD node -e "const http = require('http'); \
+    const options = { hostname: 'localhost', port: 5000, path: '/api/health', timeout: 2000 }; \
+    const req = http.request(options, (res) => { \
+      if (res.statusCode === 200) process.exit(0); \
+      else process.exit(1); \
+    }); \
+    req.on('error', () => process.exit(1)); \
+    req.on('timeout', () => process.exit(1)); \
+    req.end();"
 
-# Start the application
+# Start the application with dumb-init for proper signal handling
+ENTRYPOINT ["dumb-init", "--"]
 CMD ["npm", "start"]
