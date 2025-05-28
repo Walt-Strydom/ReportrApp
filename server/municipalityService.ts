@@ -305,12 +305,9 @@ export function getDepartmentEmailsByLocation(latitude: number, longitude: numbe
   const municipality = getMunicipalityByCoordinates(latitude, longitude);
   
   if (!municipality) {
-    // If location is not in any defined municipality, use Tshwane as fallback
-    console.warn(`Location ${latitude}, ${longitude} not found in any municipality, using Tshwane as fallback`);
-    return [
-      ...defaultEmails,
-      `customercare@tshwane.gov.za` // Generic fallback
-    ];
+    // If location is not in any defined municipality, only send to waltstrydom@gmail.com
+    console.warn(`Location ${latitude}, ${longitude} not found in any municipality, sending to waltstrydom@gmail.com only`);
+    return defaultEmails; // Only waltstrydom@gmail.com, no government fallback
   }
   
   // Get department-specific emails for this municipality
