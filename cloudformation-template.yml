@@ -19,14 +19,10 @@ Parameters:
     NoEcho: true
     Description: PostgreSQL database connection string
   
-  SendGridAPIKey:
+  ResendAPIKey:
     Type: String
     NoEcho: true
-    Description: SendGrid API key for email notifications
-  
-  SendGridFromEmail:
-    Type: String
-    Description: Sender email address for notifications
+    Description: Resend API key for email notifications
   
   GoogleMapsAPIKey:
     Type: String
@@ -156,19 +152,12 @@ Resources:
       Type: SecureString
       Value: !Ref DatabaseURL
 
-  SendGridAPIKeyParameter:
+  ResendAPIKeyParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: /reportr/sendgrid-api-key
+      Name: /reportr/resend-api-key
       Type: SecureString
-      Value: !Ref SendGridAPIKey
-
-  SendGridFromEmailParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: /reportr/sendgrid-from-email
-      Type: String
-      Value: !Ref SendGridFromEmail
+      Value: !Ref ResendAPIKey
 
   GoogleMapsAPIKeyParameter:
     Type: AWS::SSM::Parameter
@@ -209,10 +198,8 @@ Resources:
           Secrets:
             - Name: DATABASE_URL
               ValueFrom: !Ref DatabaseURLParameter
-            - Name: SENDGRID_API_KEY
-              ValueFrom: !Ref SendGridAPIKeyParameter
-            - Name: SENDGRID_FROM_EMAIL
-              ValueFrom: !Ref SendGridFromEmailParameter
+            - Name: RESEND_API_KEY
+              ValueFrom: !Ref ResendAPIKeyParameter
             - Name: GOOGLE_MAPS_API_KEY
               ValueFrom: !Ref GoogleMapsAPIKeyParameter
           LogConfiguration:

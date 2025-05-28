@@ -68,21 +68,19 @@ docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
 echo -e "${YELLOW}☁️  Step 3: Deploying infrastructure with CloudFormation...${NC}"
 
 # Check if we need to prompt for parameters
-if [ -z "$VPC_ID" ] || [ -z "$SUBNET_IDS" ] || [ -z "$DATABASE_URL" ] || [ -z "$SENDGRID_API_KEY" ] || [ -z "$SENDGRID_FROM_EMAIL" ] || [ -z "$GOOGLE_MAPS_API_KEY" ]; then
+if [ -z "$VPC_ID" ] || [ -z "$SUBNET_IDS" ] || [ -z "$DATABASE_URL" ] || [ -z "$RESEND_API_KEY" ] || [ -z "$GOOGLE_MAPS_API_KEY" ]; then
     echo -e "${YELLOW}⚠️  Missing required environment variables. Please set the following:${NC}"
     echo "VPC_ID - Your VPC ID"
     echo "SUBNET_IDS - Comma-separated list of subnet IDs (minimum 2)"
     echo "DATABASE_URL - PostgreSQL connection string"
-    echo "SENDGRID_API_KEY - SendGrid API key"
-    echo "SENDGRID_FROM_EMAIL - Sender email address"
+    echo "RESEND_API_KEY - Resend.com API key"
     echo "GOOGLE_MAPS_API_KEY - Google Maps API key"
     echo ""
     echo "Example:"
     echo "export VPC_ID=vpc-12345678"
     echo "export SUBNET_IDS=subnet-12345678,subnet-87654321"
     echo "export DATABASE_URL=postgresql://user:pass@host:5432/reportr"
-    echo "export SENDGRID_API_KEY=SG.xxxxx"
-    echo "export SENDGRID_FROM_EMAIL=noreply@yourdomain.com"
+    echo "export RESEND_API_KEY=re_xxxxx"
     echo "export GOOGLE_MAPS_API_KEY=AIzaSyxxxxx"
     echo ""
     echo "Then run this script again."
@@ -100,8 +98,7 @@ aws cloudformation deploy \
         SubnetIds=$SUBNET_IDS \
         ECRRepositoryURI=$ECR_REPOSITORY_URI:$IMAGE_TAG \
         DatabaseURL=$DATABASE_URL \
-        SendGridAPIKey=$SENDGRID_API_KEY \
-        SendGridFromEmail=$SENDGRID_FROM_EMAIL \
+        ResendAPIKey=$RESEND_API_KEY \
         GoogleMapsAPIKey=$GOOGLE_MAPS_API_KEY
 
 # Get the ALB DNS name

@@ -29,12 +29,8 @@
           "valueFrom": "arn:aws:ssm:YOUR_REGION:YOUR_ACCOUNT_ID:parameter/reportr/database-url"
         },
         {
-          "name": "SENDGRID_API_KEY",
-          "valueFrom": "arn:aws:ssm:YOUR_REGION:YOUR_ACCOUNT_ID:parameter/reportr/sendgrid-api-key"
-        },
-        {
-          "name": "SENDGRID_FROM_EMAIL",
-          "valueFrom": "arn:aws:ssm:YOUR_REGION:YOUR_ACCOUNT_ID:parameter/reportr/sendgrid-from-email"
+          "name": "RESEND_API_KEY",
+          "valueFrom": "arn:aws:ssm:YOUR_REGION:YOUR_ACCOUNT_ID:parameter/reportr/resend-api-key"
         },
         {
           "name": "GOOGLE_MAPS_API_KEY",
