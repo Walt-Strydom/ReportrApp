@@ -191,16 +191,21 @@ export default function IssueDetailsPanel({
       }`}
       style={{paddingBottom: 'max(24px, env(safe-area-inset-bottom))', paddingTop: 'max(24px, env(safe-area-inset-top))'}}
     >
+      {/* Close button - positioned outside the main content area for better mobile visibility */}
+      <div className="absolute top-4 right-4 z-30">
+        <button
+          onClick={onClose}
+          className="p-3 rounded-full bg-white shadow-md hover:bg-gray-50 transition-colors border border-gray-200"
+          style={{minWidth: '44px', minHeight: '44px'}}
+          aria-label="Close details"
+        >
+          <XIcon className="h-5 w-5 text-gray-600" />
+        </button>
+      </div>
+      
       <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto"></div>
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Close details"
-          >
-            <XIcon className="h-5 w-5 text-gray-500" />
-          </button>
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-12 h-1 bg-neutral-300 rounded-full"></div>
         </div>
         
         <div className="flex items-start mb-6">

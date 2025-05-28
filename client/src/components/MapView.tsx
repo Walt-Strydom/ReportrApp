@@ -251,13 +251,14 @@ export default function MapView({ isOpen, onClose, onIssueClick }: MapViewProps)
           <div className="relative mb-4">
             <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto"></div>
             
-            {/* Close button */}
+            {/* Close button - improved positioning for mobile */}
             <button
               onClick={() => setSelectedIssue(null)}
-              className="absolute top-0 right-0 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="absolute -top-2 -right-2 p-3 bg-white shadow-md hover:bg-gray-50 rounded-full transition-colors border border-gray-200"
+              style={{minWidth: '44px', minHeight: '44px'}}
               aria-label="Close issue details"
             >
-              <XIcon className="h-5 w-5 text-gray-500" />
+              <XIcon className="h-5 w-5 text-gray-600" />
             </button>
           </div>
           
