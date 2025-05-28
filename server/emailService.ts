@@ -269,11 +269,12 @@ export async function sendSupportEmail(issue: Issue): Promise<{ success: boolean
               <h1 style="margin: 0; font-size: 24px;">⚠️ URGENT: Additional Support Received</h1>
             </div>
             <div class="content">
-              <p><strong>This issue now has ${issue.upvotes} ${issue.upvotes === 1 ? 'supporter' : 'supporters'}</strong> from different citizens in Pretoria. Details are as follows:</p>
+              <p><strong>This issue now has ${issue.upvotes} ${issue.upvotes === 1 ? 'supporter' : 'supporters'}</strong> from different citizens. Details are as follows:</p>
               
               <div class="highlight">
                 <p class="detail-row"><span class="label">Report ID:</span> ${issue.reportId}</p>
                 <p class="detail-row"><span class="label">Issue Type:</span> ${issueType}</p>
+                <p class="detail-row"><span class="label">Municipality:</span> ${municipalityInfo.name}</p>
                 <p class="detail-row" style="color: #ef4444; font-weight: bold; font-size: 16px;"><span class="label">TOTAL SUPPORTERS:</span> ${issue.upvotes}</p>
               </div>
               
@@ -355,6 +356,7 @@ export async function sendReminderEmail(issue: Issue): Promise<{ success: boolea
     // Format issue details for email
     const issueType = getIssueTypeName(issue.type);
     const reportDate = formatDate(issue.createdAt);
+    const municipalityInfo = getMunicipalityInfo(issue.latitude, issue.longitude);
     const daysOpen = differenceInDays(new Date(), new Date(issue.createdAt));
     
     // Create email content
@@ -388,6 +390,7 @@ export async function sendReminderEmail(issue: Issue): Promise<{ success: boolea
               <div class="highlight">
                 <p class="detail-row"><span class="label">Report ID:</span> ${issue.reportId}</p>
                 <p class="detail-row"><span class="label">Issue Type:</span> ${issueType}</p>
+                <p class="detail-row"><span class="label">Municipality:</span> ${municipalityInfo.name}</p>
                 <p class="detail-row"><span class="label">Supporters:</span> ${issue.upvotes}</p>
                 <p class="detail-row"><span class="label">Status:</span> ${issue.status.toUpperCase()}</p>
               </div>
