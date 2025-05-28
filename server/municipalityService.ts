@@ -121,59 +121,57 @@ const municipalities: Municipality[] = [
     emailDomains: {
       default: '@joburg.org.za',
       departments: {
-        // Potholes and road maintenance
-        'pothole': ['roads@joburg.org.za'],
-        'damaged-road': ['roads@joburg.org.za'],
-        'road-damage': ['roads@joburg.org.za'],
+        // Roads and potholes
+        'pothole': ['hotline@jra.org.za'],
+        'damaged-road': ['hotline@jra.org.za'],
+        'road-damage': ['hotline@jra.org.za'],
         
         // Water issues
-        'burst-pipe': ['water@joburg.org.za'],
-        'leaking-meter': ['water@joburg.org.za'],
-        'water-leak': ['water@joburg.org.za'],
-        'no-water': ['water@joburg.org.za'],
+        'burst-pipe': ['customerserviceemails@jwater.co.za'],
+        'leaking-meter': ['customerserviceemails@jwater.co.za'],
+        'water-leak': ['customerserviceemails@jwater.co.za'],
+        'no-water': ['customerserviceemails@jwater.co.za'],
         
-        // Sewer issues
-        'blocked-drain': ['wastewater@joburg.org.za'],
-        'sewage-spill': ['wastewater@joburg.org.za'],
-        'sewer-overflow': ['wastewater@joburg.org.za'],
-        'manhole-cover': ['wastewater@joburg.org.za'],
+        // Sewer issues (Water department)
+        'blocked-drain': ['customerserviceemails@jwater.co.za'],
+        'sewage-spill': ['customerserviceemails@jwater.co.za'],
+        'sewer-overflow': ['customerserviceemails@jwater.co.za'],
+        'manhole-cover': ['customerserviceemails@jwater.co.za'],
         
-        // Street lighting
-        'streetlight': ['electricity@joburg.org.za'],
-        'street-light': ['electricity@joburg.org.za'],
-        'broken-light': ['electricity@joburg.org.za'],
-        'light-out': ['electricity@joburg.org.za'],
+        // Electricity and street lighting
+        'streetlight': ['customerservice@citypower.co.za'],
+        'street-light': ['customerservice@citypower.co.za'],
+        'broken-light': ['customerservice@citypower.co.za'],
+        'light-out': ['customerservice@citypower.co.za'],
+        'downed-lines': ['customerservice@citypower.co.za'],
+        'damaged-substation': ['customerservice@citypower.co.za'],
+        'open-electrical-box': ['customerservice@citypower.co.za'],
+        'broken-electrical-box': ['customerservice@citypower.co.za'],
+        'power-outage': ['customerservice@citypower.co.za'],
+        'fallen-power-line': ['customerservice@citypower.co.za'],
+        'electrical-hazard': ['customerservice@citypower.co.za'],
         
-        // Traffic lights
-        'trafficlight': ['traffic@joburg.org.za'],
-        'traffic-light': ['traffic@joburg.org.za'],
-        'malfunctioning-traffic': ['traffic@joburg.org.za'],
-        'traffic-signal': ['traffic@joburg.org.za'],
+        // Traffic lights (general)
+        'trafficlight': ['joburgconnect@joburg.org.za'],
+        'traffic-light': ['joburgconnect@joburg.org.za'],
+        'malfunctioning-traffic': ['joburgconnect@joburg.org.za'],
+        'traffic-signal': ['joburgconnect@joburg.org.za'],
         
-        // Electricity issues
-        'downed-lines': ['electricity@joburg.org.za'],
-        'damaged-substation': ['electricity@joburg.org.za'],
-        'open-electrical-box': ['electricity@joburg.org.za'],
-        'broken-electrical-box': ['electricity@joburg.org.za'],
-        'power-outage': ['electricity@joburg.org.za'],
-        'fallen-power-line': ['electricity@joburg.org.za'],
-        'electrical-hazard': ['electricity@joburg.org.za'],
+        // Waste and refuse
+        'overflowing-bin': ['joburgconnect@joburg.org.za'],
+        'illegal-dumping': ['joburgconnect@joburg.org.za'],
+        'missed-collection': ['joburgconnect@joburg.org.za'],
+        'broken-bin': ['joburgconnect@joburg.org.za'],
         
-        // Waste management
-        'overflowing-bin': ['waste@joburg.org.za'],
-        'illegal-dumping': ['waste@joburg.org.za'],
-        'missed-collection': ['waste@joburg.org.za'],
-        'broken-bin': ['waste@joburg.org.za'],
+        // Environmental concerns (general)
+        'damaged-green-space': ['joburgconnect@joburg.org.za'],
+        'tree-damage': ['joburgconnect@joburg.org.za'],
+        'park-maintenance': ['joburgconnect@joburg.org.za'],
+        'environmental-hazard': ['joburgconnect@joburg.org.za'],
         
-        // Environmental concerns
-        'damaged-green-space': ['environment@joburg.org.za'],
-        'tree-damage': ['environment@joburg.org.za'],
-        'park-maintenance': ['environment@joburg.org.za'],
-        'environmental-hazard': ['environment@joburg.org.za'],
-        
-        // General/fallback
-        'other': ['callcentre@joburg.org.za'],
-        'general': ['callcentre@joburg.org.za']
+        // General/fallback - all other non-specified reports
+        'other': ['joburgconnect@joburg.org.za'],
+        'general': ['joburgconnect@joburg.org.za']
       }
     }
   },
