@@ -4,11 +4,14 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy source code first
-COPY . .
+# Copy package files first for better Docker layer caching
+COPY package*.json ./
 
 # Install dependencies 
 RUN npm install --only=production && npm cache clean --force
+
+# Copy source code
+COPY . .
 
 # Build the application
 RUN npm run build
