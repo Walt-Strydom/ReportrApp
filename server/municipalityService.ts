@@ -108,11 +108,11 @@ const municipalities: Municipality[] = [
     boundaries: [
       {
         type: 'polygon',
-        // Approximate boundaries of Johannesburg metropolitan area
+        // Approximate boundaries of Johannesburg metropolitan area (excluding Ekurhuleni overlap)
         coordinates: [
           [-25.9, 27.8], // Northwest
-          [-25.9, 28.3], // Northeast
-          [-26.5, 28.3], // Southeast
+          [-25.9, 28.0], // Northeast (reduced to avoid Ekurhuleni overlap)
+          [-26.5, 28.0], // Southeast (reduced to avoid Ekurhuleni overlap)
           [-26.5, 27.8], // Southwest
           [-25.9, 27.8]  // Close polygon
         ]
@@ -185,70 +185,54 @@ const municipalities: Municipality[] = [
         type: 'polygon',
         // Approximate boundaries of Ekurhuleni (East Rand)
         coordinates: [
-          [-25.9, 28.1], // Northwest
-          [-25.9, 28.7], // Northeast
-          [-26.4, 28.7], // Southeast
-          [-26.4, 28.1], // Southwest
-          [-25.9, 28.1]  // Close polygon
+          [-25.8, 28.0], // Northwest
+          [-25.8, 28.8], // Northeast
+          [-26.5, 28.8], // Southeast
+          [-26.5, 28.0], // Southwest
+          [-25.8, 28.0]  // Close polygon
         ]
       }
     ],
     emailDomains: {
       default: '@ekurhuleni.gov.za',
       departments: {
-        // Potholes and road maintenance
-        'pothole': ['roads@ekurhuleni.gov.za'],
-        'damaged-road': ['roads@ekurhuleni.gov.za'],
-        'road-damage': ['roads@ekurhuleni.gov.za'],
-        
-        // Water issues
-        'burst-pipe': ['water@ekurhuleni.gov.za'],
-        'leaking-meter': ['water@ekurhuleni.gov.za'],
-        'water-leak': ['water@ekurhuleni.gov.za'],
-        'no-water': ['water@ekurhuleni.gov.za'],
-        
-        // Sewer issues
-        'blocked-drain': ['sewer@ekurhuleni.gov.za'],
-        'sewage-spill': ['sewer@ekurhuleni.gov.za'],
-        'sewer-overflow': ['sewer@ekurhuleni.gov.za'],
-        'manhole-cover': ['sewer@ekurhuleni.gov.za'],
-        
-        // Street lighting
-        'streetlight': ['electricity@ekurhuleni.gov.za'],
-        'street-light': ['electricity@ekurhuleni.gov.za'],
-        'broken-light': ['electricity@ekurhuleni.gov.za'],
-        'light-out': ['electricity@ekurhuleni.gov.za'],
-        
-        // Traffic lights
-        'trafficlight': ['traffic@ekurhuleni.gov.za'],
-        'traffic-light': ['traffic@ekurhuleni.gov.za'],
-        'malfunctioning-traffic': ['traffic@ekurhuleni.gov.za'],
-        'traffic-signal': ['traffic@ekurhuleni.gov.za'],
-        
-        // Electricity issues
-        'downed-lines': ['electricity@ekurhuleni.gov.za'],
-        'damaged-substation': ['electricity@ekurhuleni.gov.za'],
-        'open-electrical-box': ['electricity@ekurhuleni.gov.za'],
-        'broken-electrical-box': ['electricity@ekurhuleni.gov.za'],
-        'power-outage': ['electricity@ekurhuleni.gov.za'],
-        'fallen-power-line': ['electricity@ekurhuleni.gov.za'],
-        'electrical-hazard': ['electricity@ekurhuleni.gov.za'],
-        
-        // Waste management
-        'overflowing-bin': ['waste@ekurhuleni.gov.za'],
-        'illegal-dumping': ['waste@ekurhuleni.gov.za'],
-        'missed-collection': ['waste@ekurhuleni.gov.za'],
-        'broken-bin': ['waste@ekurhuleni.gov.za'],
-        
-        // Environmental concerns
-        'damaged-green-space': ['environment@ekurhuleni.gov.za'],
-        'tree-damage': ['environment@ekurhuleni.gov.za'],
-        'park-maintenance': ['environment@ekurhuleni.gov.za'],
-        'environmental-hazard': ['environment@ekurhuleni.gov.za'],
-        
-        // General/fallback
-        'other': ['customercare@ekurhuleni.gov.za'],
-        'general': ['customercare@ekurhuleni.gov.za']
+        // All issues route to call centre
+        'pothole': ['call.centre@ekurhuleni.gov.za'],
+        'damaged-road': ['call.centre@ekurhuleni.gov.za'],
+        'road-damage': ['call.centre@ekurhuleni.gov.za'],
+        'burst-pipe': ['call.centre@ekurhuleni.gov.za'],
+        'leaking-meter': ['call.centre@ekurhuleni.gov.za'],
+        'water-leak': ['call.centre@ekurhuleni.gov.za'],
+        'no-water': ['call.centre@ekurhuleni.gov.za'],
+        'blocked-drain': ['call.centre@ekurhuleni.gov.za'],
+        'sewage-spill': ['call.centre@ekurhuleni.gov.za'],
+        'sewer-overflow': ['call.centre@ekurhuleni.gov.za'],
+        'manhole-cover': ['call.centre@ekurhuleni.gov.za'],
+        'streetlight': ['call.centre@ekurhuleni.gov.za'],
+        'street-light': ['call.centre@ekurhuleni.gov.za'],
+        'broken-light': ['call.centre@ekurhuleni.gov.za'],
+        'light-out': ['call.centre@ekurhuleni.gov.za'],
+        'trafficlight': ['call.centre@ekurhuleni.gov.za'],
+        'traffic-light': ['call.centre@ekurhuleni.gov.za'],
+        'malfunctioning-traffic': ['call.centre@ekurhuleni.gov.za'],
+        'traffic-signal': ['call.centre@ekurhuleni.gov.za'],
+        'downed-lines': ['call.centre@ekurhuleni.gov.za'],
+        'damaged-substation': ['call.centre@ekurhuleni.gov.za'],
+        'open-electrical-box': ['call.centre@ekurhuleni.gov.za'],
+        'broken-electrical-box': ['call.centre@ekurhuleni.gov.za'],
+        'power-outage': ['call.centre@ekurhuleni.gov.za'],
+        'fallen-power-line': ['call.centre@ekurhuleni.gov.za'],
+        'electrical-hazard': ['call.centre@ekurhuleni.gov.za'],
+        'overflowing-bin': ['call.centre@ekurhuleni.gov.za'],
+        'illegal-dumping': ['call.centre@ekurhuleni.gov.za'],
+        'missed-collection': ['call.centre@ekurhuleni.gov.za'],
+        'broken-bin': ['call.centre@ekurhuleni.gov.za'],
+        'damaged-green-space': ['call.centre@ekurhuleni.gov.za'],
+        'tree-damage': ['call.centre@ekurhuleni.gov.za'],
+        'park-maintenance': ['call.centre@ekurhuleni.gov.za'],
+        'environmental-hazard': ['call.centre@ekurhuleni.gov.za'],
+        'other': ['call.centre@ekurhuleni.gov.za'],
+        'general': ['call.centre@ekurhuleni.gov.za']
       }
     }
   }
