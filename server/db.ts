@@ -2,11 +2,13 @@ import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
-// Direct connection to your Supabase database using transaction pooler
-const supabaseConnectionString = "postgresql://postgres.tnzyloggrqsmovjnytyb:Xn7Lxen.3LCzYQJ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres";
+// Supabase database connection - your authentic production database
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL environment variable is required for Supabase connection");
+}
 
 export const pool = new Pool({ 
-  connectionString: supabaseConnectionString,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
