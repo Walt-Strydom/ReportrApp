@@ -1,0 +1,473 @@
+2025/05/28 14:58:57.468324 [INFO] Starting...
+2025/05/28 14:58:57.468366 [INFO] Starting EBPlatform-PlatformEngine
+2025/05/28 14:58:57.468415 [INFO] reading event message file
+2025/05/28 14:58:57.468635 [INFO] Engine received EB command userdata-exec
+
+2025/05/28 14:58:57.481571 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBAutoScalingGroup --region eu-west-2
+2025/05/28 14:58:57.984263 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBBeanstalkMetadata --region eu-west-2
+2025/05/28 14:58:58.568470 [INFO] This is a workflow controlled instance.
+2025/05/28 14:58:58.568558 [INFO] Engine command: (env-launch)
+
+2025/05/28 14:58:58.577255 [INFO] Executing instruction: SyncClock
+2025/05/28 14:58:58.577262 [INFO] Starting SyncClock
+2025/05/28 14:58:58.577269 [INFO] Running command: /usr/bin/chronyc tracking
+2025/05/28 14:58:58.583541 [INFO] Reference ID    : 00000000 ()
+Stratum         : 0
+Ref time (UTC)  : Thu Jan 01 00:00:00 1970
+System time     : 0.000000000 seconds slow of NTP time
+Last offset     : +0.000000000 seconds
+RMS offset      : 0.000000000 seconds
+Frequency       : 6.122 ppm slow
+Residual freq   : +0.000 ppm
+Skew            : 0.000 ppm
+Root delay      : 1.000000000 seconds
+Root dispersion : 1.000000000 seconds
+Update interval : 0.0 seconds
+Leap status     : Not synchronised
+
+2025/05/28 14:58:58.583553 [INFO] Running command: /usr/bin/chronyc -a makestep
+2025/05/28 14:58:58.586113 [INFO] 200 OK
+
+2025/05/28 14:58:58.586139 [INFO] Skipping Configure OS
+2025/05/28 14:58:58.586145 [INFO] Skipping LockRepo
+2025/05/28 14:58:58.586148 [INFO] Skipping GenerateEBBanner
+2025/05/28 14:58:58.586153 [INFO] Skipping Install Process Manager
+2025/05/28 14:58:58.586157 [INFO] Skipping install syslog
+2025/05/28 14:58:58.586160 [INFO] Skipping install cron
+2025/05/28 14:58:58.586164 [INFO] Skipping install proxy
+2025/05/28 14:58:58.586168 [INFO] Skipping installhealthd
+2025/05/28 14:58:58.586172 [INFO] Skipping Install Log Streaming Manager
+2025/05/28 14:58:58.586176 [INFO] Skipping install X-Ray
+2025/05/28 14:58:58.586180 [INFO] Skipping install Third Party License
+2025/05/28 14:58:58.586184 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:58:58.586187 [INFO] Executing instruction: installSqsd
+2025/05/28 14:58:58.586189 [INFO] This is a web server environment instance, skip install sqsd daemon ...
+2025/05/28 14:58:58.586193 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:58:58.586195 [INFO] Executing instruction: bootstraphealthd
+2025/05/28 14:58:58.586198 [INFO] this is an enhanced health env ...
+2025/05/28 14:58:58.586206 [INFO] bootstrap healthd....
+2025/05/28 14:58:58.586212 [INFO] Running command: /usr/bin/id -u healthd || /usr/sbin/useradd --user-group healthd -s /sbin/nologin --create-home
+2025/05/28 14:58:59.955905 [INFO] /usr/bin/id: ‘healthd’: no such user
+
+2025/05/28 14:58:59.956089 [INFO] none proxy, skip creating proxy dir for healthd
+2025/05/28 14:58:59.956099 [INFO] bootstrap healthd....
+2025/05/28 14:58:59.956110 [INFO] Running command: /usr/bin/id -u healthd || /usr/sbin/useradd --user-group healthd -s /sbin/nologin --create-home
+2025/05/28 14:58:59.958191 [INFO] 1001
+
+2025/05/28 14:58:59.959302 [INFO] configure bundle log for healthd...
+2025/05/28 14:58:59.959345 [INFO] Skipping Install yum packages
+2025/05/28 14:58:59.959349 [INFO] Skipping install docker-compose
+2025/05/28 14:58:59.959354 [INFO] Skipping Configure Docker Daemon
+2025/05/28 14:58:59.959358 [INFO] Skipping MarkBaked
+2025/05/28 14:58:59.959363 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:58:59.959365 [INFO] Executing instruction: TuneSystemSettings
+2025/05/28 14:58:59.959368 [INFO] Starting TuneSystemSettings
+2025/05/28 14:58:59.959371 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:58:59.965590 [INFO] Executing instruction: GetSetupLogRotate
+2025/05/28 14:58:59.965597 [INFO] Initialize LogRotate files and directories
+2025/05/28 14:58:59.985202 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:58:59.985210 [INFO] Executing instruction: BootstrapCFNHup
+2025/05/28 14:58:59.985213 [INFO] Bootstrap cfn-hup
+2025/05/28 14:58:59.987416 [INFO] Copying file /opt/elasticbeanstalk/config/private/aws-eb-command-handler.conf to /etc/cfn/hooks.d/aws-eb-command-handler.conf
+2025/05/28 14:58:59.989569 [INFO] Executing instruction: StartCFNHup
+2025/05/28 14:58:59.989574 [INFO] Start cfn-hup
+2025/05/28 14:58:59.989589 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/05/28 14:59:00.014331 [INFO] cfn-hup is not registered with EB yet, registering it now
+2025/05/28 14:59:00.014351 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/05/28 14:59:00.042630 [INFO] Running command: systemctl daemon-reload
+2025/05/28 14:59:00.507719 [INFO] Running command: systemctl reset-failed
+2025/05/28 14:59:00.526617 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/05/28 14:59:00.544975 [INFO] Running command: systemctl enable aws-eb.target
+2025/05/28 14:59:00.982994 [INFO] Running command: systemctl start aws-eb.target
+2025/05/28 14:59:00.995199 [INFO] Running command: systemctl enable cfn-hup.service
+2025/05/28 14:59:01.441444 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/cfn-hup.service → /etc/systemd/system/cfn-hup.service.
+
+2025/05/28 14:59:01.441464 [INFO] Running command: systemctl is-active cfn-hup.service
+2025/05/28 14:59:01.454629 [INFO] cfn-hup process is not running, starting it now
+2025/05/28 14:59:01.454648 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/05/28 14:59:01.466779 [INFO] Running command: systemctl is-active cfn-hup.service
+2025/05/28 14:59:01.480459 [INFO] Running command: systemctl start cfn-hup.service
+2025/05/28 14:59:01.587655 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:59:01.587669 [INFO] Executing instruction: SetupPublishLogCronjob
+2025/05/28 14:59:01.587672 [INFO] Setup publish logs cron job...
+2025/05/28 14:59:01.587675 [INFO] Copying file /opt/elasticbeanstalk/config/private/logtasks/cron/publishlogs to /etc/cron.d/publishlogs
+2025/05/28 14:59:01.590871 [INFO] Executing instruction: Start Docker
+2025/05/28 14:59:01.590879 [INFO] Starting Docker...
+2025/05/28 14:59:01.590927 [INFO] Copying file /opt/elasticbeanstalk/config/private/docker-log.conf to /etc/systemd/system/docker.service.d/docker-log.conf
+2025/05/28 14:59:01.593101 [INFO] Copying file /opt/elasticbeanstalk/config/private/docker-rsyslog.conf to /etc/rsyslog.d/docker-log.conf
+2025/05/28 14:59:01.595554 [INFO] Running command: systemctl restart rsyslog.service
+2025/05/28 14:59:02.084204 [INFO] Running command: systemctl show -p PartOf docker.service
+2025/05/28 14:59:02.111682 [INFO] Running command: systemctl daemon-reload
+2025/05/28 14:59:02.576378 [INFO] Running command: systemctl reset-failed
+2025/05/28 14:59:02.597529 [INFO] Running command: systemctl show -p PartOf docker.service
+2025/05/28 14:59:02.628017 [INFO] Running command: systemctl is-active docker.service
+2025/05/28 14:59:02.638437 [INFO] Running command: systemctl start docker.service
+2025/05/28 14:59:06.631400 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:59:06.631413 [INFO] Executing instruction: Setup Docker Options
+2025/05/28 14:59:06.631416 [INFO] Setting up configurations for docker platform
+2025/05/28 14:59:06.645685 [INFO] Running command: systemctl show -p PartOf eb-docker-events.service
+2025/05/28 14:59:06.663090 [INFO] Running command: systemctl daemon-reload
+2025/05/28 14:59:06.952062 [INFO] Running command: systemctl reset-failed
+2025/05/28 14:59:06.960188 [INFO] Running command: systemctl enable eb-docker-events.service
+2025/05/28 14:59:07.249926 [INFO] Created symlink /etc/systemd/system/docker.service.wants/eb-docker-events.service → /etc/systemd/system/eb-docker-events.service.
+
+2025/05/28 14:59:07.249946 [INFO] Running command: systemctl show -p PartOf eb-docker-events.service
+2025/05/28 14:59:07.260190 [INFO] Running command: systemctl is-active eb-docker-events.service
+2025/05/28 14:59:07.267819 [INFO] Running command: systemctl start eb-docker-events.service
+2025/05/28 14:59:07.323163 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:59:07.323174 [INFO] Executing instruction: MarkBootstrapped
+2025/05/28 14:59:07.323177 [INFO] Starting MarkBootstrapped
+2025/05/28 14:59:07.323181 [INFO] Instance has NOT been bootstrapped
+2025/05/28 14:59:07.323275 [INFO] Marked instance as Bootstrapped
+2025/05/28 14:59:07.323279 [INFO] Executing instruction: Save CFN Stack Info
+2025/05/28 14:59:07.330456 [INFO] Executing cleanup logic
+2025/05/28 14:59:07.330471 [INFO] Platform Engine finished execution on command: env-launch
+
+2025/05/28 14:59:31.446428 [INFO] Starting...
+2025/05/28 14:59:31.446459 [INFO] Starting EBPlatform-PlatformEngine
+2025/05/28 14:59:31.446479 [INFO] reading event message file
+2025/05/28 14:59:31.447131 [INFO] Engine received EB command cfn-hup-exec
+
+2025/05/28 14:59:31.513977 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBAutoScalingGroup --region eu-west-2
+2025/05/28 14:59:31.788273 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBBeanstalkMetadata --region eu-west-2
+2025/05/28 14:59:32.057623 [INFO] checking whether command app-deploy is applicable to this instance...
+2025/05/28 14:59:32.057636 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/05/28 14:59:32.057639 [INFO] Engine command: (app-deploy)
+
+2025/05/28 14:59:32.057644 [INFO] Downloading EB Application...
+2025/05/28 14:59:32.057646 [INFO] Region: eu-west-2
+2025/05/28 14:59:32.057649 [INFO] envID: e-warkspitvn
+2025/05/28 14:59:32.057652 [INFO] envBucket: elasticbeanstalk-eu-west-2-459234975125
+2025/05/28 14:59:32.057655 [INFO] accountID: 459234975125
+2025/05/28 14:59:32.057658 [INFO] Using manifest file name from command request
+2025/05/28 14:59:32.057676 [INFO] Unable to get version manifest file.
+2025/05/28 14:59:32.057680 [INFO] Downloading latest manifest available.
+2025/05/28 14:59:32.057682 [INFO] Download latest app version manifest
+2025/05/28 14:59:32.057843 [INFO] resources/environments/e-warkspitvn/_runtime/versions/manifest
+2025/05/28 14:59:32.113799 [INFO] latestManifest key *: resources/environments/e-warkspitvn/_runtime/versions/manifest_1748444287711
+
+2025/05/28 14:59:32.114011 [INFO] Downloading: bucket: elasticbeanstalk-eu-west-2-459234975125, object: resources/environments/e-warkspitvn/_runtime/versions/manifest_1748444287711, expected bucket owner: 459234975125
+2025/05/28 14:59:32.153455 [INFO] Download successful103bytes downloaded
+2025/05/28 14:59:32.153530 [INFO] Trying to read and parse version manifest...
+2025/05/28 14:59:32.153613 [INFO] Downloading: bucket: elasticbeanstalk-eu-west-2-459234975125, object: resources/environments/e-warkspitvn/_runtime/_versions/ReportrApp/ver, expected bucket owner: 459234975125
+2025/05/28 14:59:32.184253 [INFO] Download successful4271bytes downloaded
+2025/05/28 14:59:32.184579 [INFO] Executing instruction: ElectLeader
+2025/05/28 14:59:32.184586 [INFO] Running leader election for instance i-047b0421b9ad6becd...
+2025/05/28 14:59:32.184589 [INFO] Calling the cfn-elect-cmd-leader to elect the command leader.
+2025/05/28 14:59:32.184598 [INFO] Running command: /opt/aws/bin/cfn-elect-cmd-leader --stack arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f --command-name ElasticBeanstalkCommand-AWSEBAutoScalingGroup --invocation-id 5f472e79-354d-4f75-9f0a-41f719b5d09e --listener-id i-047b0421b9ad6becd --region eu-west-2
+2025/05/28 14:59:32.482602 [INFO] Instance is Leader.
+2025/05/28 14:59:32.482655 [INFO] Executing instruction: stopSqsd
+2025/05/28 14:59:32.482660 [INFO] This is a web server environment instance, skip stop sqsd daemon ...
+2025/05/28 14:59:32.482663 [INFO] Executing instruction: PreBuildEbExtension
+2025/05/28 14:59:32.482671 [INFO] Starting executing the config set Infra-EmbeddedPreBuild.
+2025/05/28 14:59:32.482680 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBAutoScalingGroup --region eu-west-2 --configsets Infra-EmbeddedPreBuild
+2025/05/28 14:59:32.773409 [INFO] Finished executing the config set Infra-EmbeddedPreBuild.
+
+2025/05/28 14:59:32.773428 [INFO] Executing instruction: StagedockerApplication
+2025/05/28 14:59:32.773449 [INFO] Running command: docker ps -a -q -f status=running
+2025/05/28 14:59:32.790371 [INFO] Pruning containers ...
+2025/05/28 14:59:32.790414 [INFO] Running command: docker ps -a
+2025/05/28 14:59:32.802718 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/05/28 14:59:32.802737 [INFO] Running command: docker container prune -f
+2025/05/28 14:59:32.813847 [INFO] Total reclaimed space: 0B
+
+2025/05/28 14:59:32.813883 [INFO] Running command: docker ps -a
+2025/05/28 14:59:32.825716 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/05/28 14:59:32.825729 [INFO] Recreating /var/app/staging/
+2025/05/28 14:59:32.825825 [INFO] Recreating /var/log/eb-docker/containers/eb-current-app
+2025/05/28 14:59:32.825945 [INFO] Running command: /bin/file -m /opt/elasticbeanstalk/config/private/beanstalk-magic -b --mime-type /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/05/28 14:59:32.840258 [INFO] application/zip
+
+2025/05/28 14:59:32.840270 [INFO] app source bundle is zip file ...
+2025/05/28 14:59:32.840273 [INFO] extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/
+2025/05/28 14:59:32.840280 [INFO] Running command: /usr/bin/unzip -q -o /opt/elasticbeanstalk/deployment/app_source_bundle -d /var/app/staging/
+2025/05/28 14:59:32.842689 [INFO] finished extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/ successfully
+2025/05/28 14:59:32.842697 [INFO] Executing instruction: RunAppDeployPreBuildHooks
+2025/05/28 14:59:32.842785 [INFO] Executing platform hooks in .platform/hooks/prebuild/
+2025/05/28 14:59:32.842804 [INFO] The dir .platform/hooks/prebuild/ does not exist
+2025/05/28 14:59:32.842806 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/prebuild
+2025/05/28 14:59:32.842811 [INFO] Executing instruction: Generate environment file
+2025/05/28 14:59:32.842854 [INFO] Executing instruction: Docker Specific Build Application
+2025/05/28 14:59:32.842858 [INFO] start build docker app
+2025/05/28 14:59:32.842965 [INFO] fetching image names from Dockerfile /var/app/staging/Dockerfile
+2025/05/28 14:59:32.843021 [INFO] found images [node:20-alpine node:20-alpine] in Dockerfile /var/app/staging/Dockerfile
+2025/05/28 14:59:32.843025 [INFO] pull docker image if update is not false in Dockerrun.aws.json
+2025/05/28 14:59:32.843035 [INFO] Running command: docker pull node:20-alpine
+2025/05/28 14:59:37.289634 [INFO] 20-alpine: Pulling from library/node
+f18232174bc9: Pulling fs layer
+05c1247b2bae: Pulling fs layer
+301aebe3d905: Pulling fs layer
+699b753813e6: Pulling fs layer
+699b753813e6: Waiting
+301aebe3d905: Verifying Checksum
+301aebe3d905: Download complete
+f18232174bc9: Verifying Checksum
+f18232174bc9: Download complete
+699b753813e6: Verifying Checksum
+699b753813e6: Download complete
+05c1247b2bae: Verifying Checksum
+05c1247b2bae: Download complete
+f18232174bc9: Pull complete
+05c1247b2bae: Pull complete
+301aebe3d905: Pull complete
+699b753813e6: Pull complete
+Digest: sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679
+Status: Downloaded newer image for node:20-alpine
+docker.io/library/node:20-alpine
+
+2025/05/28 14:59:37.289653 [INFO] successfully execute command: docker pull node:20-alpine
+2025/05/28 14:59:37.289657 [INFO] successfully pulled docker image node:20-alpine
+2025/05/28 14:59:37.289669 [INFO] Running command: docker pull node:20-alpine
+2025/05/28 14:59:38.096935 [INFO] 20-alpine: Pulling from library/node
+Digest: sha256:be56e91681a8ec1bba91e3006039bd228dc797fd984794a3efedab325b36e679
+Status: Image is up to date for node:20-alpine
+docker.io/library/node:20-alpine
+
+2025/05/28 14:59:38.096957 [INFO] successfully execute command: docker pull node:20-alpine
+2025/05/28 14:59:38.096961 [INFO] successfully pulled docker image node:20-alpine
+2025/05/28 14:59:38.096964 [INFO] start to build docker image
+2025/05/28 14:59:38.096990 [INFO] Running command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/05/28 14:59:40.965639 [INFO] #0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.73kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 703B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 3.54kB done
+#4 DONE 0.1s
+
+#5 [builder 1/6] FROM docker.io/library/node:20-alpine
+#5 DONE 0.1s
+
+#6 [builder 2/6] WORKDIR /app
+#6 DONE 0.1s
+
+#7 [production 2/8] RUN apk add --no-cache dumb-init
+#7 ...
+
+#8 [builder 3/6] COPY package*.json ./
+#8 DONE 0.1s
+
+#7 [production 2/8] RUN apk add --no-cache dumb-init
+#7 0.418 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+#7 0.601 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+#7 1.329 (1/1) Installing dumb-init (1.2.5-r3)
+#7 1.334 Executing busybox-1.37.0-r12.trigger
+#7 1.344 OK: 10 MiB in 18 packages
+#7 DONE 1.5s
+
+#9 [builder 4/6] RUN npm install --only=production && npm cache clean --force
+#9 0.695 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#9 ...
+
+#10 [production 3/8] WORKDIR /app
+#10 DONE 0.1s
+
+#9 [builder 4/6] RUN npm install --only=production && npm cache clean --force
+#9 1.643 npm error code ENOENT
+#9 1.644 npm error syscall open
+#9 1.645 npm error path /app/package.json
+#9 1.645 npm error errno -2
+#9 1.646 npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/app/package.json'
+#9 1.646 npm error enoent This is related to npm not being able to find a file.
+#9 1.646 npm error enoent
+#9 1.648 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T14_59_39_611Z-debug-0.log
+#9 ERROR: process "/bin/sh -c npm install --only=production && npm cache clean --force" did not complete successfully: exit code: 254
+
+#11 [production 4/8] RUN addgroup -g 1001 -S nodejs &&     adduser -S reportr -u 1001
+#11 CANCELED
+------
+ > [builder 4/6] RUN npm install --only=production && npm cache clean --force:
+0.695 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+1.643 npm error code ENOENT
+1.644 npm error syscall open
+1.645 npm error path /app/package.json
+1.645 npm error errno -2
+1.646 npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/app/package.json'
+1.646 npm error enoent This is related to npm not being able to find a file.
+1.646 npm error enoent
+1.648 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T14_59_39_611Z-debug-0.log
+------
+Dockerfile:11
+--------------------
+   9 |     
+  10 |     # Install dependencies 
+  11 | >>> RUN npm install --only=production && npm cache clean --force
+  12 |     
+  13 |     # Copy source code
+--------------------
+ERROR: failed to solve: process "/bin/sh -c npm install --only=production && npm cache clean --force" did not complete successfully: exit code: 254
+
+2025/05/28 14:59:40.974866 [WARN] failed to execute command: docker build -t aws_beanstalk/staging-app /var/app/staging/, retrying...
+2025/05/28 14:59:40.974887 [INFO] Running command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/05/28 14:59:42.308162 [INFO] #0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.73kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 703B done
+#3 DONE 0.0s
+
+#4 [production 1/8] FROM docker.io/library/node:20-alpine
+#4 DONE 0.0s
+
+#5 [production 2/8] RUN apk add --no-cache dumb-init
+#5 CACHED
+
+#6 [production 3/8] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 353B 0.0s done
+#7 DONE 0.1s
+
+#8 [builder 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [builder 3/6] COPY package*.json ./
+#9 CACHED
+
+#10 [builder 4/6] RUN npm install --only=production && npm cache clean --force
+#10 ...
+
+#11 [production 4/8] RUN addgroup -g 1001 -S nodejs &&     adduser -S reportr -u 1001
+#11 DONE 0.3s
+
+#10 [builder 4/6] RUN npm install --only=production && npm cache clean --force
+#10 0.464 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#10 0.914 npm error code ENOENT
+#10 0.915 npm error syscall open
+#10 0.916 npm error path /app/package.json
+#10 0.916 npm error errno -2
+#10 0.917 npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/app/package.json'
+#10 0.917 npm error enoent This is related to npm not being able to find a file.
+#10 0.917 npm error enoent
+#10 0.918 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T14_59_41_670Z-debug-0.log
+#10 ERROR: process "/bin/sh -c npm install --only=production && npm cache clean --force" did not complete successfully: exit code: 254
+------
+ > [builder 4/6] RUN npm install --only=production && npm cache clean --force:
+0.464 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+0.914 npm error code ENOENT
+0.915 npm error syscall open
+0.916 npm error path /app/package.json
+0.916 npm error errno -2
+0.917 npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/app/package.json'
+0.917 npm error enoent This is related to npm not being able to find a file.
+0.917 npm error enoent
+0.918 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T14_59_41_670Z-debug-0.log
+------
+Dockerfile:11
+--------------------
+   9 |     
+  10 |     # Install dependencies 
+  11 | >>> RUN npm install --only=production && npm cache clean --force
+  12 |     
+  13 |     # Copy source code
+--------------------
+ERROR: failed to solve: process "/bin/sh -c npm install --only=production && npm cache clean --force" did not complete successfully: exit code: 254
+
+2025/05/28 14:59:42.308338 [ERROR] An error occurred during execution of command [app-deploy] - [Docker Specific Build Application]. Stop running the command. Error: failed to build docker image: Command docker build -t aws_beanstalk/staging-app /var/app/staging/ failed with error exit status 1. Stderr:#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.73kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 703B done
+#3 DONE 0.0s
+
+#4 [production 1/8] FROM docker.io/library/node:20-alpine
+#4 DONE 0.0s
+
+#5 [production 2/8] RUN apk add --no-cache dumb-init
+#5 CACHED
+
+#6 [production 3/8] WORKDIR /app
+#6 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 353B 0.0s done
+#7 DONE 0.1s
+
+#8 [builder 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [builder 3/6] COPY package*.json ./
+#9 CACHED
+
+#10 [builder 4/6] RUN npm install --only=production && npm cache clean --force
+#10 ...
+
+#11 [production 4/8] RUN addgroup -g 1001 -S nodejs &&     adduser -S reportr -u 1001
+#11 DONE 0.3s
+
+#10 [builder 4/6] RUN npm install --only=production && npm cache clean --force
+#10 0.464 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+#10 0.914 npm error code ENOENT
+#10 0.915 npm error syscall open
+#10 0.916 npm error path /app/package.json
+#10 0.916 npm error errno -2
+#10 0.917 npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/app/package.json'
+#10 0.917 npm error enoent This is related to npm not being able to find a file.
+#10 0.917 npm error enoent
+#10 0.918 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T14_59_41_670Z-debug-0.log
+#10 ERROR: process "/bin/sh -c npm install --only=production && npm cache clean --force" did not complete successfully: exit code: 254
+------
+ > [builder 4/6] RUN npm install --only=production && npm cache clean --force:
+0.464 npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+0.914 npm error code ENOENT
+0.915 npm error syscall open
+0.916 npm error path /app/package.json
+0.916 npm error errno -2
+0.917 npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/app/package.json'
+0.917 npm error enoent This is related to npm not being able to find a file.
+0.917 npm error enoent
+0.918 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-05-28T14_59_41_670Z-debug-0.log
+------
+Dockerfile:11
+--------------------
+   9 |     
+  10 |     # Install dependencies 
+  11 | >>> RUN npm install --only=production && npm cache clean --force
+  12 |     
+  13 |     # Copy source code
+--------------------
+ERROR: failed to solve: process "/bin/sh -c npm install --only=production && npm cache clean --force" did not complete successfully: exit code: 254
+ 
+
+2025/05/28 14:59:42.308346 [INFO] Executing cleanup logic
+2025/05/28 14:59:42.308457 [INFO] CommandService Response: {"status":"FAILURE","api_version":"1.0","results":[{"status":"FAILURE","msg":"Engine execution has encountered an error.","returncode":1,"events":[{"msg":"Instance deployment failed to build the Docker image. The deployment failed.","timestamp":1748444382308,"severity":"ERROR"},{"msg":"Instance deployment failed. For details, see 'eb-engine.log'.","timestamp":1748444382308,"severity":"ERROR"}]}]}
+
+2025/05/28 14:59:42.308704 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/05/28 15:01:39.469626 [INFO] Starting...
+2025/05/28 15:01:39.469661 [INFO] Starting EBPlatform-PlatformEngine
+2025/05/28 15:01:39.469681 [INFO] reading event message file
+2025/05/28 15:01:39.469916 [INFO] Engine received EB command cfn-hup-exec
+
+2025/05/28 15:01:39.544372 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBAutoScalingGroup --region eu-west-2
+2025/05/28 15:01:39.841520 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-west-2:459234975125:stack/awseb-e-warkspitvn-stack/2a972760-3bd4-11f0-a137-06f758a60c5f -r AWSEBBeanstalkMetadata --region eu-west-2
+2025/05/28 15:01:40.120280 [INFO] checking whether command bundle-log is applicable to this instance...
+2025/05/28 15:01:40.120292 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/05/28 15:01:40.120295 [INFO] Engine command: (bundle-log)
+
+2025/05/28 15:01:40.120337 [INFO] Executing instruction: GetBundleLogs
+2025/05/28 15:01:40.120340 [INFO] Bundle Logs...
