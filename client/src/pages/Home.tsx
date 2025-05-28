@@ -283,6 +283,11 @@ Thank you!`);
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
+        {/* Ad Banner Section */}
+        <section className="mb-6">
+          <AdBanner type="static" size="medium" />
+        </section>
+
         {/* How-to Guide */}
         <section className="mb-6">
           <div className="bg-white rounded-xl overflow-hidden border border-orange-100">
