@@ -5,6 +5,7 @@ import { differenceInDays } from 'date-fns';
 import { db } from './db';
 import { issues, upvotes } from '@shared/schema';
 import { eq } from 'drizzle-orm';
+import { getDepartmentEmailsByLocation, getMunicipalityInfo } from './municipalityService';
 
 // Initialize Resend with the API key
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -13,9 +14,20 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const defaultRecipients = ['waltstrydom@gmail.com'];
 
 /**
- * Get department email address based on issue type
+ * Get department email address based on issue type and location
  */
-function getDepartmentEmail(issueType: string): string[] {
+function getDepartmentEmail(issueType: string, latitude?: number, longitude?: number): string[] {
+  // If location is provided, use the new location-based routing
+  if (latitude !== undefined && longitude !== undefined) {
+    const municipalityInfo = getMunicipalityInfo(latitude, longitude);
+    const recipients = getDepartmentEmailsByLocation(latitude, longitude, issueType);
+    
+    console.log(`Routing issue ${issueType} at coordinates (${latitude}, ${longitude}) to ${municipalityInfo.name}:`, recipients);
+    
+    return recipients;
+  }
+  
+  // Fallback to Tshwane if no location provided (backward compatibility)
   const departmentEmails = ['waltstrydom@gmail.com']; // Always include Walt's email
   
   // Add specific department email based on issue type
