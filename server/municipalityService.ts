@@ -37,8 +37,8 @@ const municipalities: Municipality[] = [
         coordinates: [
           [-25.4, 28.0], // Northwest
           [-25.4, 28.6], // Northeast
-          [-26.0, 28.6], // Southeast
-          [-26.0, 28.0], // Southwest
+          [-25.9, 28.6], // Southeast
+          [-25.9, 28.0], // Southwest
           [-25.4, 28.0]  // Close polygon
         ]
       }
