@@ -1,17 +1,21 @@
-# Simple single-stage build for Elastic Beanstalk
-FROM node:20-alpine
-
-# Set working directory
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy all files
+COPY package*.json ./
+RUN npm ci
+
 COPY . .
+RUN npm run build
 
-# Install dependencies and build
-RUN npm install && npm run build
+FROM node:20-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
 
-# Expose port
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/shared ./shared
+
 EXPOSE 5000
-
-# Start the application
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]
