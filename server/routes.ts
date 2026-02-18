@@ -1,326 +1,257 @@
 import { Express, Request, Response } from "express";
 import express from "express";
 import { createServer, Server } from "http";
-import { storage } from "./storage";
 import { issueFormSchema, supportFormSchema } from "@shared/schema";
 import { z } from "zod";
 import { nanoid } from "nanoid";
-import { ZodError } from "zod-validation-error";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { differenceInDays } from 'date-fns';
-import { sendNewIssueEmail, sendSupportEmail, sendReminderEmail } from "./emailService";
 
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: function (req, file, cb) {
-      const uploadDir = path.join(import.meta.dirname, "../uploads");
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-  })
-});
+const upload = multer({ storage: multer.memoryStorage() });
 
-// Function to check for unresolved issues older than 45 days and send reminders
-async function checkAndSendReminders() {
-  try {
-    // Get all issues
-    const issues = await storage.getIssues();
-    
-    // Filter for unresolved issues older than 45 days
-    const now = new Date();
-    const unresolvedOldIssues = issues.filter(issue => {
-      // Only include issues with status 'pending' or 'in-progress'
-      const isUnresolved = issue.status === 'pending' || issue.status === 'in-progress';
-      const creationDate = new Date(issue.createdAt);
-      const daysOpen = differenceInDays(now, creationDate);
-      
-      // Check if the issue is at least 45 days old
-      return isUnresolved && daysOpen >= 45;
+const N8N_WEBHOOK_BASE_URL = process.env.N8N_WEBHOOK_BASE_URL;
+const N8N_AUTH_HEADER = process.env.N8N_AUTH_HEADER ?? "x-reportr-key";
+const N8N_AUTH_TOKEN = process.env.N8N_AUTH_TOKEN;
+
+function ensureN8nConfigured(res: Response): boolean {
+  if (!N8N_WEBHOOK_BASE_URL) {
+    res.status(500).json({
+      message: "n8n backend is not configured",
+      requiredEnv: "N8N_WEBHOOK_BASE_URL",
     });
-    
-    console.log(`Found ${unresolvedOldIssues.length} unresolved issues older than 45 days`);
-    
-    // Send reminder emails for each old unresolved issue
-    for (const issue of unresolvedOldIssues) {
-      const result = await sendReminderEmail(issue);
-      if (result.success) {
-        console.log(`Sent reminder email for issue ID ${issue.id}, report ID ${issue.reportId}`);
-      } else {
-        console.error(`Failed to send reminder email for issue ID ${issue.id}:`, result.error);
-      }
-      
-      // Add small delay between emails to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-  } catch (error) {
-    console.error('Error checking for old issues:', error);
+    return false;
   }
+  return true;
+}
+
+function withPathParams(pathTemplate: string, params: Record<string, string>): string {
+  return Object.entries(params).reduce(
+    (path, [key, value]) => path.replace(`:${key}`, encodeURIComponent(value)),
+    pathTemplate,
+  );
+}
+
+async function callN8n(path: string, init?: RequestInit) {
+  const headers = new Headers(init?.headers);
+  headers.set("content-type", "application/json");
+  if (N8N_AUTH_TOKEN) {
+    headers.set(N8N_AUTH_HEADER, N8N_AUTH_TOKEN);
+  }
+
+  const response = await fetch(`${N8N_WEBHOOK_BASE_URL}${path}`, {
+    ...init,
+    headers,
+  });
+
+  const contentType = response.headers.get("content-type") || "";
+  const body = contentType.includes("application/json")
+    ? await response.json()
+    : { message: await response.text() };
+
+  return {
+    ok: response.ok,
+    status: response.status,
+    body,
+  };
+}
+
+function relayN8nResponse(res: Response, result: Awaited<ReturnType<typeof callN8n>>) {
+  res.status(result.status).json(result.body);
+}
+
+function buildAnonymousContext(req: Request) {
+  return {
+    anonymous: true,
+    requester: {
+      ip:
+        req.headers["x-forwarded-for"]?.toString().split(",")[0]?.trim() ||
+        req.ip ||
+        "unknown",
+      userAgent: req.headers["user-agent"] || "unknown",
+    },
+  };
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Create HTTP server
   const httpServer = createServer(app);
 
-  // Set up reminder check to run daily
-  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000; // in milliseconds
-  
-  // Run initial check after 1 minute (to allow server to fully start)
-  setTimeout(checkAndSendReminders, 60 * 1000);
-  
-  // Then run every 24 hours
-  setInterval(checkAndSendReminders, TWENTY_FOUR_HOURS);
-  
-  // Serve uploaded files
-  app.use('/uploads', express.static(path.join(import.meta.dirname, '../uploads')));
+  app.get("/api/health", async (_req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
 
-  // Health check endpoint for Docker/AWS
-  app.get('/api/health', async (req: Request, res: Response) => {
     try {
-      // Basic health check - verify database connectivity
-      await storage.getIssues();
-      res.status(200).json({ 
-        status: 'healthy', 
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        version: '1.0.0'
-      });
-    } catch (error) {
-      res.status(503).json({ 
-        status: 'unhealthy', 
-        timestamp: new Date().toISOString(),
-        error: 'Database connectivity issue'
-      });
+      const result = await callN8n("/health", { method: "GET" });
+      relayN8nResponse(res, result);
+    } catch {
+      res.status(503).json({ status: "unhealthy", message: "Failed to reach n8n backend" });
     }
   });
 
-  // Get all issues
-  app.get('/api/issues', async (req: Request, res: Response) => {
+  app.get("/api/issues", async (_req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
-      const issues = await storage.getIssues();
-      res.json(issues);
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to retrieve issues' });
+      const result = await callN8n("/issues", { method: "GET" });
+      relayN8nResponse(res, result);
+    } catch {
+      res.status(500).json({ message: "Failed to retrieve issues" });
     }
   });
 
-  // Get issues by location (with radius in km)
-  app.get('/api/issues/nearby', async (req: Request, res: Response) => {
+  app.get("/api/issues/nearby", async (req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
       const schema = z.object({
         lat: z.coerce.number(),
         lng: z.coerce.number(),
-        radius: z.coerce.number().default(5), // Default 5km radius
+        radius: z.coerce.number().default(5),
       });
 
       const query = schema.parse(req.query);
-      const issues = await storage.getIssuesByLocation(query.lat, query.lng, query.radius);
-      res.json(issues);
+      const searchParams = new URLSearchParams({
+        lat: query.lat.toString(),
+        lng: query.lng.toString(),
+        radius: query.radius.toString(),
+      });
+
+      const result = await callN8n(`/issues/nearby?${searchParams.toString()}`, { method: "GET" });
+      relayN8nResponse(res, result);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: 'Invalid query parameters', errors: error.errors });
+        return res.status(400).json({ message: "Invalid query parameters", errors: error.errors });
       }
-      res.status(500).json({ message: 'Failed to retrieve nearby issues' });
+      res.status(500).json({ message: "Failed to retrieve nearby issues" });
     }
   });
 
-  // Get issue by ID
-  app.get('/api/issues/:id', async (req: Request, res: Response) => {
+  app.get("/api/issues/:id", async (req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
-      const id = parseInt(req.params.id);
-      const issue = await storage.getIssueById(id);
-      
-      if (!issue) {
-        return res.status(404).json({ message: 'Issue not found' });
-      }
-      
-      res.json(issue);
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to retrieve issue' });
+      const path = withPathParams("/issues/:id", { id: req.params.id });
+      const result = await callN8n(path, { method: "GET" });
+      relayN8nResponse(res, result);
+    } catch {
+      res.status(500).json({ message: "Failed to retrieve issue" });
     }
   });
 
-  // Create new issue
-  app.post('/api/issues', upload.single('photo'), async (req: Request, res: Response) => {
+  app.post("/api/issues", upload.single("photo"), async (req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
-      // Parse the form data
-      const photoUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
-      
-      // Create issue with generated reportId
       const reportId = nanoid(10);
+      const photoAttachment = req.file
+        ? {
+            filename: req.file.originalname,
+            mimeType: req.file.mimetype,
+            size: req.file.size,
+            base64: req.file.buffer.toString("base64"),
+          }
+        : undefined;
+
       const issueData = {
         ...req.body,
-        photoUrl,
         reportId,
         latitude: parseFloat(req.body.latitude),
         longitude: parseFloat(req.body.longitude),
       };
-      
-      // Validate the input
+
       const validatedData = issueFormSchema.parse(issueData);
-      
-      // Create issue in storage
-      const issue = await storage.createIssue(validatedData);
-      
-      // Send email notification using Resend API
-      try {
-        const emailResult = await sendNewIssueEmail(issue);
-        console.log('Email notification sent:', emailResult.success ? 'Success' : 'Failed');
-        if (!emailResult.success) {
-          console.error('Email sending error:', emailResult.error);
-        }
-      } catch (emailError) {
-        console.error('Failed to send email notification:', emailError);
-        // Continue with response even if email fails
-      }
-      
-      res.status(201).json(issue);
+
+      const result = await callN8n("/issues", {
+        method: "POST",
+        body: JSON.stringify({
+          ...validatedData,
+          photoAttachment,
+          ...buildAnonymousContext(req),
+        }),
+      });
+
+      relayN8nResponse(res, result);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ 
-          message: 'Invalid issue data', 
-          errors: error.errors 
-        });
+        return res.status(400).json({ message: "Invalid issue data", errors: error.errors });
       }
-      
-      console.error('Issue creation error:', error);
-      res.status(500).json({ message: 'Failed to create issue' });
+
+      res.status(500).json({ message: "Failed to create issue" });
     }
   });
 
-  // Support an issue
-  app.post('/api/issues/:id/support', async (req: Request, res: Response) => {
+  app.post("/api/issues/:id/support", async (req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
       const id = parseInt(req.params.id);
-      const issue = await storage.getIssueById(id);
-      
-      if (!issue) {
-        return res.status(404).json({ message: 'Issue not found' });
-      }
-      
-      // Validate support data
-      const upvoteData = supportFormSchema.parse({
+      const supportData = supportFormSchema.parse({
         issueId: id,
-        deviceId: req.body.deviceId
+        deviceId: req.body.deviceId,
       });
-      
-      // Check if this device already supported this issue
-      const existingUpvote = await storage.getUpvoteByDeviceAndIssue(
-        upvoteData.deviceId,
-        upvoteData.issueId
-      );
-      
-      if (existingUpvote) {
-        return res.status(409).json({ message: 'You have already supported this issue' });
-      }
-      
-      // Create support record
-      await storage.createUpvote(upvoteData);
-      
-      // Increment support count on the issue
-      const updatedIssue = await storage.incrementUpvote(id);
-      
-      // Use the updated issue or create a merged object with updated supporters count
-      const issueForEmail = updatedIssue || {
-        ...issue,
-        upvotes: issue.upvotes + 1
-      };
-      
-      // Send email notification using Resend API
-      try {
-        const emailResult = await sendSupportEmail(issueForEmail);
-        console.log('Support email notification sent:', emailResult.success ? 'Success' : 'Failed');
-        if (!emailResult.success) {
-          console.error('Support email sending error:', emailResult.error);
-        }
-      } catch (emailError) {
-        console.error('Failed to send support email notification:', emailError);
-        // Continue with response even if email fails
-      }
-      
-      res.json(updatedIssue);
+
+      const path = withPathParams("/issues/:id/support", { id: id.toString() });
+      const result = await callN8n(path, {
+        method: "POST",
+        body: JSON.stringify({
+          ...supportData,
+          ...buildAnonymousContext(req),
+        }),
+      });
+
+      relayN8nResponse(res, result);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ 
-          message: 'Invalid support data', 
-          errors: error.errors 
-        });
+        return res.status(400).json({ message: "Invalid support data", errors: error.errors });
       }
-      
-      console.error('Support error:', error);
-      res.status(500).json({ message: 'Failed to support this issue' });
+
+      res.status(500).json({ message: "Failed to support this issue" });
     }
   });
-  
-  // Check if a device has supported an issue
-  app.get('/api/issues/:id/support/:deviceId', async (req: Request, res: Response) => {
+
+  app.get("/api/issues/:id/support/:deviceId", async (req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
       const id = parseInt(req.params.id);
-      const deviceId = req.params.deviceId;
-      
-      // Validate input
+      const { deviceId } = req.params;
+
       if (!id || isNaN(id) || !deviceId) {
-        return res.status(400).json({ message: 'Invalid issue ID or device ID' });
+        return res.status(400).json({ message: "Invalid issue ID or device ID" });
       }
-      
-      const existingUpvote = await storage.getUpvoteByDeviceAndIssue(deviceId, id);
-      
-      if (existingUpvote) {
-        return res.status(200).json({ supported: true });
-      } else {
-        return res.status(404).json({ supported: false });
-      }
-    } catch (error) {
-      console.error('Support status check error:', error);
-      res.status(500).json({ message: 'Failed to check support status' });
+
+      const path = withPathParams("/issues/:id/support/:deviceId", {
+        id: id.toString(),
+        deviceId,
+      });
+
+      const result = await callN8n(path, { method: "GET" });
+      relayN8nResponse(res, result);
+    } catch {
+      res.status(500).json({ message: "Failed to check support status" });
     }
   });
-  
-  // Revoke support for an issue
-  app.delete('/api/issues/:id/support', async (req: Request, res: Response) => {
+
+  app.delete("/api/issues/:id/support", async (req: Request, res: Response) => {
+    if (!ensureN8nConfigured(res)) return;
+
     try {
       const id = parseInt(req.params.id);
-      const issue = await storage.getIssueById(id);
-      
-      if (!issue) {
-        return res.status(404).json({ message: 'Issue not found' });
+      const { deviceId } = req.body;
+
+      if (!id || isNaN(id) || !deviceId) {
+        return res.status(400).json({ message: "Invalid issue ID or device ID" });
       }
-      
-      // Validate the device ID
-      const deviceId = req.body.deviceId;
-      if (!deviceId) {
-        return res.status(400).json({ message: 'Device ID is required' });
-      }
-      
-      // Check if this device has supported this issue
-      const existingUpvote = await storage.getUpvoteByDeviceAndIssue(deviceId, id);
-      
-      if (!existingUpvote) {
-        return res.status(404).json({ message: 'No support record found for this issue' });
-      }
-      
-      // Delete the support record
-      const deleteResult = await storage.deleteUpvoteByDeviceAndIssue(deviceId, id);
-      
-      if (!deleteResult) {
-        return res.status(500).json({ message: 'Failed to revoke support' });
-      }
-      
-      // Decrement support count on the issue
-      const updatedIssue = await storage.decrementUpvote(id);
-      
-      res.json(updatedIssue);
-    } catch (error) {
-      console.error('Revoke support error:', error);
-      res.status(500).json({ message: 'Failed to revoke support for this issue' });
+
+      const path = withPathParams("/issues/:id/support", { id: id.toString() });
+      const result = await callN8n(path, {
+        method: "DELETE",
+        body: JSON.stringify({
+          deviceId,
+          ...buildAnonymousContext(req),
+        }),
+      });
+
+      relayN8nResponse(res, result);
+    } catch {
+      res.status(500).json({ message: "Failed to revoke support for this issue" });
     }
   });
 
